@@ -16,7 +16,7 @@ public enum RemmeMethod {
     ATOMIC_SWAP("get_atomic_swap_info"),
     ATOMIC_SWAP_PUBLIC_KEY("get_atomic_swap_public_key"),
     USER_PUBLIC_KEYS("get_public_keys_list"),
-    NODE_KEY("get_node_public_key"),
+    NODE_CONFIG ("get_node_config"),
     NODE_PRIVATE_KEY("export_node_key"),
     TRANSACTION("send_raw_transaction"),
     NETWORK_STATUS("get_node_info"),

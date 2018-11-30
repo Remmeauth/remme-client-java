@@ -33,14 +33,13 @@ public class RemmeApi implements IRemmeApi {
     private String nodeAddress;
     private Integer nodePort;
     private boolean sslMode;
-    private static JsonRpcClient jsonRpcClient;
 
     /**
      * RemmeApi constructor to initiate node configuration
      *
      * @param nodeAddress hostname or IP-address of Remme node
-     * @param nodePort port of Remme node
-     * @param sslMode set this flag to 'true' if you want to use SSL mode (https://)
+     * @param nodePort    port of Remme node
+     * @param sslMode     set this flag to 'true' if you want to use SSL mode (https://)
      */
     public RemmeApi(String nodeAddress, Integer nodePort, boolean sslMode) {
         Asserts.check(nodeAddress != null, "nodeAddress should not be null!");
@@ -50,6 +49,11 @@ public class RemmeApi implements IRemmeApi {
         this.sslMode = sslMode;
     }
 
+    /**
+     * Get node address as concatenation of host and port
+     *
+     * @return concatenation of host and port
+     */
     public String getNodeAddress() {
         return nodeAddress + ":" + nodePort;
     }
@@ -58,9 +62,11 @@ public class RemmeApi implements IRemmeApi {
      * Use this method to send JSON-RPC request (specification 2.0) to Remme node
      *
      * @param method specifies method on Remme node
-     * @return response from Remme node in 'result' field or ErrorMessage from 'error' field in case of error result
+     * @return response from Remme node in 'result' field or ErrorMessage inside JsonRpcException from 'error' field
+     * in case of error result
      * @see RemmeMethod
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
+     * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
     public Object sendRequest(RemmeMethod method) {
         return sendRequest(method, null);
@@ -71,22 +77,20 @@ public class RemmeApi implements IRemmeApi {
      *
      * @param method specifies method on Remme node
      * @param params map with key-value parameters which will be added to 'params' field during request
-     * @return response from Remme node in 'result' field or ErrorMessage from 'error' field in case of error result
+     * @return response from Remme node in 'result' field or ErrorMessage inside JsonRpcException from 'error' field
+     * in case of error result
      * @see RemmeMethod
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
+     * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
     public Object sendRequest(RemmeMethod method, Map<String, Object> params) {
-        try {
-            RequestBuilder<Object> requestBuilder = getRequestBuilder(method);
-            if (params != null && !params.isEmpty()) {
-                for (String name : params.keySet()) {
-                    requestBuilder = requestBuilder.param(name, params.get(name));
-                }
+        RequestBuilder<Object> requestBuilder = getRequestBuilder(method);
+        if (params != null && !params.isEmpty()) {
+            for (String name : params.keySet()) {
+                requestBuilder = requestBuilder.param(name, params.get(name));
             }
-            return requestBuilder.execute();
-        } catch (JsonRpcException e) {
-            return e.getErrorMessage();
         }
+        return requestBuilder.execute();
     }
 
     /**
@@ -97,15 +101,15 @@ public class RemmeApi implements IRemmeApi {
     }
 
     private RequestBuilder<Object> getRequestBuilder(RemmeMethod method) {
-        initClient();
-        return jsonRpcClient.createRequest()
+        return initClient().createRequest()
                 .method(method.getMethodName())
                 .id(Math.round(Math.random() * 100));
     }
 
-    private void initClient() {
-        jsonRpcClient = new JsonRpcClient(new Transport() {
+    private JsonRpcClient initClient() {
+        return new JsonRpcClient(new Transport() {
             CloseableHttpClient httpClient = HttpClients.createDefault();
+
             @NotNull
             public String pass(@NotNull String request) throws IOException {
                 HttpPost post = new HttpPost(getURLForRequest());
