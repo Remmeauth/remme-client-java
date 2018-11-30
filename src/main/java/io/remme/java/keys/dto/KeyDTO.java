@@ -13,17 +13,17 @@ public class KeyDTO {
      */
     protected String address;
     /**
-     * protected key  bytes array or rsa key type format
+     * Private key  bytes array or rsa key type format
      */
-    protected Object protectedKey;
+    protected Object privateKey;
     /**
      * Public key  bytes array or rsa key type format
      */
     protected Object publicKey;
     /**
-     * protected key in HEX string
+     * Private key in HEX string
      */
-    protected String protectedKeyHex;
+    protected String privateKeyHex;
     /**
      * Public key in HEX string
      */
@@ -33,9 +33,9 @@ public class KeyDTO {
      */
     protected String publicKeyPem;
     /**
-     * protected key in PEM format
+     * Private key in PEM format
      */
-    protected String protectedKeyPem;
+    protected String privateKeyPem;
     /**
      * Base64 of public key
      */
