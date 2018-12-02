@@ -1,5 +1,5 @@
 package io.remme.java.enums;
 
-public enum PubKeyType {
+public enum KeyType {
     RSA, ECDSA, EdDSA
 }
