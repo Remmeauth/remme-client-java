@@ -14,7 +14,7 @@ public class RemmeApiTest {
 
     @Test
     public void testSendRequestWithParams() throws ExecutionException, InterruptedException {
-        RemmeApi<List> remmeApi = new RemmeApi<>("node-genesis-testnet-dev.remme.io", 8080, false);
+        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
         Map<String, Object> params = new HashMap<>();
         params.put("start", 0);
         params.put("limit", 50);
@@ -25,7 +25,7 @@ public class RemmeApiTest {
 
     @Test
     public void testSendRequestWithoutParams() throws ExecutionException, InterruptedException {
-        RemmeApi<Integer> remmeApi = new RemmeApi<>("node-genesis-testnet-dev.remme.io", 8080, false);
+        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
         Future<Integer> result = remmeApi.sendRequest(RemmeMethod.BLOCK_NUMBER);
         Assert.assertNotNull(result);
         Assert.assertTrue((result.get()) > 0);

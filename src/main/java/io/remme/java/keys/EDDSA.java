@@ -40,7 +40,8 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
         } else if (privateKey != null) {
             Asserts.check(privateKey instanceof EdDSAPrivateKey, "Private Key should be instance of EdDSAPrivateKey");
             EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
-            this.publicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(((EdDSAPrivateKey)privateKey).getA(), spec));
+            this.privateKey = privateKey;
+            this.publicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(((EdDSAPrivateKey)this.privateKey).getA(), spec));
         } else if (publicKey != null) {
             Asserts.check(publicKey instanceof EdDSAPublicKey, "Public Key should be instance of EdDSAPublicKey");
             this.publicKey = publicKey;
@@ -128,9 +129,6 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
     @Override
     public boolean verify(String signature, String data) {
         try {
-            if (publicKey == null) {
-                throw new RemmeKeyException("PublicKey is not provided!");
-            }
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);

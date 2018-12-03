@@ -40,6 +40,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         } else if (privateKey != null) {
             Asserts.check(privateKey instanceof RSAPrivateKey, "Private Key should be instance of RSAPrivateKey");
+            this.privateKey = privateKey;
             try {
                 RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) this.privateKey;
                 KeySpec spec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(), rsaPrivateKey.getPrivateExponent());
@@ -127,9 +128,6 @@ public class RSA extends KeyDTO implements IRemmeKeys {
     @Override
     public boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding) {
         try {
-            if (publicKey == null) {
-                throw new RemmeKeyException("PublicKey is not provided!");
-            }
             byte[] signatureBytes = Hex.decodeHex(signature);
             switch (rsaSignaturePadding) {
                 case PSS:

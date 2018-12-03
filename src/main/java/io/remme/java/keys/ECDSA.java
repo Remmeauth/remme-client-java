@@ -43,6 +43,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         } else if (privateKey != null) {
             Asserts.check(privateKey instanceof BCECPrivateKey, "Private Key should be instance of BCECPrivateKey");
+            this.privateKey = privateKey;
             this.publicKey = derivePubKeyFromPrivKey((BCECPrivateKey) this.privateKey);
         } else if (publicKey != null) {
             Asserts.check(publicKey instanceof BCECPublicKey, "Public Key should be instance of BCECPublicKey");
@@ -141,9 +142,6 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
     @Override
     public boolean verify(String signatureHex, String data) {
         try {
-            if (publicKey == null) {
-                throw new RemmeKeyException("PublicKey is not provided!");
-            }
             byte[] signatureBytes = Hex.decodeHex(signatureHex);
             Signature signature = Signature.getInstance("SHA256withECDSA", "BC");
             signature.initVerify(publicKey);

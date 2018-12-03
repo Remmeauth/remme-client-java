@@ -6,6 +6,7 @@ import com.github.arteam.simplejsonrpc.client.builder.RequestBuilder;
 import com.google.common.net.MediaType;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.utils.RemmeExecutorService;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.codec.Charsets;
@@ -27,17 +28,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
- * Implementation of {@link IRemmeApi} to work with JSON-RPC node
+ * Main class that send requests to our REMME protocol;
+ * <br>Check JSON-RPC API specification:<br>
+ * <a target="_top" href="https://remmeio.atlassian.net/wiki/spaces/WikiREMME/pages/292814862/RPC+API+specification">RPC API specification</a>.
+ * <br>Implementation of {@link IRemmeApi} to work with JSON-RPC node
  */
 @Data
 @NoArgsConstructor
-public class RemmeApi<T> implements IRemmeApi {
-    private String nodeAddress;
-    private Integer nodePort;
-    private boolean sslMode;
+@Builder
+public class RemmeApi implements IRemmeApi {
+    private String nodeAddress = "localhost";
+    private Integer nodePort = 8080;
+    private boolean sslMode = false;
 
     /**
-     * RemmeApi constructor to initiate node configuration
+     * RemmeApi constructor to initiate node configuration. All parameters are optional
+     *<p>
+     * By default params for constructor are:<br>
+     * <pre>
+     * nodeAddress: "localhost"
+     * nodePort: 8080
+     * sslMode: false
+     * </pre>
+     * <p>Example</p>
+     * Implementation with all parameters:
+     * <pre>
+     *     {@code RemmeApi<Object> remmeApi = new RemmeApi<>("localhost", 8080, false)};
+     * </pre>
+     * Implementation with one parameter:
+     * <pre>
+     *     {@code RemmeApi<Object> remmeApi = RemmeApi<Object>.nodeAddress("localhost").build();}
+     * </pre>
+     * Implementation without parameters:
+     * <pre>
+     *     {@code RemmeApi<Object> remmeApi = new RemmeApi<>()};
+     * </pre>
      *
      * @param nodeAddress hostname or IP-address of Remme node
      * @param nodePort    port of Remme node
@@ -63,6 +88,13 @@ public class RemmeApi<T> implements IRemmeApi {
     /**
      * Use this method to send JSON-RPC request (specification 2.0) to Remme node
      *
+     * <pre>
+     *      RemmeApi remmeApi = new RemmeApi("localhost", 8080, false);
+     *
+     *      {@code Future<Integer> result = remmeApi.sendRequest(RemmeMethod.BLOCK_NUMBER);}
+     *       System.out.println(result.get());
+     * </pre>
+     *
      * @param method specifies method on Remme node
      * @return response from Remme node in 'result' field or ErrorMessage inside JsonRpcException from 'error' field
      * in case of error result
@@ -70,12 +102,23 @@ public class RemmeApi<T> implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
-    public Future<T> sendRequest(RemmeMethod method) {
+    @Override
+    public <T> Future<T> sendRequest(RemmeMethod method) {
         return sendRequest(method, null);
     }
 
     /**
      * Use this method to send JSON-RPC request (specification 2.0) to Remme node with some input parameters
+     *
+     * <pre>
+     *      RemmeApi remmeApi = new RemmeApi("localhost", 8080, false);
+     *
+     *      {@code Map<String, Object> params = new HashMap<>();}
+     *         params.put("start", 0);
+     *         params.put("limit", 50);
+     *      {@code Future<List> result = remmeApi.sendRequest(RemmeMethod.BLOCK_INFO, params);}
+     *       System.out.println(result.get().size());
+     * </pre>
      *
      * @param method specifies method on Remme node
      * @param params map with key-value parameters which will be added to 'params' field during request
@@ -85,7 +128,8 @@ public class RemmeApi<T> implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
-    public Future<T> sendRequest(RemmeMethod method, Map<String, Object> params) {
+    @Override
+    public <T> Future<T> sendRequest(RemmeMethod method, Map<String, Object> params) {
         ExecutorService es = RemmeExecutorService.getInstance();
         RequestBuilder<Object> requestBuilder = getRequestBuilder(method);
         if (params != null && !params.isEmpty()) {

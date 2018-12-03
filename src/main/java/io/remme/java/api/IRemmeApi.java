@@ -3,6 +3,7 @@ package io.remme.java.api;
 import io.remme.java.enums.RemmeMethod;
 
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
     RemmeApi interface to work with JSON-RPC
@@ -10,6 +11,6 @@ import java.util.Map;
 public interface IRemmeApi {
     boolean isSslMode();
     String getNodeAddress();
-    Object sendRequest(RemmeMethod method);
-    Object sendRequest(RemmeMethod method, Map<String, Object> params);
+    <T> Future<T> sendRequest(RemmeMethod method);
+    <T> Future<T> sendRequest(RemmeMethod method, Map<String, Object> params);
 }
