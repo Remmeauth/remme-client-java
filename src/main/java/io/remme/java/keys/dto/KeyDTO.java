@@ -3,6 +3,7 @@ package io.remme.java.keys.dto;
 import io.remme.java.enums.KeyType;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
+import io.remme.java.keys.IRemmeKeysParams;
 import lombok.Getter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -14,7 +15,7 @@ import java.security.Security;
  * DTO for different kind of keys
  */
 @Getter
-public class KeyDTO {
+public class KeyDTO implements IRemmeKeysParams {
     /**
      * Address of this key in blockchain. (https://docs.remme.io/remme-core/docs/family-account.html#addressing)
      */
@@ -64,14 +65,41 @@ public class KeyDTO {
     }
 
     /**
-     * Return private key
-     * @return String
+     * Set public key value
+     * @param publicKey public key for specified {@link KeyType}
      */
-    public Object getPrivateKey() {
+    @Override
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    /**
+     * Return private key
+     * @return PrivateKey
+     */
+    public PrivateKey getPrivateKey() {
         if (privateKey == null) {
             throw new RemmeKeyException("You didn't provide private key");
         }
         return privateKey;
+    }
+
+    /**
+     * Set private key value
+     * @param privateKey public key for specified {@link KeyType}
+     */
+    @Override
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    /**
+     * Set key type
+     * @param keyType value from {@link KeyType}
+     */
+    @Override
+    public void setKeyType(KeyType keyType) {
+        this.keyType = keyType;
     }
 
     /**
