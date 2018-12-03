@@ -3,9 +3,9 @@ package io.remme.java.api;
 import com.github.arteam.simplejsonrpc.client.JsonRpcClient;
 import com.github.arteam.simplejsonrpc.client.Transport;
 import com.github.arteam.simplejsonrpc.client.builder.RequestBuilder;
-import com.github.arteam.simplejsonrpc.client.exception.JsonRpcException;
 import com.google.common.net.MediaType;
 import io.remme.java.enums.RemmeMethod;
+import io.remme.java.utils.RemmeExecutorService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.codec.Charsets;
@@ -23,13 +23,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * Implementation of {@link IRemmeApi} to work with JSON-RPC node
  */
 @Data
 @NoArgsConstructor
-public class RemmeApi implements IRemmeApi {
+public class RemmeApi<T> implements IRemmeApi {
     private String nodeAddress;
     private Integer nodePort;
     private boolean sslMode;
@@ -68,7 +70,7 @@ public class RemmeApi implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
-    public Object sendRequest(RemmeMethod method) {
+    public Future<T> sendRequest(RemmeMethod method) {
         return sendRequest(method, null);
     }
 
@@ -83,14 +85,16 @@ public class RemmeApi implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.core.domain.ErrorMessage
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
-    public Object sendRequest(RemmeMethod method, Map<String, Object> params) {
+    public Future<T> sendRequest(RemmeMethod method, Map<String, Object> params) {
+        ExecutorService es = RemmeExecutorService.getInstance();
         RequestBuilder<Object> requestBuilder = getRequestBuilder(method);
         if (params != null && !params.isEmpty()) {
             for (String name : params.keySet()) {
                 requestBuilder = requestBuilder.param(name, params.get(name));
             }
         }
-        return requestBuilder.execute();
+        RequestBuilder<Object> finalRequestBuilder = requestBuilder;
+        return es.submit(() -> (T) finalRequestBuilder.execute());
     }
 
     /**

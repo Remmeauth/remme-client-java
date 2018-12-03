@@ -3,6 +3,7 @@ package io.remme.java.keys;
 import io.remme.java.enums.KeyType;
 import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
+import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.GenerateOptions;
 import io.remme.java.keys.dto.KeyDTO;
 import io.remme.java.utils.Functions;
@@ -26,19 +27,19 @@ public class RSA extends KeyDTO implements IRemmeKeys {
 
     /**
      * Constructor for RSA key pair. If only privateKey available then public key will be generate from private.
+     *
      * @param privateKey private key (required)
-     * @param publicKey public key (optional)
+     * @param publicKey  public key (optional)
      */
     public RSA(PublicKey publicKey, PrivateKey privateKey) {
         super();
-        if (privateKey != null) {
-            this.privateKey = privateKey;
+        if (privateKey != null && publicKey != null) {
             Asserts.check(privateKey instanceof RSAPrivateKey, "Private Key should be instance of RSAPrivateKey");
-        }
-        if (publicKey != null) {
-            this.publicKey = publicKey;
             Asserts.check(publicKey instanceof RSAPublicKey, "Public Key should be instance of RSAPublicKey");
-        } else {
+            this.privateKey = privateKey;
+            this.publicKey = publicKey;
+        } else if (privateKey != null) {
+            Asserts.check(privateKey instanceof RSAPrivateKey, "Private Key should be instance of RSAPrivateKey");
             try {
                 RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) this.privateKey;
                 KeySpec spec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(), rsaPrivateKey.getPrivateExponent());
@@ -47,23 +48,27 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 throw new IllegalArgumentException(e);
             }
+        } else if (publicKey != null) {
+            Asserts.check(publicKey instanceof RSAPublicKey, "Public Key should be instance of RSAPublicKey");
+            this.publicKey = publicKey;
         }
         this.publicKeyPem = Functions.publicKeyToPem(this.publicKey);
         this.privateKeyPem = Functions.privateKeyToPem(this.privateKey);
         this.publicKeyBase64 = Base64.encodeBase64String(publicKeyPem.getBytes(StandardCharsets.UTF_8));
-        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
+        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyPem);
         this.keyType = KeyType.RSA;
     }
 
     /**
      * Get address from public key
+     *
      * @param publicKey public key
      * @return address in blockchain generated from public key PEM string
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
+        Asserts.check(publicKey instanceof RSAPublicKey, "Public Key should be instance of RSAPublicKey");
         String publicKeyPem = Functions.publicKeyToPem(publicKey);
-        String publicKeyBase64 = Base64.encodeBase64String(publicKeyPem.getBytes(StandardCharsets.UTF_8));
-        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
+        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyPem);
     }
 
     private Integer calculateSaltLength(MessageDigest md) {
@@ -77,6 +82,9 @@ public class RSA extends KeyDTO implements IRemmeKeys {
     @Override
     public String sign(String data, RSASignaturePadding rsaSignaturePadding) {
         try {
+            if (privateKey == null) {
+                throw new RemmeKeyException("PrivateKey is not provided!");
+            }
             rsaSignaturePadding = rsaSignaturePadding != null ? rsaSignaturePadding : RSASignaturePadding.PSS;
             switch (rsaSignaturePadding) {
                 case PSS:
@@ -96,8 +104,10 @@ public class RSA extends KeyDTO implements IRemmeKeys {
                     pkcs1v15.initSign(privateKey);
                     pkcs1v15.update(data.getBytes(StandardCharsets.UTF_8));
                     return Hex.encodeHexString(pkcs1v15.sign());
+                default: {
+                    throw new IllegalArgumentException("Unknown padding: " + rsaSignaturePadding.name());
+                }
             }
-            return null;
         } catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | InvalidAlgorithmParameterException e) {
             throw new IllegalArgumentException(e);
         }
@@ -107,8 +117,19 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
+    public String sign(String data) {
+        return sign(data, RSASignaturePadding.PSS);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding) {
         try {
+            if (publicKey == null) {
+                throw new RemmeKeyException("PublicKey is not provided!");
+            }
             byte[] signatureBytes = Hex.decodeHex(signature);
             switch (rsaSignaturePadding) {
                 case PSS:
@@ -128,15 +149,26 @@ public class RSA extends KeyDTO implements IRemmeKeys {
                     pkcs1v15.initVerify(publicKey);
                     pkcs1v15.update(data.getBytes(StandardCharsets.UTF_8));
                     return pkcs1v15.verify(signatureBytes);
+                default: {
+                    throw new IllegalArgumentException("Unknown padding: " + rsaSignaturePadding.name());
+                }
             }
-            return false;
         } catch (DecoderException | InvalidKeyException | NoSuchAlgorithmException | SignatureException | InvalidAlgorithmParameterException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String data) {
+        return verify(signature, data, RSASignaturePadding.PSS);
+    }
+
+    /**
      * Generate public and private key pair
+     *
      * @param options rsaKeySize can be specified (optional)
      * @return {@link KeyPair}
      */

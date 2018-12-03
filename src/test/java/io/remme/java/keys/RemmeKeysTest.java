@@ -11,7 +11,7 @@ public class RemmeKeysTest {
     @Test
     public void testRemmeKeys() {
         try {
-            IRemmeKeysParams params = RemmeKeys.construct(KeyType.RSA, null, null);
+            IRemmeKeys params = RemmeKeys.construct(KeyType.RSA, null, null);
             KeyPair keyPair = RemmeKeys.generateKeyPair(KeyType.ECDSA, null).get();
             Assert.assertNotNull("publicKey not null", params.getPublicKey());
             Assert.assertNotNull(RemmeKeys.getAddressFromPublicKey(KeyType.ECDSA, keyPair.getPublic()));

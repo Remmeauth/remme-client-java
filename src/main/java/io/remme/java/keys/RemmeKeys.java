@@ -75,7 +75,7 @@ class RemmeKeys {
      * @param privateKey private key for specified keyType
      * @param publicKey public key for specified keyType
      */
-    public static IRemmeKeysParams construct(KeyType keyType, PublicKey publicKey, PrivateKey privateKey) {
+    public static IRemmeKeys construct(KeyType keyType, PublicKey publicKey, PrivateKey privateKey) {
         try {
             keyType = keyType != null ? keyType : KeyType.RSA;
             if (privateKey == null && publicKey == null) {

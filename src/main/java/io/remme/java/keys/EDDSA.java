@@ -3,6 +3,7 @@ package io.remme.java.keys;
 import io.remme.java.enums.KeyType;
 import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
+import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.GenerateOptions;
 import io.remme.java.keys.dto.KeyDTO;
 import io.remme.java.utils.Functions;
@@ -31,13 +32,18 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      */
     public EDDSA(PrivateKey privateKey, PublicKey publicKey) {
         super();
-        this.privateKey = privateKey;
         if (privateKey != null && publicKey != null) {
+            Asserts.check(privateKey instanceof EdDSAPrivateKey, "Private Key should be instance of EdDSAPrivateKey");
+            Asserts.check(publicKey instanceof EdDSAPublicKey, "Public Key should be instance of EdDSAPublicKey");
+            this.privateKey = privateKey;
             this.publicKey = publicKey;
         } else if (privateKey != null) {
             Asserts.check(privateKey instanceof EdDSAPrivateKey, "Private Key should be instance of EdDSAPrivateKey");
             EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
             this.publicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(((EdDSAPrivateKey)privateKey).getA(), spec));
+        } else if (publicKey != null) {
+            Asserts.check(publicKey instanceof EdDSAPublicKey, "Public Key should be instance of EdDSAPublicKey");
+            this.publicKey = publicKey;
         }
 
         this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
@@ -55,6 +61,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * @return address in blockchain generated from public key HEX string
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
+        Asserts.check(publicKey instanceof EdDSAPublicKey, "Public Key should be instance of EdDSAPublicKey");
         String publicKeyToHex = Hex.encodeHexString(publicKey.getEncoded());
         String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
         return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
@@ -93,8 +100,11 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String data) {
         try {
+            if (privateKey == null) {
+                throw new RemmeKeyException("PrivateKey is not provided!");
+            }
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             signature.initSign(privateKey);
             signature.update(data.getBytes(StandardCharsets.UTF_8));
@@ -108,8 +118,19 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String data, RSASignaturePadding padding) {
+        return sign(data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String data) {
         try {
+            if (publicKey == null) {
+                throw new RemmeKeyException("PublicKey is not provided!");
+            }
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);
@@ -118,5 +139,13 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
         } catch (NoSuchAlgorithmException | DecoderException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+        return verify(signature, data);
     }
 }
