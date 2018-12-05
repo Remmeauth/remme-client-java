@@ -15,6 +15,8 @@ import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
@@ -98,12 +100,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
 
             BigInteger d = definingKey.getD();
-            org.bouncycastle.jce.spec.ECParameterSpec ecSpec =
-                    definingKey.getParameters();
+            ECParameterSpec ecSpec = definingKey.getParameters();
             ECPoint Q = definingKey.getParameters().getG().multiply(d);
-
-            org.bouncycastle.jce.spec.ECPublicKeySpec pubSpec = new
-                    org.bouncycastle.jce.spec.ECPublicKeySpec(Q, ecSpec);
+            ECPublicKeySpec pubSpec = new ECPublicKeySpec(Q, ecSpec);
             return keyFactory.generatePublic(pubSpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
             throw new IllegalArgumentException(e);
