@@ -22,9 +22,7 @@ import org.bouncycastle.math.ec.ECPoint;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.InvalidKeySpecException;
+import java.security.spec.*;
 
 /**
  * ECDSA(secp256k1) key type definition
@@ -33,8 +31,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
 
     /**
      * Constructor for ECDSA key pair. If only privateKey available then public key will be generate from private.
+     *
      * @param privateKey private key (required)
-     * @param publicKey public key (optional)
+     * @param publicKey  public key (optional)
      */
     public ECDSA(PrivateKey privateKey, PublicKey publicKey) {
         super();
@@ -53,16 +52,19 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
         }
 
         this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
-        this.privateKeyHex = Hex.encodeHexString(this.privateKey.getEncoded());
+        if (privateKey != null) {
+            this.privateKeyHex = Hex.encodeHexString(((BCECPrivateKey) this.privateKey).getS().toByteArray());
+        }
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
 
-        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), this.publicKeyBase64);
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyBase64);
         this.keyType = KeyType.ECDSA;
     }
 
     /**
      * Get address from public key
+     *
      * @param publicKey public key
      * @return address in blockchain generated from public key HEX string
      */
@@ -75,27 +77,48 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
 
     /**
      * Generate public and private key pair
+     *
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair() {
+        byte[] bytes = new byte[32];
+        SecureRandom random = new SecureRandom();
+        do {
+            random.nextBytes(bytes);
+        } while (!(new BigInteger(bytes).compareTo(BigInteger.ZERO) > 0));
+        PrivateKey privateKey = generatePrivateKey(bytes);
+        PublicKey publicKey = derivePubKeyFromPrivKey((BCECPrivateKey) privateKey);
+        return new KeyPair(publicKey, privateKey);
+    }
+
+    public static PrivateKey generatePrivateKey(byte[] keyBin) {
         try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", "BC");
-            generator.initialize(new ECGenParameterSpec("secp256k1"));
-            return generator.generateKeyPair();
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-            throw new IllegalArgumentException(e);
+            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
+            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
+            ECPrivateKeySpec privKeySpec = new ECPrivateKeySpec(new BigInteger(keyBin), params);
+            return kf.generatePrivate(privKeySpec);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+            throw new RemmeKeyException(e);
         }
     }
 
-    private PrivateKey generatePrivateKey(byte[] keyBin) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
-        ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
-        KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-        ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
-        ECPrivateKeySpec privKeySpec = new ECPrivateKeySpec(new BigInteger(keyBin), params);
-        return kf.generatePrivate(privKeySpec);
+    public static PublicKey getPublicKeyFromBytes(String pubHex)  {
+        try {
+            String hexX = pubHex.substring(0, pubHex.length() / 2);
+            String hexY = pubHex.substring(pubHex.length() / 2);
+            java.security.spec.ECPoint point = new java.security.spec.ECPoint(new BigInteger(hexX, 16), new BigInteger(hexY, 16));
+            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
+            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
+            java.security.spec.ECPublicKeySpec pubKeySpec = new java.security.spec.ECPublicKeySpec(point, params);
+            return kf.generatePublic(pubKeySpec);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+            throw new RemmeKeyException(e);
+        }
     }
 
-    private PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
+    private static PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
 

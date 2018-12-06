@@ -48,11 +48,13 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
         }
 
         this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
-        this.privateKeyHex = Hex.encodeHexString(this.privateKey.getEncoded());
+        if (privateKey != null) {
+            this.privateKeyHex = Hex.encodeHexString(this.privateKey.getEncoded());
+        }
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
 
-        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), this.publicKeyBase64);
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyBase64);
         this.keyType = KeyType.EdDSA;
     }
 

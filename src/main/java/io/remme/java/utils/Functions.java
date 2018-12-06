@@ -2,8 +2,10 @@ package io.remme.java.utils;
 
 import io.remme.java.enums.KeyType;
 import io.remme.java.error.RemmeKeyException;
+import io.remme.java.keys.ECDSA;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -145,8 +147,7 @@ public class Functions {
                     factory = KeyFactory.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
                     return factory.generatePublic(new X509EncodedKeySpec(encoded));
                 case ECDSA:
-                    factory = KeyFactory.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
-                    return factory.generatePublic(new X509EncodedKeySpec(encoded));
+                    return ECDSA.getPublicKeyFromBytes(Hex.encodeHexString(encoded));
                 case EdDSA:
                     factory = KeyFactory.getInstance("EdDSA", EdDSASecurityProvider.PROVIDER_NAME);
                     return factory.generatePublic(new X509EncodedKeySpec(encoded));
@@ -174,8 +175,7 @@ public class Functions {
                     factory = KeyFactory.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
                     return factory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
                 case ECDSA:
-                    factory = KeyFactory.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
-                    return factory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+                    return ECDSA.generatePrivateKey(encoded);
                 case EdDSA:
                     factory = KeyFactory.getInstance("EdDSA", EdDSASecurityProvider.PROVIDER_NAME);
                     return factory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
