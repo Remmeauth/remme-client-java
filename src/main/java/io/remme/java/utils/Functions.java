@@ -2,18 +2,23 @@ package io.remme.java.utils;
 
 import io.remme.java.enums.KeyType;
 import io.remme.java.error.RemmeKeyException;
-import io.remme.java.keys.ECDSA;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
+import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
+import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.openssl.PEMParser;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.security.*;
+import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -147,7 +152,7 @@ public class Functions {
                     factory = KeyFactory.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
                     return factory.generatePublic(new X509EncodedKeySpec(encoded));
                 case ECDSA:
-                    return ECDSA.getPublicKeyFromBytes(Hex.encodeHexString(encoded));
+                    return getECDSAPublicKeyFromHex(Hex.encodeHexString(encoded));
                 case EdDSA:
                     factory = KeyFactory.getInstance("EdDSA", EdDSASecurityProvider.PROVIDER_NAME);
                     return factory.generatePublic(new X509EncodedKeySpec(encoded));
@@ -175,7 +180,7 @@ public class Functions {
                     factory = KeyFactory.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
                     return factory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
                 case ECDSA:
-                    return ECDSA.generatePrivateKey(encoded);
+                    return generateECDSAPrivateKey(encoded);
                 case EdDSA:
                     factory = KeyFactory.getInstance("EdDSA", EdDSASecurityProvider.PROVIDER_NAME);
                     return factory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
@@ -184,6 +189,45 @@ public class Functions {
                 }
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
+            throw new RemmeKeyException(e);
+        }
+    }
+
+    /**
+     * Generates {@link BCECPrivateKey} from byte array
+     *
+     * @param keyBin private key byte array
+     * @return {@link PrivateKey}
+     */
+    public static PrivateKey generateECDSAPrivateKey(byte[] keyBin) {
+        try {
+            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
+            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
+            ECPrivateKeySpec privKeySpec = new ECPrivateKeySpec(new BigInteger(keyBin), params);
+            return kf.generatePrivate(privKeySpec);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+            throw new RemmeKeyException(e);
+        }
+    }
+
+    /**
+     * Generates {@link org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey} from HEX string
+     *
+     * @param pubHex public key HEX string
+     * @return {@link PublicKey}
+     */
+    public static PublicKey getECDSAPublicKeyFromHex(String pubHex)  {
+        try {
+            String hexX = pubHex.substring(0, pubHex.length() / 2);
+            String hexY = pubHex.substring(pubHex.length() / 2);
+            java.security.spec.ECPoint point = new java.security.spec.ECPoint(new BigInteger(hexX, 16), new BigInteger(hexY, 16));
+            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
+            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
+            java.security.spec.ECPublicKeySpec pubKeySpec = new java.security.spec.ECPublicKeySpec(point, params);
+            return kf.generatePublic(pubKeySpec);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
             throw new RemmeKeyException(e);
         }
     }
