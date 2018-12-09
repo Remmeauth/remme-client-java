@@ -54,9 +54,11 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         }
         this.publicKeyPem = Functions.publicKeyToPem(this.publicKey);
-        this.privateKeyPem = Functions.privateKeyToPem(this.privateKey);
+        if (this.privateKey != null) {
+            this.privateKeyPem = Functions.privateKeyToPem(this.privateKey);
+        }
         this.publicKeyBase64 = Base64.encodeBase64String(publicKeyPem.getBytes(StandardCharsets.UTF_8));
-        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyPem);
+        this.address = Functions.generateAddress(familyName.getName(), publicKeyPem);
         this.keyType = KeyType.RSA;
     }
 

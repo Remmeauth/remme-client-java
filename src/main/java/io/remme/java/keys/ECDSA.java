@@ -12,9 +12,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.http.util.Asserts;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECPoint;
@@ -22,9 +19,7 @@ import org.bouncycastle.math.ec.ECPoint;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.InvalidKeySpecException;
+import java.security.spec.*;
 
 /**
  * ECDSA(secp256k1) key type definition
@@ -33,8 +28,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
 
     /**
      * Constructor for ECDSA key pair. If only privateKey available then public key will be generate from private.
+     *
      * @param privateKey private key (required)
-     * @param publicKey public key (optional)
+     * @param publicKey  public key (optional)
      */
     public ECDSA(PrivateKey privateKey, PublicKey publicKey) {
         super();
@@ -52,50 +48,47 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         }
 
-        this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
-        this.privateKeyHex = Hex.encodeHexString(this.privateKey.getEncoded());
+        this.publicKeyHex = Functions.ecdsaPublicKeyToHex(this.publicKey, true);
+        if (privateKey != null) {
+            this.privateKeyHex = Functions.ecdsaPrivateKeyToHex(this.privateKey);
+        }
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
 
-        this.address = Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), this.publicKeyBase64);
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyBase64);
         this.keyType = KeyType.ECDSA;
     }
 
     /**
      * Get address from public key
+     *
      * @param publicKey public key
      * @return address in blockchain generated from public key HEX string
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof BCECPublicKey, "Public Key should be instance of BCECPublicKey");
-        String publicKeyToHex = Hex.encodeHexString(publicKey.getEncoded());
+        String publicKeyToHex = Functions.ecdsaPublicKeyToHex(publicKey, true);
         String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
         return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
     }
 
     /**
      * Generate public and private key pair
+     *
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair() {
-        try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", "BC");
-            generator.initialize(new ECGenParameterSpec("secp256k1"));
-            return generator.generateKeyPair();
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-            throw new IllegalArgumentException(e);
-        }
+        byte[] bytes = new byte[32];
+        SecureRandom random = new SecureRandom();
+        do {
+            random.nextBytes(bytes);
+        } while (!(new BigInteger(bytes).compareTo(BigInteger.ZERO) > 0));
+        PrivateKey privateKey = Functions.generateECDSAPrivateKey(bytes);
+        PublicKey publicKey = derivePubKeyFromPrivKey((BCECPrivateKey) privateKey);
+        return new KeyPair(publicKey, privateKey);
     }
 
-    private PrivateKey generatePrivateKey(byte[] keyBin) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
-        ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
-        KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-        ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
-        ECPrivateKeySpec privKeySpec = new ECPrivateKeySpec(new BigInteger(keyBin), params);
-        return kf.generatePrivate(privKeySpec);
-    }
-
-    private PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
+    private static PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
 
