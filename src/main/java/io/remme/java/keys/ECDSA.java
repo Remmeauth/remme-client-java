@@ -12,9 +12,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.http.util.Asserts;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.math.ec.ECPoint;
@@ -51,9 +48,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         }
 
-        this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
+        this.publicKeyHex = Functions.ecdsaPublicKeyToHex(this.publicKey, true);
         if (privateKey != null) {
-            this.privateKeyHex = Hex.encodeHexString(((BCECPrivateKey) this.privateKey).getS().toByteArray());
+            this.privateKeyHex = Functions.ecdsaPrivateKeyToHex(this.privateKey);
         }
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
@@ -70,7 +67,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof BCECPublicKey, "Public Key should be instance of BCECPublicKey");
-        String publicKeyToHex = Hex.encodeHexString(publicKey.getEncoded());
+        String publicKeyToHex = Functions.ecdsaPublicKeyToHex(publicKey, true);
         String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
         return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
     }
@@ -86,36 +83,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
         do {
             random.nextBytes(bytes);
         } while (!(new BigInteger(bytes).compareTo(BigInteger.ZERO) > 0));
-        PrivateKey privateKey = generatePrivateKey(bytes);
+        PrivateKey privateKey = Functions.generateECDSAPrivateKey(bytes);
         PublicKey publicKey = derivePubKeyFromPrivKey((BCECPrivateKey) privateKey);
         return new KeyPair(publicKey, privateKey);
-    }
-
-    public static PrivateKey generatePrivateKey(byte[] keyBin) {
-        try {
-            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
-            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
-            ECPrivateKeySpec privKeySpec = new ECPrivateKeySpec(new BigInteger(keyBin), params);
-            return kf.generatePrivate(privKeySpec);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
-            throw new RemmeKeyException(e);
-        }
-    }
-
-    public static PublicKey getPublicKeyFromBytes(String pubHex)  {
-        try {
-            String hexX = pubHex.substring(0, pubHex.length() / 2);
-            String hexY = pubHex.substring(pubHex.length() / 2);
-            java.security.spec.ECPoint point = new java.security.spec.ECPoint(new BigInteger(hexX, 16), new BigInteger(hexY, 16));
-            ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec("secp256k1");
-            KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            ECNamedCurveSpec params = new ECNamedCurveSpec("secp256k1", spec.getCurve(), spec.getG(), spec.getN());
-            java.security.spec.ECPublicKeySpec pubKeySpec = new java.security.spec.ECPublicKeySpec(point, params);
-            return kf.generatePublic(pubKeySpec);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
-            throw new RemmeKeyException(e);
-        }
     }
 
     private static PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
