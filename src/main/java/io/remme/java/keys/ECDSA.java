@@ -48,9 +48,9 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             this.publicKey = publicKey;
         }
 
-        this.publicKeyHex = Hex.encodeHexString(this.publicKey.getEncoded());
+        this.publicKeyHex = Functions.ecdsaPublicKeyToHex(this.publicKey, true);
         if (privateKey != null) {
-            this.privateKeyHex = Hex.encodeHexString(((BCECPrivateKey) this.privateKey).getS().toByteArray());
+            this.privateKeyHex = Functions.ecdsaPrivateKeyToHex(this.privateKey);
         }
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
@@ -67,7 +67,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof BCECPublicKey, "Public Key should be instance of BCECPublicKey");
-        String publicKeyToHex = Hex.encodeHexString(publicKey.getEncoded());
+        String publicKeyToHex = Functions.ecdsaPublicKeyToHex(publicKey, true);
         String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
         return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
     }

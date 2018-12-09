@@ -13,9 +13,9 @@ public class ECDSATest {
     @Test
     public void testECDSA() {
         KeyPair keyPair = ECDSA.generateKeyPair();
-        PublicKey publicKey = Functions.getPublicKeyFromBytesArray(KeyType.ECDSA, keyPair.getPublic().getEncoded());
+        PublicKey publicKey = Functions.getPublicKeyFromBytesArray(KeyType.ECDSA, Functions.hexToBytes(Functions.ecdsaPublicKeyToHex(keyPair.getPublic(), true)));
         Assert.assertTrue(publicKey instanceof BCECPublicKey);
-        PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.ECDSA, keyPair.getPrivate().getEncoded());
+        PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.ECDSA, Functions.hexToBytes(Functions.ecdsaPrivateKeyToHex(keyPair.getPrivate())));
         Assert.assertTrue(privateKey instanceof BCECPrivateKey);
         ECDSA ecdsa = new ECDSA(keyPair.getPrivate(), keyPair.getPublic());
         String signature = ecdsa.sign("testData", null);

@@ -4,9 +4,6 @@ import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.keys.ECDSA;
 import io.remme.java.keys.IRemmeKeys;
 import io.remme.java.utils.Functions;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 
 /**
  * Account that is used for signing transactions and storing public keys which he was signed.
@@ -42,8 +39,8 @@ public class RemmeAccount extends ECDSA implements IRemmeKeys {
      *
      * @param privateKeyHex private key in HEX format
      */
-    public RemmeAccount(String privateKeyHex) throws DecoderException {
-        super(Functions.generateECDSAPrivateKey(Hex.decodeHex(privateKeyHex)), null);
+    public RemmeAccount(String privateKeyHex) {
+        super(Functions.generateECDSAPrivateKey(Functions.hexToBytes(privateKeyHex)), null);
         this.familyName = RemmeFamilyName.ACCOUNT;
         this.address = Functions.generateAddress(familyName.getName(), this.publicKeyHex);
     }
@@ -61,9 +58,7 @@ public class RemmeAccount extends ECDSA implements IRemmeKeys {
      * </pre>
      *
      */
-    public RemmeAccount() throws DecoderException {
-        this(Hex.encodeHexString(((BCECPrivateKey) ECDSA.generateKeyPair().getPrivate()).getS().toByteArray()));
-        this.familyName = RemmeFamilyName.ACCOUNT;
-        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyHex);
+    public RemmeAccount() {
+        this(Functions.ecdsaPrivateKeyToHex(ECDSA.generateKeyPair().getPrivate()));
     }
 }
