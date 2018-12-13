@@ -7,6 +7,7 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -20,8 +21,8 @@ public class EDDSATest {
         PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.EdDSA, keyPair.getPrivate().getEncoded());
         Assert.assertTrue(privateKey instanceof EdDSAPrivateKey);
         EDDSA eddsa = new EDDSA(keyPair.getPrivate(), keyPair.getPublic());
-        String signature = eddsa.sign("testData", null);
-        boolean result = eddsa.verify(signature, "testData", null);
+        String signature = eddsa.sign("testData".getBytes(StandardCharsets.UTF_8), null);
+        boolean result = eddsa.verify(signature, "testData".getBytes(StandardCharsets.UTF_8), null);
         Assert.assertTrue(result);
     }
 }

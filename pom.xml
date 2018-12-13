@@ -77,6 +77,14 @@
             <version>3.6.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.bitcoinj/bitcoinj-core -->
+        <!--<dependency>-->
+            <!--<groupId>org.bitcoinj</groupId>-->
+            <!--<artifactId>bitcoinj-core</artifactId>-->
+            <!--<version>0.14.7</version>-->
+        <!--</dependency>-->
+
+
         <!--websocket libs-->
         <dependency>
             <groupId>org.java-websocket</groupId>

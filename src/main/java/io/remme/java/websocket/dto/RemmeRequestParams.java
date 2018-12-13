@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RemmeRequestParams {
-    public RemmeEvents event_type;
-    public String id;
-    public String from_block;
-    public String address;
+    private RemmeEvents event_type;
+    private String id;
+    private String from_block;
+    private String address;
 }

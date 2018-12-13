@@ -4,8 +4,10 @@ import io.remme.java.enums.KeyType;
 import io.remme.java.error.RemmeKeyException;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
@@ -250,10 +252,8 @@ public class Functions {
      * @return HEX string
      */
     public static String ecdsaPublicKeyToHex(PublicKey publicKey, boolean compressed) {
-        ECPoint w = ((BCECPublicKey) publicKey).getQ();
-        String x = w.getAffineXCoord().toBigInteger().toString(16);
-        String y = w.getAffineYCoord().toBigInteger().toString(16);
-        return compressed ? compress(publicKey) : "04" + x + y;
+        byte[] w = ((BCECPublicKey) publicKey).getQ().getEncoded(compressed);
+        return Hex.encodeHexString(w);
     }
 
     /**
@@ -279,10 +279,31 @@ public class Functions {
         System.arraycopy(x, 0, xy, 0, x.length);
         System.arraycopy(y, 0, xy, x.length, y.length);
         BigInteger pubKey = new BigInteger(xy);
+        return compress(pubKey);
+    }
+
+    /**
+     * Compress BigInteger public key to HEX string using only X coordinate and starting with 02(even Y) or 03(odd Y)
+     *
+     * @param pubKey BigInteger public key {@link BigInteger}
+     * @return HEX string
+     */
+    public static String compress(BigInteger pubKey) {
         String pubKeyYPrefix = pubKey.testBit(0) ? "03" : "02";
         String pubKeyHex = pubKey.toString(16);
+        System.out.println(pubKeyHex.length());
         String pubKeyX = pubKeyHex.substring(0, 64);
         return pubKeyYPrefix + pubKeyX;
+    }
+
+    /**
+     * Decompress public key byte array for ECDSA
+     *
+     * @param compressed compressed publicKey
+     * @return decompressed publicKey byte array
+     */
+    public static byte[] uncompressPoint(byte[] compressed) {
+        return SECNamedCurves.getByName("secp256k1").getCurve().decodePoint(compressed).getEncoded(false);
     }
 
     /**

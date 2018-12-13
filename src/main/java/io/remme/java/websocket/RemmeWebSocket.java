@@ -44,6 +44,11 @@ public class RemmeWebSocket implements IRemmeWebSocket {
     protected WebSocketClient client;
     protected RemmeRequestParams data;
 
+    public RemmeWebSocket(String nodeAddress, boolean sslMode) {
+        this.nodeAddress = nodeAddress;
+        this.sslMode = sslMode;
+    }
+
     public RemmeWebSocket(String nodeAddress, boolean sslMode, RemmeRequestParams params) {
         this.nodeAddress = nodeAddress;
         this.sslMode = sslMode;
@@ -96,7 +101,7 @@ public class RemmeWebSocket implements IRemmeWebSocket {
                             sendAnError(response.getError(), listener);
                             return;
                         }
-                        if (response.getResult() != null && response.getResult().contains("{")) {
+                        if (response.getResult() != null && response.getResult().startsWith("{")) {
                             JsonRpcResult result = MAPPER.readValue(response.getResult(), JsonRpcResult.class);
                             if (RemmeEvents.BATCH.equals(result.getEvent_type())) {
                                 BatchInfoDTO batchInfo = MAPPER.readValue(result.getAttributes(),

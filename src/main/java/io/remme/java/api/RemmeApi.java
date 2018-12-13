@@ -103,8 +103,8 @@ public class RemmeApi implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
     @Override
-    public <T> Future<T> sendRequest(RemmeMethod method) {
-        return sendRequest(method, null);
+    public <T> Future<T> sendRequest(RemmeMethod method, Class<T> clazz) {
+        return sendRequest(method, null, clazz);
     }
 
     /**
@@ -121,7 +121,7 @@ public class RemmeApi implements IRemmeApi {
      * </pre>
      *
      * @param method specifies method on Remme node
-     * @param params map with key-value parameters which will be added to 'params' field during request
+     * @param input map with key-value parameters which will be added to 'params' field during request
      * @return response from Remme node in 'result' field or ErrorMessage inside JsonRpcException from 'error' field
      * in case of error result
      * @see RemmeMethod
@@ -129,7 +129,8 @@ public class RemmeApi implements IRemmeApi {
      * @see com.github.arteam.simplejsonrpc.client.exception.JsonRpcException
      */
     @Override
-    public <T> Future<T> sendRequest(RemmeMethod method, Map<String, Object> params) {
+    public <T> Future<T> sendRequest(RemmeMethod method, Object input, Class<T> clazz) {
+        Map<String, Object> params = MAPPER.convertValue(input, Map.class);
         ExecutorService es = RemmeExecutorService.getInstance();
         RequestBuilder<Object> requestBuilder = getRequestBuilder(method);
         if (params != null && !params.isEmpty()) {
@@ -138,7 +139,7 @@ public class RemmeApi implements IRemmeApi {
             }
         }
         RequestBuilder<Object> finalRequestBuilder = requestBuilder;
-        return es.submit(() -> (T) finalRequestBuilder.execute());
+        return es.submit(() -> MAPPER.convertValue(finalRequestBuilder.execute(), clazz));
     }
 
     /**

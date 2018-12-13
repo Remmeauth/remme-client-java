@@ -103,14 +103,14 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data) {
+    public String sign(byte[] data) {
         try {
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             signature.initSign(privateKey);
-            signature.update(data.getBytes(StandardCharsets.UTF_8));
+            signature.update(data);
             return Hex.encodeHexString(signature.sign());
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
@@ -121,7 +121,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data, RSASignaturePadding padding) {
+    public String sign(byte[] data, RSASignaturePadding padding) {
         return sign(data);
     }
 
@@ -129,12 +129,12 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data) {
+    public boolean verify(String signature, byte[] data) {
         try {
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);
-            eddsa.update(data.getBytes(StandardCharsets.UTF_8));
+            eddsa.update(data);
             return eddsa.verify(signatureBytes);
         } catch (NoSuchAlgorithmException | DecoderException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
@@ -145,7 +145,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+    public boolean verify(String signature, byte[] data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
 }

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -23,8 +24,8 @@ public class RSATest {
         KeyPair keyPair = RSA.generateKeyPair(null);
         PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.RSA, keyPair.getPrivate().getEncoded());
         Assert.assertTrue(privateKey instanceof RSAPrivateKey);
-        String signature = new RSA(keyPair.getPublic(), keyPair.getPrivate()).sign("testData", RSASignaturePadding.PSS);
-        boolean result = new RSA(keyPair.getPublic(), keyPair.getPrivate()).verify(signature, "testData", RSASignaturePadding.PSS);
+        String signature = new RSA(keyPair.getPublic(), keyPair.getPrivate()).sign("testData".getBytes(StandardCharsets.UTF_8), RSASignaturePadding.PSS);
+        boolean result = new RSA(keyPair.getPublic(), keyPair.getPrivate()).verify(signature, "testData".getBytes(StandardCharsets.UTF_8), RSASignaturePadding.PSS);
         Assert.assertTrue(result);
     }
 }
