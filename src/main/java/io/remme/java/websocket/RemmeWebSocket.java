@@ -3,6 +3,7 @@ package io.remme.java.websocket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
+import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeSocketException;
 import io.remme.java.websocket.dto.*;
 import io.remme.java.websocket.dto.atomicswap.AtomicSwapInfoDTO;
@@ -11,7 +12,6 @@ import io.remme.java.websocket.dto.batch.BatchStatus;
 import io.remme.java.websocket.dto.block.BlockInfoDTO;
 import io.remme.java.websocket.dto.transfer.TransferInfoDTO;
 import io.remme.java.websocket.enums.RemmeEvents;
-import io.remme.java.websocket.enums.RemmeMethods;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -67,7 +67,7 @@ public class RemmeWebSocket implements IRemmeWebSocket {
         if (this.data == null) {
             throw new Error("Data for subscribe was not provided");
         }
-        RemmeMethods method = subscribe ? RemmeMethods.SUBSCRIBE : RemmeMethods.UNSUBSCRIBE;
+        RemmeMethod method = subscribe ? RemmeMethod.SUBSCRIBE : RemmeMethod.UNSUBSCRIBE;
         try {
             return MAPPER.writeValueAsString(new JsonRpcRequest(method, this.data));
         } catch (JsonProcessingException e) {

@@ -1,7 +1,9 @@
 package io.remme.java.utils;
 
 import io.remme.java.enums.KeyType;
+import io.remme.java.enums.Patterns;
 import io.remme.java.error.RemmeKeyException;
+import io.remme.java.error.RemmeValidationException;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
@@ -324,6 +326,24 @@ public class Functions {
             return keyFactory.generatePublic(pubKeySpec);
         } catch (Exception e) {
              throw new RemmeKeyException(e);
+        }
+    }
+
+    public static void checkAddress(String address) {
+        if (address == null || address.isEmpty()) {
+            throw new RemmeValidationException("Address was not provided, please set the address");
+        }
+        if (!address.matches(Patterns.ADDRESS.getPattern())) {
+            throw new RemmeValidationException("Given address is not a valid");
+        }
+    }
+
+    public static void checkPublicKey(String publicKey) {
+        if (publicKey == null || publicKey.isEmpty()) {
+            throw new RemmeValidationException("Public Key was not provided, please set the address");
+        }
+        if (!publicKey.matches(Patterns.PUBLIC_KEY.getPattern())) {
+            throw new RemmeValidationException("Given public key is not a valid");
         }
     }
 }

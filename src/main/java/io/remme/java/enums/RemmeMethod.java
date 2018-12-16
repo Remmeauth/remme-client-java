@@ -1,5 +1,6 @@
 package io.remme.java.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -31,7 +32,14 @@ public enum RemmeMethod {
     STATE("list_state"),
     FETCH_STATE("fetch_state"),
     PEERS("fetch_peers"),
-    RECEIPTS("list_receipts");
+    RECEIPTS("list_receipts"),
+    SUBSCRIBE("subscribe"),
+    UNSUBSCRIBE("unsubscribe");
 
-    private String methodName;
+    private String method;
+
+    @JsonValue
+    public String getMethod() {
+        return method;
+    }
 }

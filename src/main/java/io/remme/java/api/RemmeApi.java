@@ -151,7 +151,7 @@ public class RemmeApi implements IRemmeApi {
 
     private RequestBuilder<Object> getRequestBuilder(RemmeMethod method) {
         return initClient().createRequest()
-                .method(method.getMethodName())
+                .method(method.getMethod())
                 .id(Math.round(Math.random() * 100));
     }
 

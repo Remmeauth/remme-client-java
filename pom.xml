@@ -128,9 +128,10 @@
                 <version>0.6.1</version>
                 <configuration>
                     <protocExecutable>C:/work/protoc_compiler/bin/protoc</protocExecutable>
-                    <clearOutputDirectory>true</clearOutputDirectory>
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                    <descriptorSetOutputDirectory>${project.basedir}/remme-protobuf/</descriptorSetOutputDirectory>
                     <protoSourceRoot>${project.basedir}/remme-protobuf/</protoSourceRoot>
-                    <outputDirectory>${project.basedir}/src/main/java/io/remme/java/protobuf/</outputDirectory>
+                    <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
