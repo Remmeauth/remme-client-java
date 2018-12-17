@@ -7,7 +7,6 @@ import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 
 public class ECDSATest {
@@ -21,8 +20,8 @@ public class ECDSATest {
         ECDSA ecdsa = new ECDSA(keyPair.getPrivate(), keyPair.getPublic());
         System.out.println(ecdsa.getPublicKeyHex());
         System.out.println(ecdsa.getPrivateKeyHex());
-        String signature = ecdsa.sign("testData".getBytes(StandardCharsets.UTF_8), null);
-        boolean result = ecdsa.verify(signature, "testData".getBytes(StandardCharsets.UTF_8), null);
+        String signature = ecdsa.sign("testData", null);
+        boolean result = ecdsa.verify(signature, "testData", null);
         Assert.assertTrue(result);
     }
 }

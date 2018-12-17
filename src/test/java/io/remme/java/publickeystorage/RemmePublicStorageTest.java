@@ -23,35 +23,36 @@ import static io.remme.java.websocket.RemmeWebSocketTest.MAPPER;
 public class RemmePublicStorageTest {
     @Test
     public void testStorage() throws ExecutionException, InterruptedException {
+//        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
         RemmeApi remmeApi = new RemmeApi("138.197.204.63", 8080, false);
         //0399cc573facb6a206cd1a6bbb6b3200a80b9147890f1a612feab1d522cd3cebd6
-        RemmeAccount remmeAccount = new RemmeAccount("31e0386248657ff01070e93dc2cc2cf8531b193494a1b1ed9ff9e482b4c4c33d");
+        RemmeAccount remmeAccount = new RemmeAccount("b2c94353072abecabd47db2ca03a72f7a9eef583e1aec4f4e76c67a4f8a5f252");
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, remmeAccount);
-//        IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
-//        System.out.println(keys.getPublicKeyPem());
+        IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
+        System.out.println(keys.getPublicKeyPem());
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, remmeAccount, transactionService);
-//        BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
-//                .data("store data")
-//                .rsaSignaturePadding(RSASignaturePadding.PSS)
-//                .validFrom(new Date())
-//                .validTo(new Date(System.currentTimeMillis() + 5*24*60*60000L))
-//                .keys(keys)
-//                .build()).get();
-//        storeResponse.connectToWebSocket((err, res) -> {
-//            try {
-//                if (err != null) {
-//                    System.out.println(MAPPER.writeValueAsString(err));
-//                    return;
-//                }
-//                System.out.println(MAPPER.writeValueAsString(res));
-//                storeResponse.closeWebSocket();
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        while (true) {
-//
-//        }
+        BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
+                .data("store data")
+                .rsaSignaturePadding(RSASignaturePadding.PSS)
+                .validFrom(new Date())
+                .validTo(new Date(System.currentTimeMillis() + 5*24*60*60000L))
+                .keys(keys)
+                .build()).get();
+        storeResponse.connectToWebSocket((err, res) -> {
+            try {
+                if (err != null) {
+                    System.out.println(MAPPER.writeValueAsString(err));
+                    return;
+                }
+                System.out.println(MAPPER.writeValueAsString(res));
+                storeResponse.closeWebSocket();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        while (true) {
+
+        }
 //        boolean keyIsValid = publicKeyStorage.check(keys.getAddress()).get();
 //        System.out.println(keyIsValid); // true
 //
@@ -73,7 +74,7 @@ public class RemmePublicStorageTest {
 //            revoke.closeWebSocket();
 //        });
 //        Thread.sleep(30000L);
-        String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress()).get();
-        System.out.println(Arrays.toString(publicKeyAddresses)); // string[]
+//        String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress()).get();
+//        System.out.println(Arrays.toString(publicKeyAddresses)); // string[]
     }
 }

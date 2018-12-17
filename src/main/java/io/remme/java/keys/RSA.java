@@ -83,8 +83,9 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(byte[] data, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String dataString, RSASignaturePadding rsaSignaturePadding) {
         try {
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
@@ -120,7 +121,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(byte[] data) {
+    public String sign(String data) {
         return sign(data, RSASignaturePadding.PSS);
     }
 
@@ -128,9 +129,10 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, byte[] data, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(String signature, String dataString, RSASignaturePadding rsaSignaturePadding) {
         try {
             byte[] signatureBytes = Hex.decodeHex(signature);
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             switch (rsaSignaturePadding) {
                 case PSS:
                     MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
@@ -162,7 +164,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, byte[] data) {
+    public boolean verify(String signature, String data) {
         return verify(signature, data, RSASignaturePadding.PSS);
     }
 

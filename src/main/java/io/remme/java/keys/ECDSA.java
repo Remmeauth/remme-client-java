@@ -134,6 +134,14 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
+    public String sign(String dataString) {
+        if (privateKey == null) {
+            throw new RemmeKeyException("PrivateKey is not provided!");
+        }
+        byte[] dataHash = DigestUtils.sha256(dataString.getBytes(StandardCharsets.UTF_8));
+        return Hex.encodeHexString(sign(dataHash, Functions.hexToBytes(privateKeyHex)));
+    }
+
     public String sign(byte[] data) {
         if (privateKey == null) {
             throw new RemmeKeyException("PrivateKey is not provided!");
@@ -146,7 +154,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(byte[] data, RSASignaturePadding padding) {
+    public String sign(String data, RSASignaturePadding padding) {
         return sign(data);
     }
 
@@ -154,10 +162,10 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signatureHex, byte[] data) {
+    public boolean verify(String signatureHex, String data) {
         try {
             byte[] tokenSignature = Hex.decodeHex(signatureHex);
-            byte[] dataHash = DigestUtils.sha256(data);
+            byte[] dataHash = DigestUtils.sha256(data.getBytes(StandardCharsets.UTF_8));
             return verify(dataHash, tokenSignature, Hex.decodeHex(publicKeyHex));
         } catch (DecoderException e) {
             return false;
@@ -168,7 +176,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, byte[] data, RSASignaturePadding padding) {
+    public boolean verify(String signature, String data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
 

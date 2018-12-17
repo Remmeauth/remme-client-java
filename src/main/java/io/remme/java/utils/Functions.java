@@ -59,7 +59,7 @@ public class Functions {
     }
 
     public static String generateSettingsAddress(String key) {
-        List<String> keyParts = Arrays.asList(key.split(".", 4));
+        List<String> keyParts = Arrays.asList(key.split("\\.", 4));
         List<String> addressParts = keyParts.stream().map(v -> DigestUtils.sha256Hex(v).substring(0, 16))
                 .collect(Collectors.toList());
         while (4 - addressParts.size() != 0) {

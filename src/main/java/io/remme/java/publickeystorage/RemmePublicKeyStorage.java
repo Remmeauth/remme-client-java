@@ -45,10 +45,10 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
     @Getter
     private String familyVersion = "0.1";
 
-    private byte[] generateTransactionPayload(int method, byte[] data) {
+    private byte[] generateTransactionPayload(int method, ByteString data) {
         return Transaction.TransactionPayload.newBuilder()
                 .setMethod(method)
-                .setData(ByteString.copyFrom(data)).build().toByteArray();
+                .setData(data).build().toByteArray();
     }
 
     private Future<BaseTransactionResponse> createAndSendTransaction(String[] inputs, String[] outputs, byte[] payloadBytes) {
@@ -147,8 +147,7 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
 
             String message = this.generateMessage(keyStore.getData());
             String entityHash = this.generateEntityHash(message);
-            String entityHashSignature = keyStore.getKeys().sign(entityHash.getBytes(StandardCharsets.UTF_8),
-                    keyStore.getRsaSignaturePadding());
+            String entityHashSignature = keyStore.getKeys().sign(message, keyStore.getRsaSignaturePadding());
             PubKey.NewPubKeyPayload.PubKeyType keyType = null;
             switch (keyStore.getKeys().getKeyType()) {
                 case RSA:
@@ -168,7 +167,7 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
             String storagePublicKeyAddress = generateSettingsAddress("remme.settings.storage_pub_key");
             String settingAddress = generateSettingsAddress("remme.economy_enabled");
             String storageAddress = generateAddress(this.remmeAccount.getFamilyName().getName(), nodeConfig.getStorage_public_key());
-            byte[] payloadBytes = this.generateTransactionPayload(PubKey.PubKeyMethod.Method.STORE.getNumber(), payload.toByteArray());
+            byte[] payloadBytes = this.generateTransactionPayload(PubKey.PubKeyMethod.Method.STORE.getNumber(), payload.toByteString());
             String[] inputs = new String[]{pubKeyAddress, storagePublicKeyAddress, settingAddress, storageAddress};
             String[] outputs = new String[]{pubKeyAddress, storageAddress};
             return this.createAndSendTransaction(inputs, outputs, payloadBytes);
@@ -235,7 +234,7 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
         checkAddress(address);
         PubKey.RevokePubKeyPayload revokePayload = PubKey.RevokePubKeyPayload.newBuilder()
                 .setAddress(address).build();
-        byte[] payloadBytes = this.generateTransactionPayload(PubKey.PubKeyMethod.Method.REVOKE.getNumber(), revokePayload.toByteArray());
+        byte[] payloadBytes = this.generateTransactionPayload(PubKey.PubKeyMethod.Method.REVOKE.getNumber(), revokePayload.toByteString());
         return this.createAndSendTransaction(new String[]{address}, new String[]{address}, payloadBytes);
     }
 

@@ -21,8 +21,8 @@ public class EDDSATest {
         PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.EdDSA, keyPair.getPrivate().getEncoded());
         Assert.assertTrue(privateKey instanceof EdDSAPrivateKey);
         EDDSA eddsa = new EDDSA(keyPair.getPrivate(), keyPair.getPublic());
-        String signature = eddsa.sign("testData".getBytes(StandardCharsets.UTF_8), null);
-        boolean result = eddsa.verify(signature, "testData".getBytes(StandardCharsets.UTF_8), null);
+        String signature = eddsa.sign("testData", null);
+        boolean result = eddsa.verify(signature, "testData", null);
         Assert.assertTrue(result);
     }
 }

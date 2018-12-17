@@ -19,14 +19,14 @@ public interface IRemmeKeys {
      * @param rsaSignaturePadding RSA padding for signature (optional)
      * @return HEX String for signature
      */
-    String sign(byte[] data, RSASignaturePadding rsaSignaturePadding);
+    String sign(String data, RSASignaturePadding rsaSignaturePadding);
 
     /**
      * Sign provided data with selected key implementation
      * @param data Data string which will be signed
      * @return HEX String for signature
      */
-    String sign(byte[] data);
+    String sign(String data);
 
     /**
      * Verify signature for selected key implementation
@@ -35,7 +35,7 @@ public interface IRemmeKeys {
      * @param rsaSignaturePadding RSA padding for signature (optional)
      * @return <code>true</code> in case signature is correct
      */
-    boolean verify(String signature, byte[] data, RSASignaturePadding rsaSignaturePadding);
+    boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding);
 
     /**
      * Verify signature for selected key implementation
@@ -43,5 +43,5 @@ public interface IRemmeKeys {
      * @param data Data string which will be verified
      * @return <code>true</code> in case signature is correct
      */
-    boolean verify(String signature, byte[] data);
+    boolean verify(String signature, String data);
 }

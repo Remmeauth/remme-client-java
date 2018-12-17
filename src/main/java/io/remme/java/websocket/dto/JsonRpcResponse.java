@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JsonRpcResponse {
     private String jsonrpc;
-    private String result;
+    private Object result;
     private ErrorMessage error;
     private String id;
 }

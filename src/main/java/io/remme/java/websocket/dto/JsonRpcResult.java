@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JsonRpcResult {
     RemmeEvents event_type;
-    String attributes; //IAtomicSwap | IBatch | IBlock | ITransfer;
+    Object attributes; //IAtomicSwap | IBatch | IBlock | ITransfer;
 }

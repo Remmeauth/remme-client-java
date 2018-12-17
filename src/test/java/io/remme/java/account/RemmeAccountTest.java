@@ -23,7 +23,7 @@ public class RemmeAccountTest {
         RemmeAccount anotherAccount = new RemmeAccount();
         System.out.println(anotherAccount.getPrivateKeyHex());
         ECDSA ecdsa = new ECDSA(Functions.generateECDSAPrivateKey(Functions.hexToBytes(privateKeyA)), Functions.getECDSAPublicKeyFromBytes(Functions.hexToBytes(publikKeyA)));
-        byte[] data = "some data".getBytes(StandardCharsets.UTF_8);
+        String data = "some data";
         String signedData = account.sign(data);
         String signedData2 = ecdsa.sign(data);
         boolean isVerify = account.verify(signedData, data);

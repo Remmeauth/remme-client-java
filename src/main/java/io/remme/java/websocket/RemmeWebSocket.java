@@ -101,17 +101,17 @@ public class RemmeWebSocket implements IRemmeWebSocket {
                             sendAnError(response.getError(), listener);
                             return;
                         }
-                        if (response.getResult() != null && response.getResult().startsWith("{")) {
-                            JsonRpcResult result = MAPPER.readValue(response.getResult(), JsonRpcResult.class);
+                        if (response.getResult() != null && !(response.getResult() instanceof String)) {
+                            JsonRpcResult result = MAPPER.convertValue(response.getResult(), JsonRpcResult.class);
                             if (RemmeEvents.BATCH.equals(result.getEvent_type())) {
-                                BatchInfoDTO batchInfo = MAPPER.readValue(result.getAttributes(),
+                                BatchInfoDTO batchInfo = MAPPER.convertValue(result.getAttributes(),
                                         BatchInfoDTO.class);
                                 if (batchInfo.getStatus().equals(BatchStatus.INVALID)) {
                                     sendAnError(new ErrorFromEvent(batchInfo), listener);
                                     return;
                                 }
                             }
-                            listener.callback(null, MAPPER.readValue(result.getAttributes(), EVENT_MAP.get(result.getEvent_type())));
+                            listener.callback(null, MAPPER.convertValue(result.getAttributes(), EVENT_MAP.get(result.getEvent_type())));
                         }
                     } catch (Exception e) {
                         throw new RemmeSocketException(e);

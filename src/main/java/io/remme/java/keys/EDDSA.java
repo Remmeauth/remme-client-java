@@ -103,11 +103,12 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(byte[] data) {
+    public String sign(String dataString) {
         try {
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             signature.initSign(privateKey);
             signature.update(data);
@@ -121,7 +122,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(byte[] data, RSASignaturePadding padding) {
+    public String sign(String data, RSASignaturePadding padding) {
         return sign(data);
     }
 
@@ -129,8 +130,9 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, byte[] data) {
+    public boolean verify(String signature, String dataString) {
         try {
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);
@@ -145,7 +147,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, byte[] data, RSASignaturePadding padding) {
+    public boolean verify(String signature, String data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
 }

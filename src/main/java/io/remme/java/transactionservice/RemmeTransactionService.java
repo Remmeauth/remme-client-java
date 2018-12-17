@@ -14,7 +14,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import sawtooth.sdk.protobuf.Transaction;
 import sawtooth.sdk.protobuf.TransactionHeader;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -64,20 +67,22 @@ public class RemmeTransactionService implements IRemmeTransactionService {
         return es.submit(() -> {
             try {
                 NodeConfigRequest nodeConfig = remmeApi.sendRequest(RemmeMethod.NODE_CONFIG, NodeConfigRequest.class).get();
+                List<String> outputs = new ArrayList<>(Arrays.asList(settings.getOutputs()));
+                outputs.add(remmeAccount.getAddress());
+                List<String> inputs = new ArrayList<>(Arrays.asList(settings.getInputs()));
+                inputs.add(remmeAccount.getAddress());
                 TransactionHeader transactionHeader = TransactionHeader.newBuilder()
                         .setFamilyName(settings.getFamilyName())
                         .setFamilyVersion(settings.getFamilyVersion())
                         .setSignerPublicKey(remmeAccount.getPublicKeyHex())
                         .setNonce(DigestUtils.sha512Hex(String.valueOf(Math.floor(Math.random() * 1000))))
-                        .setSignerPublicKey(remmeAccount.getPublicKeyHex())
                         .setBatcherPublicKey(nodeConfig.getNode_public_key())
                         .setPayloadSha512(DigestUtils.sha512Hex(settings.getPayloadBytes()))
-                        .addAllOutputs(Arrays.asList(settings.getOutputs()))
-                        .addAllInputs(Arrays.asList(settings.getInputs()))
-                        .addInputs(remmeAccount.getAddress())
-                        .addOutputs(remmeAccount.getAddress())
+                        .addAllOutputs(outputs)
+                        .addAllInputs(inputs)
                         .build();
 
+//                String signature = remmeAccount.sign(new String(transactionHeader.toByteArray(), StandardCharsets.UTF_8));
                 String signature = remmeAccount.sign(transactionHeader.toByteArray());
                 Transaction transaction = Transaction.newBuilder()
                         .setHeader(transactionHeader.toByteString())
