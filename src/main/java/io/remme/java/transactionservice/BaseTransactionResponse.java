@@ -26,8 +26,7 @@ public class BaseTransactionResponse extends RemmeWebSocket {
      * @param batchId     identifier of batch that contains sending transaction
      */
     public BaseTransactionResponse(String nodeAddress, boolean sslMode, String batchId) {
-        super(nodeAddress, sslMode);
-        this.data = new RemmeRequestParams(RemmeEvents.BATCH, batchId, null, null);
+        super(nodeAddress, sslMode, new RemmeRequestParams(RemmeEvents.BATCH, batchId, null, null));
         setBatchId(batchId);
     }
 

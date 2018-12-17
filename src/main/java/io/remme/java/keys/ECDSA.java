@@ -142,6 +142,12 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
         return Hex.encodeHexString(sign(dataHash, Functions.hexToBytes(privateKeyHex)));
     }
 
+    /**
+     * Makes same as {@link #sign(String)} but data in byte array format
+     *
+     * @param data byte array of data
+     * @return signature HEX string
+     */
     public String sign(byte[] data) {
         if (privateKey == null) {
             throw new RemmeKeyException("PrivateKey is not provided!");

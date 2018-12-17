@@ -44,11 +44,6 @@ public class RemmeWebSocket implements IRemmeWebSocket {
     protected WebSocketClient client;
     protected RemmeRequestParams data;
 
-    public RemmeWebSocket(String nodeAddress, boolean sslMode) {
-        this.nodeAddress = nodeAddress;
-        this.sslMode = sslMode;
-    }
-
     public RemmeWebSocket(String nodeAddress, boolean sslMode, RemmeRequestParams params) {
         this.nodeAddress = nodeAddress;
         this.sslMode = sslMode;

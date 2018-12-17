@@ -14,7 +14,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import sawtooth.sdk.protobuf.Transaction;
 import sawtooth.sdk.protobuf.TransactionHeader;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +81,6 @@ public class RemmeTransactionService implements IRemmeTransactionService {
                         .addAllInputs(inputs)
                         .build();
 
-//                String signature = remmeAccount.sign(new String(transactionHeader.toByteArray(), StandardCharsets.UTF_8));
                 String signature = remmeAccount.sign(transactionHeader.toByteArray());
                 Transaction transaction = Transaction.newBuilder()
                         .setHeader(transactionHeader.toByteString())

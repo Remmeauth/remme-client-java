@@ -26,7 +26,7 @@ public class RemmePublicStorageTest {
 //        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
         RemmeApi remmeApi = new RemmeApi("138.197.204.63", 8080, false);
         //0399cc573facb6a206cd1a6bbb6b3200a80b9147890f1a612feab1d522cd3cebd6
-        RemmeAccount remmeAccount = new RemmeAccount("b2c94353072abecabd47db2ca03a72f7a9eef583e1aec4f4e76c67a4f8a5f252");
+        RemmeAccount remmeAccount = new RemmeAccount("c2df9dd6d896e32d8bb6bbe7fc3989ef15a1610c859606d0804f86f82ee93751");
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, remmeAccount);
         IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
         System.out.println(keys.getPublicKeyPem());
