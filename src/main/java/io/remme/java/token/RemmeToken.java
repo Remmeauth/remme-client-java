@@ -19,34 +19,6 @@ import static io.remme.java.utils.Functions.checkAddress;
  * Class that work with tokens.
  * Transfer them and getting balance by public key.
  *
- * <pre>
- * const someAccountPublicKeyInHex = "02926476095ea28904c11f22d0da20e999801a267cd3455a00570aa1153086eb13";
- * const someRemmeAddress = generateAddress(RemmeFamilyName.Account, someAccountPublicKeyInHex);
- * <p>
- * const receiverBalance = await remme.token.getBalance(someRemmeAddress);
- * console.log(`Account ${someRemmeAddress} as receiver, balance - ${receiverBalance} REM`);
- * <p>
- * const balance = await remme.token.getBalance(remme.account.address);
- * console.log(`Account ${remme.account.address} as sender, balance - ${balance} REM`);
- * <p>
- * const transactionResult = await remme.token.transfer(someRemmeAddress, 10);
- * console.log(`Sending tokens...BatchId: ${transactionResult.batchId}`);
- * <p>
- * const transactionCallback = async (err, result) => {
- * if (err) {
- * console.log(err);
- * return;
- * }
- * console.log("token", result);
- * if (result.status === "COMMITTED") {
- * const newBalance = await remme.token.getBalance(someRemmeAddress);
- * console.log(`Account ${someRemmeAddress} balance - ${newBalance} REM`);
- * transactionResult.closeWebSocket()
- * }
- * };
- * <p>
- * transactionResult.connectToWebSocket(transactionCallback);
- * </pre>
  */
 public class RemmeToken implements IRemmeToken {
 

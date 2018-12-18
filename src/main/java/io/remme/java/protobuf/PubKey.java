@@ -529,94 +529,74 @@ public final class PubKey {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * PEM Encoded public key
-     * </pre>
-     *
-     * <code>string public_key = 1;</code>
+     * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
      */
-    java.lang.String getPublicKey();
+    int getHashingAlgorithmValue();
     /**
-     * <pre>
-     * PEM Encoded public key
-     * </pre>
-     *
-     * <code>string public_key = 1;</code>
+     * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
      */
-    com.google.protobuf.ByteString
-        getPublicKeyBytes();
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm getHashingAlgorithm();
 
     /**
-     * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+     * <code>bytes entity_hash = 2;</code>
      */
-    int getPublicKeyTypeValue();
-    /**
-     * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
-     */
-    io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType getPublicKeyType();
+    com.google.protobuf.ByteString getEntityHash();
 
     /**
-     * <pre>
-     * For future ACME support(Now only Personal)
-     * </pre>
-     *
-     * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
+     * <code>bytes entity_hash_signature = 3;</code>
      */
-    int getEntityTypeValue();
-    /**
-     * <pre>
-     * For future ACME support(Now only Personal)
-     * </pre>
-     *
-     * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
-     */
-    io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType getEntityType();
+    com.google.protobuf.ByteString getEntityHashSignature();
 
     /**
-     * <pre>
-     * hash of PEM encoded public key of certificate
-     * </pre>
-     *
-     * <code>string entity_hash = 4;</code>
-     */
-    java.lang.String getEntityHash();
-    /**
-     * <pre>
-     * hash of PEM encoded public key of certificate
-     * </pre>
-     *
-     * <code>string entity_hash = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getEntityHashBytes();
-
-    /**
-     * <code>string entity_hash_signature = 5;</code>
-     */
-    java.lang.String getEntityHashSignature();
-    /**
-     * <code>string entity_hash_signature = 5;</code>
-     */
-    com.google.protobuf.ByteString
-        getEntityHashSignatureBytes();
-
-    /**
-     * <pre>
-     * UNIX time when validity begins
-     * </pre>
-     *
-     * <code>uint32 valid_from = 6;</code>
+     * <code>uint32 valid_from = 4;</code>
      */
     int getValidFrom();
 
     /**
-     * <pre>
-     * UNIX time when validity ends
-     * </pre>
-     *
-     * <code>uint32 valid_to = 7;</code>
+     * <code>uint32 valid_to = 5;</code>
      */
     int getValidTo();
+
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    boolean hasRsa();
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getRsa();
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder getRsaOrBuilder();
+
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    boolean hasEcdsa();
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getEcdsa();
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder getEcdsaOrBuilder();
+
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    boolean hasEd25519();
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getEd25519();
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder getEd25519OrBuilder();
+
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ConfigurationCase getConfigurationCase();
   }
   /**
    * Protobuf type {@code NewPubKeyPayload}
@@ -631,11 +611,9 @@ public final class PubKey {
       super(builder);
     }
     private NewPubKeyPayload() {
-      publicKey_ = "";
-      publicKeyType_ = 0;
-      entityType_ = 0;
-      entityHash_ = "";
-      entityHashSignature_ = "";
+      hashingAlgorithm_ = 0;
+      entityHash_ = com.google.protobuf.ByteString.EMPTY;
+      entityHashSignature_ = com.google.protobuf.ByteString.EMPTY;
       validFrom_ = 0;
       validTo_ = 0;
     }
@@ -664,44 +642,72 @@ public final class PubKey {
             case 0:
               done = true;
               break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              publicKey_ = s;
-              break;
-            }
-            case 16: {
+            case 8: {
               int rawValue = input.readEnum();
 
-              publicKeyType_ = rawValue;
+              hashingAlgorithm_ = rawValue;
               break;
             }
-            case 24: {
-              int rawValue = input.readEnum();
+            case 18: {
 
-              entityType_ = rawValue;
+              entityHash_ = input.readBytes();
               break;
             }
-            case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 26: {
 
-              entityHash_ = s;
+              entityHashSignature_ = input.readBytes();
               break;
             }
-            case 42: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              entityHashSignature_ = s;
-              break;
-            }
-            case 48: {
+            case 32: {
 
               validFrom_ = input.readUInt32();
               break;
             }
-            case 56: {
+            case 40: {
 
               validTo_ = input.readUInt32();
+              break;
+            }
+            case 50: {
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder subBuilder = null;
+              if (configurationCase_ == 6) {
+                subBuilder = ((io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_).toBuilder();
+              }
+              configuration_ =
+                  input.readMessage(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_);
+                configuration_ = subBuilder.buildPartial();
+              }
+              configurationCase_ = 6;
+              break;
+            }
+            case 58: {
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder subBuilder = null;
+              if (configurationCase_ == 7) {
+                subBuilder = ((io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_).toBuilder();
+              }
+              configuration_ =
+                  input.readMessage(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_);
+                configuration_ = subBuilder.buildPartial();
+              }
+              configurationCase_ = 7;
+              break;
+            }
+            case 66: {
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder subBuilder = null;
+              if (configurationCase_ == 8) {
+                subBuilder = ((io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_).toBuilder();
+              }
+              configuration_ =
+                  input.readMessage(io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_);
+                configuration_ = subBuilder.buildPartial();
+              }
+              configurationCase_ = 8;
               break;
             }
             default: {
@@ -737,29 +743,29 @@ public final class PubKey {
     }
 
     /**
-     * Protobuf enum {@code NewPubKeyPayload.EntityType}
+     * Protobuf enum {@code NewPubKeyPayload.HashingAlgorithm}
      */
-    public enum EntityType
+    public enum HashingAlgorithm
         implements com.google.protobuf.ProtocolMessageEnum {
       /**
-       * <code>PERSONAL = 0;</code>
+       * <code>SHA256 = 0;</code>
        */
-      PERSONAL(0),
+      SHA256(0),
       /**
-       * <code>SERVER = 1;</code>
+       * <code>SHA512 = 1;</code>
        */
-      SERVER(1),
+      SHA512(1),
       UNRECOGNIZED(-1),
       ;
 
       /**
-       * <code>PERSONAL = 0;</code>
+       * <code>SHA256 = 0;</code>
        */
-      public static final int PERSONAL_VALUE = 0;
+      public static final int SHA256_VALUE = 0;
       /**
-       * <code>SERVER = 1;</code>
+       * <code>SHA512 = 1;</code>
        */
-      public static final int SERVER_VALUE = 1;
+      public static final int SHA512_VALUE = 1;
 
 
       public final int getNumber() {
@@ -774,27 +780,27 @@ public final class PubKey {
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
-      public static EntityType valueOf(int value) {
+      public static HashingAlgorithm valueOf(int value) {
         return forNumber(value);
       }
 
-      public static EntityType forNumber(int value) {
+      public static HashingAlgorithm forNumber(int value) {
         switch (value) {
-          case 0: return PERSONAL;
-          case 1: return SERVER;
+          case 0: return SHA256;
+          case 1: return SHA512;
           default: return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<EntityType>
+      public static com.google.protobuf.Internal.EnumLiteMap<HashingAlgorithm>
           internalGetValueMap() {
         return internalValueMap;
       }
       private static final com.google.protobuf.Internal.EnumLiteMap<
-          EntityType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<EntityType>() {
-              public EntityType findValueByNumber(int number) {
-                return EntityType.forNumber(number);
+          HashingAlgorithm> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<HashingAlgorithm>() {
+              public HashingAlgorithm findValueByNumber(int number) {
+                return HashingAlgorithm.forNumber(number);
               }
             };
 
@@ -811,9 +817,9 @@ public final class PubKey {
         return io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDescriptor().getEnumTypes().get(0);
       }
 
-      private static final EntityType[] VALUES = values();
+      private static final HashingAlgorithm[] VALUES = values();
 
-      public static EntityType valueOf(
+      public static HashingAlgorithm valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
           throw new java.lang.IllegalArgumentException(
@@ -827,286 +833,1994 @@ public final class PubKey {
 
       private final int value;
 
-      private EntityType(int value) {
+      private HashingAlgorithm(int value) {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:NewPubKeyPayload.EntityType)
+      // @@protoc_insertion_point(enum_scope:NewPubKeyPayload.HashingAlgorithm)
     }
 
+    public interface RSAConfigurationOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:NewPubKeyPayload.RSAConfiguration)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      com.google.protobuf.ByteString getKey();
+
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+       */
+      int getPaddingValue();
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+       */
+      io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding getPadding();
+    }
     /**
-     * Protobuf enum {@code NewPubKeyPayload.PubKeyType}
+     * Protobuf type {@code NewPubKeyPayload.RSAConfiguration}
      */
-    public enum PubKeyType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>RSA = 0;</code>
-       */
-      RSA(0),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <code>RSA = 0;</code>
-       */
-      public static final int RSA_VALUE = 0;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
+    public  static final class RSAConfiguration extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:NewPubKeyPayload.RSAConfiguration)
+        RSAConfigurationOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use RSAConfiguration.newBuilder() to construct.
+      private RSAConfiguration(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private RSAConfiguration() {
+        key_ = com.google.protobuf.ByteString.EMPTY;
+        padding_ = 0;
       }
 
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private RSAConfiguration(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+
+                key_ = input.readBytes();
+                break;
+              }
+              case 16: {
+                int rawValue = input.readEnum();
+
+                padding_ = rawValue;
+                break;
+              }
+              default: {
+                if (!parseUnknownFieldProto3(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_RSAConfiguration_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_RSAConfiguration_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder.class);
+      }
+
+      /**
+       * Protobuf enum {@code NewPubKeyPayload.RSAConfiguration.Padding}
+       */
+      public enum Padding
+          implements com.google.protobuf.ProtocolMessageEnum {
+        /**
+         * <code>PSS = 0;</code>
+         */
+        PSS(0),
+        /**
+         * <code>PKCS1v15 = 1;</code>
+         */
+        PKCS1v15(1),
+        UNRECOGNIZED(-1),
+        ;
+
+        /**
+         * <code>PSS = 0;</code>
+         */
+        public static final int PSS_VALUE = 0;
+        /**
+         * <code>PKCS1v15 = 1;</code>
+         */
+        public static final int PKCS1v15_VALUE = 1;
+
+
+        public final int getNumber() {
+          if (this == UNRECOGNIZED) {
+            throw new java.lang.IllegalArgumentException(
+                "Can't get the number of an unknown enum value.");
+          }
+          return value;
+        }
+
+        /**
+         * @deprecated Use {@link #forNumber(int)} instead.
+         */
+        @java.lang.Deprecated
+        public static Padding valueOf(int value) {
+          return forNumber(value);
+        }
+
+        public static Padding forNumber(int value) {
+          switch (value) {
+            case 0: return PSS;
+            case 1: return PKCS1v15;
+            default: return null;
+          }
+        }
+
+        public static com.google.protobuf.Internal.EnumLiteMap<Padding>
+            internalGetValueMap() {
+          return internalValueMap;
+        }
+        private static final com.google.protobuf.Internal.EnumLiteMap<
+            Padding> internalValueMap =
+              new com.google.protobuf.Internal.EnumLiteMap<Padding>() {
+                public Padding findValueByNumber(int number) {
+                  return Padding.forNumber(number);
+                }
+              };
+
+        public final com.google.protobuf.Descriptors.EnumValueDescriptor
+            getValueDescriptor() {
+          return getDescriptor().getValues().get(ordinal());
+        }
+        public final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptorForType() {
+          return getDescriptor();
+        }
+        public static final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptor() {
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDescriptor().getEnumTypes().get(0);
+        }
+
+        private static final Padding[] VALUES = values();
+
+        public static Padding valueOf(
+            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+          if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException(
+              "EnumValueDescriptor is not for this type.");
+          }
+          if (desc.getIndex() == -1) {
+            return UNRECOGNIZED;
+          }
+          return VALUES[desc.getIndex()];
+        }
+
+        private final int value;
+
+        private Padding(int value) {
+          this.value = value;
+        }
+
+        // @@protoc_insertion_point(enum_scope:NewPubKeyPayload.RSAConfiguration.Padding)
+      }
+
+      public static final int KEY_FIELD_NUMBER = 1;
+      private com.google.protobuf.ByteString key_;
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKey() {
+        return key_;
+      }
+
+      public static final int PADDING_FIELD_NUMBER = 2;
+      private int padding_;
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+       */
+      public int getPaddingValue() {
+        return padding_;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding getPadding() {
+        @SuppressWarnings("deprecation")
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.valueOf(padding_);
+        return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.UNRECOGNIZED : result;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!key_.isEmpty()) {
+          output.writeBytes(1, key_);
+        }
+        if (padding_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS.getNumber()) {
+          output.writeEnum(2, padding_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!key_.isEmpty()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, key_);
+        }
+        if (padding_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS.getNumber()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(2, padding_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration)) {
+          return super.equals(obj);
+        }
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration other = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) obj;
+
+        boolean result = true;
+        result = result && getKey()
+            .equals(other.getKey());
+        result = result && padding_ == other.padding_;
+        result = result && unknownFields.equals(other.unknownFields);
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+        hash = (37 * hash) + PADDING_FIELD_NUMBER;
+        hash = (53 * hash) + padding_;
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code NewPubKeyPayload.RSAConfiguration}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:NewPubKeyPayload.RSAConfiguration)
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_RSAConfiguration_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_RSAConfiguration_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder.class);
+        }
+
+        // Construct using io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          key_ = com.google.protobuf.ByteString.EMPTY;
+
+          padding_ = 0;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_RSAConfiguration_descriptor;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getDefaultInstanceForType() {
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration build() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration buildPartial() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration result = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration(this);
+          result.key_ = key_;
+          result.padding_ = padding_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) {
+            return mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration other) {
+          if (other == io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance()) return this;
+          if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
+            setKey(other.getKey());
+          }
+          if (other.padding_ != 0) {
+            setPaddingValue(other.getPaddingValue());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public com.google.protobuf.ByteString getKey() {
+          return key_;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder setKey(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          key_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder clearKey() {
+          
+          key_ = getDefaultInstance().getKey();
+          onChanged();
+          return this;
+        }
+
+        private int padding_ = 0;
+        /**
+         * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+         */
+        public int getPaddingValue() {
+          return padding_;
+        }
+        /**
+         * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+         */
+        public Builder setPaddingValue(int value) {
+          padding_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+         */
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding getPadding() {
+          @SuppressWarnings("deprecation")
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.valueOf(padding_);
+          return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding.UNRECOGNIZED : result;
+        }
+        /**
+         * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+         */
+        public Builder setPadding(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          
+          padding_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.NewPubKeyPayload.RSAConfiguration.Padding padding = 2;</code>
+         */
+        public Builder clearPadding() {
+          
+          padding_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFieldsProto3(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:NewPubKeyPayload.RSAConfiguration)
+      }
+
+      // @@protoc_insertion_point(class_scope:NewPubKeyPayload.RSAConfiguration)
+      private static final io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration();
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<RSAConfiguration>
+          PARSER = new com.google.protobuf.AbstractParser<RSAConfiguration>() {
+        @java.lang.Override
+        public RSAConfiguration parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new RSAConfiguration(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<RSAConfiguration> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<RSAConfiguration> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface ECDSAConfigurationOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:NewPubKeyPayload.ECDSAConfiguration)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      com.google.protobuf.ByteString getKey();
+
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+       */
+      int getEcValue();
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+       */
+      io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC getEc();
+    }
+    /**
+     * Protobuf type {@code NewPubKeyPayload.ECDSAConfiguration}
+     */
+    public  static final class ECDSAConfiguration extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:NewPubKeyPayload.ECDSAConfiguration)
+        ECDSAConfigurationOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use ECDSAConfiguration.newBuilder() to construct.
+      private ECDSAConfiguration(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private ECDSAConfiguration() {
+        key_ = com.google.protobuf.ByteString.EMPTY;
+        ec_ = 0;
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ECDSAConfiguration(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+
+                key_ = input.readBytes();
+                break;
+              }
+              case 16: {
+                int rawValue = input.readEnum();
+
+                ec_ = rawValue;
+                break;
+              }
+              default: {
+                if (!parseUnknownFieldProto3(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_ECDSAConfiguration_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder.class);
+      }
+
+      /**
+       * Protobuf enum {@code NewPubKeyPayload.ECDSAConfiguration.EC}
+       */
+      public enum EC
+          implements com.google.protobuf.ProtocolMessageEnum {
+        /**
+         * <code>SECP256k1 = 0;</code>
+         */
+        SECP256k1(0),
+        UNRECOGNIZED(-1),
+        ;
+
+        /**
+         * <code>SECP256k1 = 0;</code>
+         */
+        public static final int SECP256k1_VALUE = 0;
+
+
+        public final int getNumber() {
+          if (this == UNRECOGNIZED) {
+            throw new java.lang.IllegalArgumentException(
+                "Can't get the number of an unknown enum value.");
+          }
+          return value;
+        }
+
+        /**
+         * @deprecated Use {@link #forNumber(int)} instead.
+         */
+        @java.lang.Deprecated
+        public static EC valueOf(int value) {
+          return forNumber(value);
+        }
+
+        public static EC forNumber(int value) {
+          switch (value) {
+            case 0: return SECP256k1;
+            default: return null;
+          }
+        }
+
+        public static com.google.protobuf.Internal.EnumLiteMap<EC>
+            internalGetValueMap() {
+          return internalValueMap;
+        }
+        private static final com.google.protobuf.Internal.EnumLiteMap<
+            EC> internalValueMap =
+              new com.google.protobuf.Internal.EnumLiteMap<EC>() {
+                public EC findValueByNumber(int number) {
+                  return EC.forNumber(number);
+                }
+              };
+
+        public final com.google.protobuf.Descriptors.EnumValueDescriptor
+            getValueDescriptor() {
+          return getDescriptor().getValues().get(ordinal());
+        }
+        public final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptorForType() {
+          return getDescriptor();
+        }
+        public static final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptor() {
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDescriptor().getEnumTypes().get(0);
+        }
+
+        private static final EC[] VALUES = values();
+
+        public static EC valueOf(
+            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+          if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException(
+              "EnumValueDescriptor is not for this type.");
+          }
+          if (desc.getIndex() == -1) {
+            return UNRECOGNIZED;
+          }
+          return VALUES[desc.getIndex()];
+        }
+
+        private final int value;
+
+        private EC(int value) {
+          this.value = value;
+        }
+
+        // @@protoc_insertion_point(enum_scope:NewPubKeyPayload.ECDSAConfiguration.EC)
+      }
+
+      public static final int KEY_FIELD_NUMBER = 1;
+      private com.google.protobuf.ByteString key_;
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKey() {
+        return key_;
+      }
+
+      public static final int EC_FIELD_NUMBER = 2;
+      private int ec_;
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+       */
+      public int getEcValue() {
+        return ec_;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC getEc() {
+        @SuppressWarnings("deprecation")
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.valueOf(ec_);
+        return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.UNRECOGNIZED : result;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!key_.isEmpty()) {
+          output.writeBytes(1, key_);
+        }
+        if (ec_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.SECP256k1.getNumber()) {
+          output.writeEnum(2, ec_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!key_.isEmpty()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, key_);
+        }
+        if (ec_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.SECP256k1.getNumber()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(2, ec_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration)) {
+          return super.equals(obj);
+        }
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration other = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) obj;
+
+        boolean result = true;
+        result = result && getKey()
+            .equals(other.getKey());
+        result = result && ec_ == other.ec_;
+        result = result && unknownFields.equals(other.unknownFields);
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+        hash = (37 * hash) + EC_FIELD_NUMBER;
+        hash = (53 * hash) + ec_;
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code NewPubKeyPayload.ECDSAConfiguration}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:NewPubKeyPayload.ECDSAConfiguration)
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_ECDSAConfiguration_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder.class);
+        }
+
+        // Construct using io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          key_ = com.google.protobuf.ByteString.EMPTY;
+
+          ec_ = 0;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getDefaultInstanceForType() {
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration build() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration buildPartial() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration result = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration(this);
+          result.key_ = key_;
+          result.ec_ = ec_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) {
+            return mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration other) {
+          if (other == io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance()) return this;
+          if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
+            setKey(other.getKey());
+          }
+          if (other.ec_ != 0) {
+            setEcValue(other.getEcValue());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public com.google.protobuf.ByteString getKey() {
+          return key_;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder setKey(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          key_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder clearKey() {
+          
+          key_ = getDefaultInstance().getKey();
+          onChanged();
+          return this;
+        }
+
+        private int ec_ = 0;
+        /**
+         * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+         */
+        public int getEcValue() {
+          return ec_;
+        }
+        /**
+         * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+         */
+        public Builder setEcValue(int value) {
+          ec_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+         */
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC getEc() {
+          @SuppressWarnings("deprecation")
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.valueOf(ec_);
+          return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC.UNRECOGNIZED : result;
+        }
+        /**
+         * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+         */
+        public Builder setEc(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.EC value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          
+          ec_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.NewPubKeyPayload.ECDSAConfiguration.EC ec = 2;</code>
+         */
+        public Builder clearEc() {
+          
+          ec_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFieldsProto3(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:NewPubKeyPayload.ECDSAConfiguration)
+      }
+
+      // @@protoc_insertion_point(class_scope:NewPubKeyPayload.ECDSAConfiguration)
+      private static final io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration();
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<ECDSAConfiguration>
+          PARSER = new com.google.protobuf.AbstractParser<ECDSAConfiguration>() {
+        @java.lang.Override
+        public ECDSAConfiguration parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ECDSAConfiguration(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<ECDSAConfiguration> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ECDSAConfiguration> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface Ed25519ConfigurationOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:NewPubKeyPayload.Ed25519Configuration)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      com.google.protobuf.ByteString getKey();
+    }
+    /**
+     * Protobuf type {@code NewPubKeyPayload.Ed25519Configuration}
+     */
+    public  static final class Ed25519Configuration extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:NewPubKeyPayload.Ed25519Configuration)
+        Ed25519ConfigurationOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Ed25519Configuration.newBuilder() to construct.
+      private Ed25519Configuration(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Ed25519Configuration() {
+        key_ = com.google.protobuf.ByteString.EMPTY;
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private Ed25519Configuration(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+
+                key_ = input.readBytes();
+                break;
+              }
+              default: {
+                if (!parseUnknownFieldProto3(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_Ed25519Configuration_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder.class);
+      }
+
+      public static final int KEY_FIELD_NUMBER = 1;
+      private com.google.protobuf.ByteString key_;
+      /**
+       * <code>bytes key = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKey() {
+        return key_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!key_.isEmpty()) {
+          output.writeBytes(1, key_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!key_.isEmpty()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, key_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration)) {
+          return super.equals(obj);
+        }
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration other = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) obj;
+
+        boolean result = true;
+        result = result && getKey()
+            .equals(other.getKey());
+        result = result && unknownFields.equals(other.unknownFields);
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code NewPubKeyPayload.Ed25519Configuration}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:NewPubKeyPayload.Ed25519Configuration)
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_Ed25519Configuration_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.class, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder.class);
+        }
+
+        // Construct using io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          key_ = com.google.protobuf.ByteString.EMPTY;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getDefaultInstanceForType() {
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration build() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration buildPartial() {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration result = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration(this);
+          result.key_ = key_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) {
+            return mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration other) {
+          if (other == io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance()) return this;
+          if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
+            setKey(other.getKey());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public com.google.protobuf.ByteString getKey() {
+          return key_;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder setKey(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          key_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bytes key = 1;</code>
+         */
+        public Builder clearKey() {
+          
+          key_ = getDefaultInstance().getKey();
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFieldsProto3(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:NewPubKeyPayload.Ed25519Configuration)
+      }
+
+      // @@protoc_insertion_point(class_scope:NewPubKeyPayload.Ed25519Configuration)
+      private static final io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration();
+      }
+
+      public static io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Ed25519Configuration>
+          PARSER = new com.google.protobuf.AbstractParser<Ed25519Configuration>() {
+        @java.lang.Override
+        public Ed25519Configuration parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Ed25519Configuration(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<Ed25519Configuration> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Ed25519Configuration> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    private int configurationCase_ = 0;
+    private java.lang.Object configuration_;
+    public enum ConfigurationCase
+        implements com.google.protobuf.Internal.EnumLite {
+      RSA(6),
+      ECDSA(7),
+      ED25519(8),
+      CONFIGURATION_NOT_SET(0);
+      private final int value;
+      private ConfigurationCase(int value) {
+        this.value = value;
+      }
       /**
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
-      public static PubKeyType valueOf(int value) {
+      public static ConfigurationCase valueOf(int value) {
         return forNumber(value);
       }
 
-      public static PubKeyType forNumber(int value) {
+      public static ConfigurationCase forNumber(int value) {
         switch (value) {
-          case 0: return RSA;
+          case 6: return RSA;
+          case 7: return ECDSA;
+          case 8: return ED25519;
+          case 0: return CONFIGURATION_NOT_SET;
           default: return null;
         }
       }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<PubKeyType>
-          internalGetValueMap() {
-        return internalValueMap;
+      public int getNumber() {
+        return this.value;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          PubKeyType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<PubKeyType>() {
-              public PubKeyType findValueByNumber(int number) {
-                return PubKeyType.forNumber(number);
-              }
-            };
+    };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDescriptor().getEnumTypes().get(1);
-      }
-
-      private static final PubKeyType[] VALUES = values();
-
-      public static PubKeyType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private PubKeyType(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:NewPubKeyPayload.PubKeyType)
+    public ConfigurationCase
+    getConfigurationCase() {
+      return ConfigurationCase.forNumber(
+          configurationCase_);
     }
 
-    public static final int PUBLIC_KEY_FIELD_NUMBER = 1;
-    private volatile java.lang.Object publicKey_;
+    public static final int HASHING_ALGORITHM_FIELD_NUMBER = 1;
+    private int hashingAlgorithm_;
     /**
-     * <pre>
-     * PEM Encoded public key
-     * </pre>
-     *
-     * <code>string public_key = 1;</code>
+     * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
      */
-    public java.lang.String getPublicKey() {
-      java.lang.Object ref = publicKey_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        publicKey_ = s;
-        return s;
-      }
+    public int getHashingAlgorithmValue() {
+      return hashingAlgorithm_;
     }
     /**
-     * <pre>
-     * PEM Encoded public key
-     * </pre>
-     *
-     * <code>string public_key = 1;</code>
+     * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getPublicKeyBytes() {
-      java.lang.Object ref = publicKey_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        publicKey_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PUBLIC_KEY_TYPE_FIELD_NUMBER = 2;
-    private int publicKeyType_;
-    /**
-     * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
-     */
-    public int getPublicKeyTypeValue() {
-      return publicKeyType_;
-    }
-    /**
-     * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
-     */
-    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType getPublicKeyType() {
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm getHashingAlgorithm() {
       @SuppressWarnings("deprecation")
-      io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.valueOf(publicKeyType_);
-      return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.UNRECOGNIZED : result;
+      io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.valueOf(hashingAlgorithm_);
+      return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.UNRECOGNIZED : result;
     }
 
-    public static final int ENTITY_TYPE_FIELD_NUMBER = 3;
-    private int entityType_;
+    public static final int ENTITY_HASH_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString entityHash_;
     /**
-     * <pre>
-     * For future ACME support(Now only Personal)
-     * </pre>
-     *
-     * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
+     * <code>bytes entity_hash = 2;</code>
      */
-    public int getEntityTypeValue() {
-      return entityType_;
-    }
-    /**
-     * <pre>
-     * For future ACME support(Now only Personal)
-     * </pre>
-     *
-     * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
-     */
-    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType getEntityType() {
-      @SuppressWarnings("deprecation")
-      io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.valueOf(entityType_);
-      return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.UNRECOGNIZED : result;
+    public com.google.protobuf.ByteString getEntityHash() {
+      return entityHash_;
     }
 
-    public static final int ENTITY_HASH_FIELD_NUMBER = 4;
-    private volatile java.lang.Object entityHash_;
+    public static final int ENTITY_HASH_SIGNATURE_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString entityHashSignature_;
     /**
-     * <pre>
-     * hash of PEM encoded public key of certificate
-     * </pre>
-     *
-     * <code>string entity_hash = 4;</code>
+     * <code>bytes entity_hash_signature = 3;</code>
      */
-    public java.lang.String getEntityHash() {
-      java.lang.Object ref = entityHash_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        entityHash_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * hash of PEM encoded public key of certificate
-     * </pre>
-     *
-     * <code>string entity_hash = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getEntityHashBytes() {
-      java.lang.Object ref = entityHash_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        entityHash_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.google.protobuf.ByteString getEntityHashSignature() {
+      return entityHashSignature_;
     }
 
-    public static final int ENTITY_HASH_SIGNATURE_FIELD_NUMBER = 5;
-    private volatile java.lang.Object entityHashSignature_;
-    /**
-     * <code>string entity_hash_signature = 5;</code>
-     */
-    public java.lang.String getEntityHashSignature() {
-      java.lang.Object ref = entityHashSignature_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        entityHashSignature_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string entity_hash_signature = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getEntityHashSignatureBytes() {
-      java.lang.Object ref = entityHashSignature_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        entityHashSignature_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int VALID_FROM_FIELD_NUMBER = 6;
+    public static final int VALID_FROM_FIELD_NUMBER = 4;
     private int validFrom_;
     /**
-     * <pre>
-     * UNIX time when validity begins
-     * </pre>
-     *
-     * <code>uint32 valid_from = 6;</code>
+     * <code>uint32 valid_from = 4;</code>
      */
     public int getValidFrom() {
       return validFrom_;
     }
 
-    public static final int VALID_TO_FIELD_NUMBER = 7;
+    public static final int VALID_TO_FIELD_NUMBER = 5;
     private int validTo_;
     /**
-     * <pre>
-     * UNIX time when validity ends
-     * </pre>
-     *
-     * <code>uint32 valid_to = 7;</code>
+     * <code>uint32 valid_to = 5;</code>
      */
     public int getValidTo() {
       return validTo_;
+    }
+
+    public static final int RSA_FIELD_NUMBER = 6;
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    public boolean hasRsa() {
+      return configurationCase_ == 6;
+    }
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getRsa() {
+      if (configurationCase_ == 6) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+    }
+    /**
+     * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder getRsaOrBuilder() {
+      if (configurationCase_ == 6) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+    }
+
+    public static final int ECDSA_FIELD_NUMBER = 7;
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    public boolean hasEcdsa() {
+      return configurationCase_ == 7;
+    }
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getEcdsa() {
+      if (configurationCase_ == 7) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+    }
+    /**
+     * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder getEcdsaOrBuilder() {
+      if (configurationCase_ == 7) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+    }
+
+    public static final int ED25519_FIELD_NUMBER = 8;
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    public boolean hasEd25519() {
+      return configurationCase_ == 8;
+    }
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getEd25519() {
+      if (configurationCase_ == 8) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+    }
+    /**
+     * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder getEd25519OrBuilder() {
+      if (configurationCase_ == 8) {
+         return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_;
+      }
+      return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1123,26 +2837,29 @@ public final class PubKey {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getPublicKeyBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, publicKey_);
+      if (hashingAlgorithm_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.SHA256.getNumber()) {
+        output.writeEnum(1, hashingAlgorithm_);
       }
-      if (publicKeyType_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.RSA.getNumber()) {
-        output.writeEnum(2, publicKeyType_);
+      if (!entityHash_.isEmpty()) {
+        output.writeBytes(2, entityHash_);
       }
-      if (entityType_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.PERSONAL.getNumber()) {
-        output.writeEnum(3, entityType_);
-      }
-      if (!getEntityHashBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, entityHash_);
-      }
-      if (!getEntityHashSignatureBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, entityHashSignature_);
+      if (!entityHashSignature_.isEmpty()) {
+        output.writeBytes(3, entityHashSignature_);
       }
       if (validFrom_ != 0) {
-        output.writeUInt32(6, validFrom_);
+        output.writeUInt32(4, validFrom_);
       }
       if (validTo_ != 0) {
-        output.writeUInt32(7, validTo_);
+        output.writeUInt32(5, validTo_);
+      }
+      if (configurationCase_ == 6) {
+        output.writeMessage(6, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_);
+      }
+      if (configurationCase_ == 7) {
+        output.writeMessage(7, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_);
+      }
+      if (configurationCase_ == 8) {
+        output.writeMessage(8, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_);
       }
       unknownFields.writeTo(output);
     }
@@ -1153,30 +2870,37 @@ public final class PubKey {
       if (size != -1) return size;
 
       size = 0;
-      if (!getPublicKeyBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, publicKey_);
-      }
-      if (publicKeyType_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.RSA.getNumber()) {
+      if (hashingAlgorithm_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.SHA256.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, publicKeyType_);
+          .computeEnumSize(1, hashingAlgorithm_);
       }
-      if (entityType_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.PERSONAL.getNumber()) {
+      if (!entityHash_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, entityType_);
+          .computeBytesSize(2, entityHash_);
       }
-      if (!getEntityHashBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, entityHash_);
-      }
-      if (!getEntityHashSignatureBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, entityHashSignature_);
+      if (!entityHashSignature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, entityHashSignature_);
       }
       if (validFrom_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(6, validFrom_);
+          .computeUInt32Size(4, validFrom_);
       }
       if (validTo_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(7, validTo_);
+          .computeUInt32Size(5, validTo_);
+      }
+      if (configurationCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_);
+      }
+      if (configurationCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_);
+      }
+      if (configurationCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1194,10 +2918,7 @@ public final class PubKey {
       io.remme.java.protobuf.PubKey.NewPubKeyPayload other = (io.remme.java.protobuf.PubKey.NewPubKeyPayload) obj;
 
       boolean result = true;
-      result = result && getPublicKey()
-          .equals(other.getPublicKey());
-      result = result && publicKeyType_ == other.publicKeyType_;
-      result = result && entityType_ == other.entityType_;
+      result = result && hashingAlgorithm_ == other.hashingAlgorithm_;
       result = result && getEntityHash()
           .equals(other.getEntityHash());
       result = result && getEntityHashSignature()
@@ -1206,6 +2927,25 @@ public final class PubKey {
           == other.getValidFrom());
       result = result && (getValidTo()
           == other.getValidTo());
+      result = result && getConfigurationCase().equals(
+          other.getConfigurationCase());
+      if (!result) return false;
+      switch (configurationCase_) {
+        case 6:
+          result = result && getRsa()
+              .equals(other.getRsa());
+          break;
+        case 7:
+          result = result && getEcdsa()
+              .equals(other.getEcdsa());
+          break;
+        case 8:
+          result = result && getEd25519()
+              .equals(other.getEd25519());
+          break;
+        case 0:
+        default:
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1217,12 +2957,8 @@ public final class PubKey {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PUBLIC_KEY_FIELD_NUMBER;
-      hash = (53 * hash) + getPublicKey().hashCode();
-      hash = (37 * hash) + PUBLIC_KEY_TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + publicKeyType_;
-      hash = (37 * hash) + ENTITY_TYPE_FIELD_NUMBER;
-      hash = (53 * hash) + entityType_;
+      hash = (37 * hash) + HASHING_ALGORITHM_FIELD_NUMBER;
+      hash = (53 * hash) + hashingAlgorithm_;
       hash = (37 * hash) + ENTITY_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getEntityHash().hashCode();
       hash = (37 * hash) + ENTITY_HASH_SIGNATURE_FIELD_NUMBER;
@@ -1231,6 +2967,22 @@ public final class PubKey {
       hash = (53 * hash) + getValidFrom();
       hash = (37 * hash) + VALID_TO_FIELD_NUMBER;
       hash = (53 * hash) + getValidTo();
+      switch (configurationCase_) {
+        case 6:
+          hash = (37 * hash) + RSA_FIELD_NUMBER;
+          hash = (53 * hash) + getRsa().hashCode();
+          break;
+        case 7:
+          hash = (37 * hash) + ECDSA_FIELD_NUMBER;
+          hash = (53 * hash) + getEcdsa().hashCode();
+          break;
+        case 8:
+          hash = (37 * hash) + ED25519_FIELD_NUMBER;
+          hash = (53 * hash) + getEd25519().hashCode();
+          break;
+        case 0:
+        default:
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1364,20 +3116,18 @@ public final class PubKey {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        publicKey_ = "";
+        hashingAlgorithm_ = 0;
 
-        publicKeyType_ = 0;
+        entityHash_ = com.google.protobuf.ByteString.EMPTY;
 
-        entityType_ = 0;
-
-        entityHash_ = "";
-
-        entityHashSignature_ = "";
+        entityHashSignature_ = com.google.protobuf.ByteString.EMPTY;
 
         validFrom_ = 0;
 
         validTo_ = 0;
 
+        configurationCase_ = 0;
+        configuration_ = null;
         return this;
       }
 
@@ -1404,13 +3154,33 @@ public final class PubKey {
       @java.lang.Override
       public io.remme.java.protobuf.PubKey.NewPubKeyPayload buildPartial() {
         io.remme.java.protobuf.PubKey.NewPubKeyPayload result = new io.remme.java.protobuf.PubKey.NewPubKeyPayload(this);
-        result.publicKey_ = publicKey_;
-        result.publicKeyType_ = publicKeyType_;
-        result.entityType_ = entityType_;
+        result.hashingAlgorithm_ = hashingAlgorithm_;
         result.entityHash_ = entityHash_;
         result.entityHashSignature_ = entityHashSignature_;
         result.validFrom_ = validFrom_;
         result.validTo_ = validTo_;
+        if (configurationCase_ == 6) {
+          if (rsaBuilder_ == null) {
+            result.configuration_ = configuration_;
+          } else {
+            result.configuration_ = rsaBuilder_.build();
+          }
+        }
+        if (configurationCase_ == 7) {
+          if (ecdsaBuilder_ == null) {
+            result.configuration_ = configuration_;
+          } else {
+            result.configuration_ = ecdsaBuilder_.build();
+          }
+        }
+        if (configurationCase_ == 8) {
+          if (ed25519Builder_ == null) {
+            result.configuration_ = configuration_;
+          } else {
+            result.configuration_ = ed25519Builder_.build();
+          }
+        }
+        result.configurationCase_ = configurationCase_;
         onBuilt();
         return result;
       }
@@ -1459,29 +3229,37 @@ public final class PubKey {
 
       public Builder mergeFrom(io.remme.java.protobuf.PubKey.NewPubKeyPayload other) {
         if (other == io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDefaultInstance()) return this;
-        if (!other.getPublicKey().isEmpty()) {
-          publicKey_ = other.publicKey_;
-          onChanged();
+        if (other.hashingAlgorithm_ != 0) {
+          setHashingAlgorithmValue(other.getHashingAlgorithmValue());
         }
-        if (other.publicKeyType_ != 0) {
-          setPublicKeyTypeValue(other.getPublicKeyTypeValue());
+        if (other.getEntityHash() != com.google.protobuf.ByteString.EMPTY) {
+          setEntityHash(other.getEntityHash());
         }
-        if (other.entityType_ != 0) {
-          setEntityTypeValue(other.getEntityTypeValue());
-        }
-        if (!other.getEntityHash().isEmpty()) {
-          entityHash_ = other.entityHash_;
-          onChanged();
-        }
-        if (!other.getEntityHashSignature().isEmpty()) {
-          entityHashSignature_ = other.entityHashSignature_;
-          onChanged();
+        if (other.getEntityHashSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setEntityHashSignature(other.getEntityHashSignature());
         }
         if (other.getValidFrom() != 0) {
           setValidFrom(other.getValidFrom());
         }
         if (other.getValidTo() != 0) {
           setValidTo(other.getValidTo());
+        }
+        switch (other.getConfigurationCase()) {
+          case RSA: {
+            mergeRsa(other.getRsa());
+            break;
+          }
+          case ECDSA: {
+            mergeEcdsa(other.getEcdsa());
+            break;
+          }
+          case ED25519: {
+            mergeEd25519(other.getEd25519());
+            break;
+          }
+          case CONFIGURATION_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1511,255 +3289,78 @@ public final class PubKey {
         }
         return this;
       }
+      private int configurationCase_ = 0;
+      private java.lang.Object configuration_;
+      public ConfigurationCase
+          getConfigurationCase() {
+        return ConfigurationCase.forNumber(
+            configurationCase_);
+      }
 
-      private java.lang.Object publicKey_ = "";
-      /**
-       * <pre>
-       * PEM Encoded public key
-       * </pre>
-       *
-       * <code>string public_key = 1;</code>
-       */
-      public java.lang.String getPublicKey() {
-        java.lang.Object ref = publicKey_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          publicKey_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * PEM Encoded public key
-       * </pre>
-       *
-       * <code>string public_key = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPublicKeyBytes() {
-        java.lang.Object ref = publicKey_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          publicKey_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * PEM Encoded public key
-       * </pre>
-       *
-       * <code>string public_key = 1;</code>
-       */
-      public Builder setPublicKey(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        publicKey_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * PEM Encoded public key
-       * </pre>
-       *
-       * <code>string public_key = 1;</code>
-       */
-      public Builder clearPublicKey() {
-        
-        publicKey_ = getDefaultInstance().getPublicKey();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * PEM Encoded public key
-       * </pre>
-       *
-       * <code>string public_key = 1;</code>
-       */
-      public Builder setPublicKeyBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        publicKey_ = value;
+      public Builder clearConfiguration() {
+        configurationCase_ = 0;
+        configuration_ = null;
         onChanged();
         return this;
       }
 
-      private int publicKeyType_ = 0;
+
+      private int hashingAlgorithm_ = 0;
       /**
-       * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+       * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
        */
-      public int getPublicKeyTypeValue() {
-        return publicKeyType_;
+      public int getHashingAlgorithmValue() {
+        return hashingAlgorithm_;
       }
       /**
-       * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+       * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
        */
-      public Builder setPublicKeyTypeValue(int value) {
-        publicKeyType_ = value;
+      public Builder setHashingAlgorithmValue(int value) {
+        hashingAlgorithm_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+       * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
        */
-      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType getPublicKeyType() {
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm getHashingAlgorithm() {
         @SuppressWarnings("deprecation")
-        io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.valueOf(publicKeyType_);
-        return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType.UNRECOGNIZED : result;
+        io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.valueOf(hashingAlgorithm_);
+        return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm.UNRECOGNIZED : result;
       }
       /**
-       * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+       * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
        */
-      public Builder setPublicKeyType(io.remme.java.protobuf.PubKey.NewPubKeyPayload.PubKeyType value) {
+      public Builder setHashingAlgorithm(io.remme.java.protobuf.PubKey.NewPubKeyPayload.HashingAlgorithm value) {
         if (value == null) {
           throw new NullPointerException();
         }
         
-        publicKeyType_ = value.getNumber();
+        hashingAlgorithm_ = value.getNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>.NewPubKeyPayload.PubKeyType public_key_type = 2;</code>
+       * <code>.NewPubKeyPayload.HashingAlgorithm hashing_algorithm = 1;</code>
        */
-      public Builder clearPublicKeyType() {
+      public Builder clearHashingAlgorithm() {
         
-        publicKeyType_ = 0;
+        hashingAlgorithm_ = 0;
         onChanged();
         return this;
       }
 
-      private int entityType_ = 0;
+      private com.google.protobuf.ByteString entityHash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <pre>
-       * For future ACME support(Now only Personal)
-       * </pre>
-       *
-       * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
+       * <code>bytes entity_hash = 2;</code>
        */
-      public int getEntityTypeValue() {
-        return entityType_;
+      public com.google.protobuf.ByteString getEntityHash() {
+        return entityHash_;
       }
       /**
-       * <pre>
-       * For future ACME support(Now only Personal)
-       * </pre>
-       *
-       * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
+       * <code>bytes entity_hash = 2;</code>
        */
-      public Builder setEntityTypeValue(int value) {
-        entityType_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * For future ACME support(Now only Personal)
-       * </pre>
-       *
-       * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
-       */
-      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType getEntityType() {
-        @SuppressWarnings("deprecation")
-        io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType result = io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.valueOf(entityType_);
-        return result == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType.UNRECOGNIZED : result;
-      }
-      /**
-       * <pre>
-       * For future ACME support(Now only Personal)
-       * </pre>
-       *
-       * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
-       */
-      public Builder setEntityType(io.remme.java.protobuf.PubKey.NewPubKeyPayload.EntityType value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        entityType_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * For future ACME support(Now only Personal)
-       * </pre>
-       *
-       * <code>.NewPubKeyPayload.EntityType entity_type = 3;</code>
-       */
-      public Builder clearEntityType() {
-        
-        entityType_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object entityHash_ = "";
-      /**
-       * <pre>
-       * hash of PEM encoded public key of certificate
-       * </pre>
-       *
-       * <code>string entity_hash = 4;</code>
-       */
-      public java.lang.String getEntityHash() {
-        java.lang.Object ref = entityHash_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          entityHash_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * hash of PEM encoded public key of certificate
-       * </pre>
-       *
-       * <code>string entity_hash = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getEntityHashBytes() {
-        java.lang.Object ref = entityHash_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          entityHash_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * hash of PEM encoded public key of certificate
-       * </pre>
-       *
-       * <code>string entity_hash = 4;</code>
-       */
-      public Builder setEntityHash(
-          java.lang.String value) {
+      public Builder setEntityHash(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1769,11 +3370,7 @@ public final class PubKey {
         return this;
       }
       /**
-       * <pre>
-       * hash of PEM encoded public key of certificate
-       * </pre>
-       *
-       * <code>string entity_hash = 4;</code>
+       * <code>bytes entity_hash = 2;</code>
        */
       public Builder clearEntityHash() {
         
@@ -1781,62 +3378,18 @@ public final class PubKey {
         onChanged();
         return this;
       }
-      /**
-       * <pre>
-       * hash of PEM encoded public key of certificate
-       * </pre>
-       *
-       * <code>string entity_hash = 4;</code>
-       */
-      public Builder setEntityHashBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        entityHash_ = value;
-        onChanged();
-        return this;
-      }
 
-      private java.lang.Object entityHashSignature_ = "";
+      private com.google.protobuf.ByteString entityHashSignature_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>string entity_hash_signature = 5;</code>
+       * <code>bytes entity_hash_signature = 3;</code>
        */
-      public java.lang.String getEntityHashSignature() {
-        java.lang.Object ref = entityHashSignature_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          entityHashSignature_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public com.google.protobuf.ByteString getEntityHashSignature() {
+        return entityHashSignature_;
       }
       /**
-       * <code>string entity_hash_signature = 5;</code>
+       * <code>bytes entity_hash_signature = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getEntityHashSignatureBytes() {
-        java.lang.Object ref = entityHashSignature_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          entityHashSignature_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string entity_hash_signature = 5;</code>
-       */
-      public Builder setEntityHashSignature(
-          java.lang.String value) {
+      public Builder setEntityHashSignature(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -1846,7 +3399,7 @@ public final class PubKey {
         return this;
       }
       /**
-       * <code>string entity_hash_signature = 5;</code>
+       * <code>bytes entity_hash_signature = 3;</code>
        */
       public Builder clearEntityHashSignature() {
         
@@ -1854,38 +3407,16 @@ public final class PubKey {
         onChanged();
         return this;
       }
-      /**
-       * <code>string entity_hash_signature = 5;</code>
-       */
-      public Builder setEntityHashSignatureBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        entityHashSignature_ = value;
-        onChanged();
-        return this;
-      }
 
       private int validFrom_ ;
       /**
-       * <pre>
-       * UNIX time when validity begins
-       * </pre>
-       *
-       * <code>uint32 valid_from = 6;</code>
+       * <code>uint32 valid_from = 4;</code>
        */
       public int getValidFrom() {
         return validFrom_;
       }
       /**
-       * <pre>
-       * UNIX time when validity begins
-       * </pre>
-       *
-       * <code>uint32 valid_from = 6;</code>
+       * <code>uint32 valid_from = 4;</code>
        */
       public Builder setValidFrom(int value) {
         
@@ -1894,11 +3425,7 @@ public final class PubKey {
         return this;
       }
       /**
-       * <pre>
-       * UNIX time when validity begins
-       * </pre>
-       *
-       * <code>uint32 valid_from = 6;</code>
+       * <code>uint32 valid_from = 4;</code>
        */
       public Builder clearValidFrom() {
         
@@ -1909,21 +3436,13 @@ public final class PubKey {
 
       private int validTo_ ;
       /**
-       * <pre>
-       * UNIX time when validity ends
-       * </pre>
-       *
-       * <code>uint32 valid_to = 7;</code>
+       * <code>uint32 valid_to = 5;</code>
        */
       public int getValidTo() {
         return validTo_;
       }
       /**
-       * <pre>
-       * UNIX time when validity ends
-       * </pre>
-       *
-       * <code>uint32 valid_to = 7;</code>
+       * <code>uint32 valid_to = 5;</code>
        */
       public Builder setValidTo(int value) {
         
@@ -1932,17 +3451,421 @@ public final class PubKey {
         return this;
       }
       /**
-       * <pre>
-       * UNIX time when validity ends
-       * </pre>
-       *
-       * <code>uint32 valid_to = 7;</code>
+       * <code>uint32 valid_to = 5;</code>
        */
       public Builder clearValidTo() {
         
         validTo_ = 0;
         onChanged();
         return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder> rsaBuilder_;
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public boolean hasRsa() {
+        return configurationCase_ == 6;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration getRsa() {
+        if (rsaBuilder_ == null) {
+          if (configurationCase_ == 6) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+        } else {
+          if (configurationCase_ == 6) {
+            return rsaBuilder_.getMessage();
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public Builder setRsa(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration value) {
+        if (rsaBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configuration_ = value;
+          onChanged();
+        } else {
+          rsaBuilder_.setMessage(value);
+        }
+        configurationCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public Builder setRsa(
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder builderForValue) {
+        if (rsaBuilder_ == null) {
+          configuration_ = builderForValue.build();
+          onChanged();
+        } else {
+          rsaBuilder_.setMessage(builderForValue.build());
+        }
+        configurationCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public Builder mergeRsa(io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration value) {
+        if (rsaBuilder_ == null) {
+          if (configurationCase_ == 6 &&
+              configuration_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance()) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.newBuilder((io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            configuration_ = value;
+          }
+          onChanged();
+        } else {
+          if (configurationCase_ == 6) {
+            rsaBuilder_.mergeFrom(value);
+          }
+          rsaBuilder_.setMessage(value);
+        }
+        configurationCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public Builder clearRsa() {
+        if (rsaBuilder_ == null) {
+          if (configurationCase_ == 6) {
+            configurationCase_ = 0;
+            configuration_ = null;
+            onChanged();
+          }
+        } else {
+          if (configurationCase_ == 6) {
+            configurationCase_ = 0;
+            configuration_ = null;
+          }
+          rsaBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder getRsaBuilder() {
+        return getRsaFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder getRsaOrBuilder() {
+        if ((configurationCase_ == 6) && (rsaBuilder_ != null)) {
+          return rsaBuilder_.getMessageOrBuilder();
+        } else {
+          if (configurationCase_ == 6) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.RSAConfiguration rsa = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder> 
+          getRsaFieldBuilder() {
+        if (rsaBuilder_ == null) {
+          if (!(configurationCase_ == 6)) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.getDefaultInstance();
+          }
+          rsaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfigurationOrBuilder>(
+                  (io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration) configuration_,
+                  getParentForChildren(),
+                  isClean());
+          configuration_ = null;
+        }
+        configurationCase_ = 6;
+        onChanged();;
+        return rsaBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder> ecdsaBuilder_;
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public boolean hasEcdsa() {
+        return configurationCase_ == 7;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration getEcdsa() {
+        if (ecdsaBuilder_ == null) {
+          if (configurationCase_ == 7) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+        } else {
+          if (configurationCase_ == 7) {
+            return ecdsaBuilder_.getMessage();
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public Builder setEcdsa(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration value) {
+        if (ecdsaBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configuration_ = value;
+          onChanged();
+        } else {
+          ecdsaBuilder_.setMessage(value);
+        }
+        configurationCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public Builder setEcdsa(
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder builderForValue) {
+        if (ecdsaBuilder_ == null) {
+          configuration_ = builderForValue.build();
+          onChanged();
+        } else {
+          ecdsaBuilder_.setMessage(builderForValue.build());
+        }
+        configurationCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public Builder mergeEcdsa(io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration value) {
+        if (ecdsaBuilder_ == null) {
+          if (configurationCase_ == 7 &&
+              configuration_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance()) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.newBuilder((io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            configuration_ = value;
+          }
+          onChanged();
+        } else {
+          if (configurationCase_ == 7) {
+            ecdsaBuilder_.mergeFrom(value);
+          }
+          ecdsaBuilder_.setMessage(value);
+        }
+        configurationCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public Builder clearEcdsa() {
+        if (ecdsaBuilder_ == null) {
+          if (configurationCase_ == 7) {
+            configurationCase_ = 0;
+            configuration_ = null;
+            onChanged();
+          }
+        } else {
+          if (configurationCase_ == 7) {
+            configurationCase_ = 0;
+            configuration_ = null;
+          }
+          ecdsaBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder getEcdsaBuilder() {
+        return getEcdsaFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder getEcdsaOrBuilder() {
+        if ((configurationCase_ == 7) && (ecdsaBuilder_ != null)) {
+          return ecdsaBuilder_.getMessageOrBuilder();
+        } else {
+          if (configurationCase_ == 7) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.ECDSAConfiguration ecdsa = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder> 
+          getEcdsaFieldBuilder() {
+        if (ecdsaBuilder_ == null) {
+          if (!(configurationCase_ == 7)) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.getDefaultInstance();
+          }
+          ecdsaBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfigurationOrBuilder>(
+                  (io.remme.java.protobuf.PubKey.NewPubKeyPayload.ECDSAConfiguration) configuration_,
+                  getParentForChildren(),
+                  isClean());
+          configuration_ = null;
+        }
+        configurationCase_ = 7;
+        onChanged();;
+        return ecdsaBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder> ed25519Builder_;
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public boolean hasEd25519() {
+        return configurationCase_ == 8;
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration getEd25519() {
+        if (ed25519Builder_ == null) {
+          if (configurationCase_ == 8) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+        } else {
+          if (configurationCase_ == 8) {
+            return ed25519Builder_.getMessage();
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public Builder setEd25519(io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration value) {
+        if (ed25519Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          configuration_ = value;
+          onChanged();
+        } else {
+          ed25519Builder_.setMessage(value);
+        }
+        configurationCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public Builder setEd25519(
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder builderForValue) {
+        if (ed25519Builder_ == null) {
+          configuration_ = builderForValue.build();
+          onChanged();
+        } else {
+          ed25519Builder_.setMessage(builderForValue.build());
+        }
+        configurationCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public Builder mergeEd25519(io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration value) {
+        if (ed25519Builder_ == null) {
+          if (configurationCase_ == 8 &&
+              configuration_ != io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance()) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.newBuilder((io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            configuration_ = value;
+          }
+          onChanged();
+        } else {
+          if (configurationCase_ == 8) {
+            ed25519Builder_.mergeFrom(value);
+          }
+          ed25519Builder_.setMessage(value);
+        }
+        configurationCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public Builder clearEd25519() {
+        if (ed25519Builder_ == null) {
+          if (configurationCase_ == 8) {
+            configurationCase_ = 0;
+            configuration_ = null;
+            onChanged();
+          }
+        } else {
+          if (configurationCase_ == 8) {
+            configurationCase_ = 0;
+            configuration_ = null;
+          }
+          ed25519Builder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder getEd25519Builder() {
+        return getEd25519FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder getEd25519OrBuilder() {
+        if ((configurationCase_ == 8) && (ed25519Builder_ != null)) {
+          return ed25519Builder_.getMessageOrBuilder();
+        } else {
+          if (configurationCase_ == 8) {
+            return (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_;
+          }
+          return io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.NewPubKeyPayload.Ed25519Configuration ed25519 = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder> 
+          getEd25519FieldBuilder() {
+        if (ed25519Builder_ == null) {
+          if (!(configurationCase_ == 8)) {
+            configuration_ = io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.getDefaultInstance();
+          }
+          ed25519Builder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519ConfigurationOrBuilder>(
+                  (io.remme.java.protobuf.PubKey.NewPubKeyPayload.Ed25519Configuration) configuration_,
+                  getParentForChildren(),
+                  isClean());
+          configuration_ = null;
+        }
+        configurationCase_ = 8;
+        onChanged();;
+        return ed25519Builder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2631,9 +4554,9 @@ public final class PubKey {
     io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder getPayloadOrBuilder();
 
     /**
-     * <code>bool revoked = 3;</code>
+     * <code>bool is_revoked = 3;</code>
      */
-    boolean getRevoked();
+    boolean getIsRevoked();
   }
   /**
    * Protobuf type {@code PubKeyStorage}
@@ -2649,7 +4572,7 @@ public final class PubKey {
     }
     private PubKeyStorage() {
       owner_ = "";
-      revoked_ = false;
+      isRevoked_ = false;
     }
 
     @java.lang.Override
@@ -2697,7 +4620,7 @@ public final class PubKey {
             }
             case 24: {
 
-              revoked_ = input.readBool();
+              isRevoked_ = input.readBool();
               break;
             }
             default: {
@@ -2807,13 +4730,13 @@ public final class PubKey {
       return getPayload();
     }
 
-    public static final int REVOKED_FIELD_NUMBER = 3;
-    private boolean revoked_;
+    public static final int IS_REVOKED_FIELD_NUMBER = 3;
+    private boolean isRevoked_;
     /**
-     * <code>bool revoked = 3;</code>
+     * <code>bool is_revoked = 3;</code>
      */
-    public boolean getRevoked() {
-      return revoked_;
+    public boolean getIsRevoked() {
+      return isRevoked_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2836,8 +4759,8 @@ public final class PubKey {
       if (payload_ != null) {
         output.writeMessage(2, getPayload());
       }
-      if (revoked_ != false) {
-        output.writeBool(3, revoked_);
+      if (isRevoked_ != false) {
+        output.writeBool(3, isRevoked_);
       }
       unknownFields.writeTo(output);
     }
@@ -2855,9 +4778,9 @@ public final class PubKey {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getPayload());
       }
-      if (revoked_ != false) {
+      if (isRevoked_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, revoked_);
+          .computeBoolSize(3, isRevoked_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2882,8 +4805,8 @@ public final class PubKey {
         result = result && getPayload()
             .equals(other.getPayload());
       }
-      result = result && (getRevoked()
-          == other.getRevoked());
+      result = result && (getIsRevoked()
+          == other.getIsRevoked());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -2901,9 +4824,9 @@ public final class PubKey {
         hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
         hash = (53 * hash) + getPayload().hashCode();
       }
-      hash = (37 * hash) + REVOKED_FIELD_NUMBER;
+      hash = (37 * hash) + IS_REVOKED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getRevoked());
+          getIsRevoked());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3045,7 +4968,7 @@ public final class PubKey {
           payload_ = null;
           payloadBuilder_ = null;
         }
-        revoked_ = false;
+        isRevoked_ = false;
 
         return this;
       }
@@ -3079,7 +5002,7 @@ public final class PubKey {
         } else {
           result.payload_ = payloadBuilder_.build();
         }
-        result.revoked_ = revoked_;
+        result.isRevoked_ = isRevoked_;
         onBuilt();
         return result;
       }
@@ -3135,8 +5058,8 @@ public final class PubKey {
         if (other.hasPayload()) {
           mergePayload(other.getPayload());
         }
-        if (other.getRevoked() != false) {
-          setRevoked(other.getRevoked());
+        if (other.getIsRevoked() != false) {
+          setIsRevoked(other.getIsRevoked());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3409,28 +5332,28 @@ public final class PubKey {
         return payloadBuilder_;
       }
 
-      private boolean revoked_ ;
+      private boolean isRevoked_ ;
       /**
-       * <code>bool revoked = 3;</code>
+       * <code>bool is_revoked = 3;</code>
        */
-      public boolean getRevoked() {
-        return revoked_;
+      public boolean getIsRevoked() {
+        return isRevoked_;
       }
       /**
-       * <code>bool revoked = 3;</code>
+       * <code>bool is_revoked = 3;</code>
        */
-      public Builder setRevoked(boolean value) {
+      public Builder setIsRevoked(boolean value) {
         
-        revoked_ = value;
+        isRevoked_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bool revoked = 3;</code>
+       * <code>bool is_revoked = 3;</code>
        */
-      public Builder clearRevoked() {
+      public Builder clearIsRevoked() {
         
-        revoked_ = false;
+        isRevoked_ = false;
         onChanged();
         return this;
       }
@@ -3498,6 +5421,21 @@ public final class PubKey {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_NewPubKeyPayload_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_NewPubKeyPayload_RSAConfiguration_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_NewPubKeyPayload_RSAConfiguration_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_NewPubKeyPayload_ECDSAConfiguration_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_NewPubKeyPayload_Ed25519Configuration_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_RevokePubKeyPayload_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -3517,19 +5455,28 @@ public final class PubKey {
   static {
     java.lang.String[] descriptorData = {
       "\n\rpub_key.proto\"/\n\014PubKeyMethod\"\037\n\006Metho" +
-      "d\022\t\n\005STORE\020\000\022\n\n\006REVOKE\020\001\"\251\002\n\020NewPubKeyPa" +
-      "yload\022\022\n\npublic_key\030\001 \001(\t\0225\n\017public_key_" +
-      "type\030\002 \001(\0162\034.NewPubKeyPayload.PubKeyType" +
-      "\0221\n\013entity_type\030\003 \001(\0162\034.NewPubKeyPayload" +
-      ".EntityType\022\023\n\013entity_hash\030\004 \001(\t\022\035\n\025enti" +
-      "ty_hash_signature\030\005 \001(\t\022\022\n\nvalid_from\030\006 " +
-      "\001(\r\022\020\n\010valid_to\030\007 \001(\r\"&\n\nEntityType\022\014\n\010P" +
-      "ERSONAL\020\000\022\n\n\006SERVER\020\001\"\025\n\nPubKeyType\022\007\n\003R" +
-      "SA\020\000\"&\n\023RevokePubKeyPayload\022\017\n\007address\030\001" +
-      " \001(\t\"S\n\rPubKeyStorage\022\r\n\005owner\030\001 \001(\t\022\"\n\007" +
-      "payload\030\002 \001(\0132\021.NewPubKeyPayload\022\017\n\007revo" +
-      "ked\030\003 \001(\010B\030\n\026io.remme.java.protobufb\006pro" +
-      "to3"
+      "d\022\t\n\005STORE\020\000\022\n\n\006REVOKE\020\001\"\237\005\n\020NewPubKeyPa" +
+      "yload\022=\n\021hashing_algorithm\030\001 \001(\0162\".NewPu" +
+      "bKeyPayload.HashingAlgorithm\022\023\n\013entity_h" +
+      "ash\030\002 \001(\014\022\035\n\025entity_hash_signature\030\003 \001(\014" +
+      "\022\022\n\nvalid_from\030\004 \001(\r\022\020\n\010valid_to\030\005 \001(\r\0221" +
+      "\n\003rsa\030\006 \001(\0132\".NewPubKeyPayload.RSAConfig" +
+      "urationH\000\0225\n\005ecdsa\030\007 \001(\0132$.NewPubKeyPayl" +
+      "oad.ECDSAConfigurationH\000\0229\n\007ed25519\030\010 \001(" +
+      "\0132&.NewPubKeyPayload.Ed25519Configuratio" +
+      "nH\000\032~\n\020RSAConfiguration\022\013\n\003key\030\001 \001(\014\022;\n\007" +
+      "padding\030\002 \001(\0162*.NewPubKeyPayload.RSAConf" +
+      "iguration.Padding\" \n\007Padding\022\007\n\003PSS\020\000\022\014\n" +
+      "\010PKCS1v15\020\001\032k\n\022ECDSAConfiguration\022\013\n\003key" +
+      "\030\001 \001(\014\0223\n\002ec\030\002 \001(\0162\'.NewPubKeyPayload.EC" +
+      "DSAConfiguration.EC\"\023\n\002EC\022\r\n\tSECP256k1\020\000" +
+      "\032#\n\024Ed25519Configuration\022\013\n\003key\030\001 \001(\014\"*\n" +
+      "\020HashingAlgorithm\022\n\n\006SHA256\020\000\022\n\n\006SHA512\020" +
+      "\001B\017\n\rconfiguration\"&\n\023RevokePubKeyPayloa" +
+      "d\022\017\n\007address\030\001 \001(\t\"V\n\rPubKeyStorage\022\r\n\005o" +
+      "wner\030\001 \001(\t\022\"\n\007payload\030\002 \001(\0132\021.NewPubKeyP" +
+      "ayload\022\022\n\nis_revoked\030\003 \001(\010B\030\n\026io.remme.j" +
+      "ava.protobufb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3554,7 +5501,25 @@ public final class PubKey {
     internal_static_NewPubKeyPayload_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_NewPubKeyPayload_descriptor,
-        new java.lang.String[] { "PublicKey", "PublicKeyType", "EntityType", "EntityHash", "EntityHashSignature", "ValidFrom", "ValidTo", });
+        new java.lang.String[] { "HashingAlgorithm", "EntityHash", "EntityHashSignature", "ValidFrom", "ValidTo", "Rsa", "Ecdsa", "Ed25519", "Configuration", });
+    internal_static_NewPubKeyPayload_RSAConfiguration_descriptor =
+      internal_static_NewPubKeyPayload_descriptor.getNestedTypes().get(0);
+    internal_static_NewPubKeyPayload_RSAConfiguration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_NewPubKeyPayload_RSAConfiguration_descriptor,
+        new java.lang.String[] { "Key", "Padding", });
+    internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor =
+      internal_static_NewPubKeyPayload_descriptor.getNestedTypes().get(1);
+    internal_static_NewPubKeyPayload_ECDSAConfiguration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_NewPubKeyPayload_ECDSAConfiguration_descriptor,
+        new java.lang.String[] { "Key", "Ec", });
+    internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor =
+      internal_static_NewPubKeyPayload_descriptor.getNestedTypes().get(2);
+    internal_static_NewPubKeyPayload_Ed25519Configuration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor,
+        new java.lang.String[] { "Key", });
     internal_static_RevokePubKeyPayload_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_RevokePubKeyPayload_fieldAccessorTable = new
@@ -3566,7 +5531,7 @@ public final class PubKey {
     internal_static_PubKeyStorage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PubKeyStorage_descriptor,
-        new java.lang.String[] { "Owner", "Payload", "Revoked", });
+        new java.lang.String[] { "Owner", "Payload", "IsRevoked", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
