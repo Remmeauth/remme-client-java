@@ -5,6 +5,7 @@ import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.KeyDTO;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.utils.Functions;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
@@ -160,7 +161,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data, RSASignaturePadding padding) {
+    public String sign(String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
         return sign(data);
     }
 
@@ -182,7 +183,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+    public boolean verify(String signature, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
         return verify(signature, data);
     }
 

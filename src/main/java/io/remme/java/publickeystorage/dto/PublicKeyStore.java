@@ -1,8 +1,7 @@
 package io.remme.java.publickeystorage.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.keys.IRemmeKeys;
+import io.remme.java.protobuf.PubKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +19,5 @@ public class PublicKeyStore {
     private IRemmeKeys keys;
     private Date validFrom;
     private Date validTo;
-    private RSASignaturePadding rsaSignaturePadding;
+    private PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding;
 }

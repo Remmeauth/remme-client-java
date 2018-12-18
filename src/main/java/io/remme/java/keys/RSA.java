@@ -6,6 +6,7 @@ import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.GenerateOptions;
 import io.remme.java.keys.dto.KeyDTO;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.utils.Functions;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
@@ -83,13 +84,13 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String dataString, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String dataString, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
         try {
             byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
-            rsaSignaturePadding = rsaSignaturePadding != null ? rsaSignaturePadding : RSASignaturePadding.PSS;
+            rsaSignaturePadding = rsaSignaturePadding != null ? rsaSignaturePadding : PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS;
             switch (rsaSignaturePadding) {
                 case PSS:
                     MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
@@ -122,14 +123,14 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      */
     @Override
     public String sign(String data) {
-        return sign(data, RSASignaturePadding.PSS);
+        return sign(data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String dataString, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(String signature, String dataString, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
         try {
             byte[] signatureBytes = Hex.decodeHex(signature);
             byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
@@ -165,7 +166,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      */
     @Override
     public boolean verify(String signature, String data) {
-        return verify(signature, data, RSASignaturePadding.PSS);
+        return verify(signature, data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS);
     }
 
     /**

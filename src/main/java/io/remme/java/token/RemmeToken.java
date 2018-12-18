@@ -9,6 +9,8 @@ import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.transactionservice.IRemmeTransactionService;
 import io.remme.java.transactionservice.dto.CreateTransactionDto;
 import io.remme.java.utils.models.PublicKeyRequest;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,6 +27,8 @@ public class RemmeToken implements IRemmeToken {
     private IRemmeApi remmeApi;
     private IRemmeTransactionService remmeTransaction;
     private RemmeFamilyName familyName = RemmeFamilyName.ACCOUNT;
+    @Getter
+    @Setter
     private String familyVersion = "0.1";
 
     /**

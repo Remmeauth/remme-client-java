@@ -8,6 +8,7 @@ import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.keys.IRemmeKeys;
 import io.remme.java.keys.RemmeKeys;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.publickeystorage.dto.PublicKeyStore;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.transactionservice.RemmeTransactionService;
@@ -33,7 +34,7 @@ public class RemmePublicStorageTest {
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, remmeAccount, transactionService);
         BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
                 .data("store data")
-                .rsaSignaturePadding(RSASignaturePadding.PSS)
+                .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
                 .validFrom(new Date())
                 .validTo(new Date(System.currentTimeMillis() + 5*24*60*60000L))
                 .keys(keys)
