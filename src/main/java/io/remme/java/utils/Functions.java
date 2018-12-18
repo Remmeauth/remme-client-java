@@ -6,6 +6,7 @@ import io.remme.java.error.RemmeKeyException;
 import io.remme.java.error.RemmeValidationException;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
