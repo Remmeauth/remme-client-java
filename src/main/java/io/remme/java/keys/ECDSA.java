@@ -9,7 +9,19 @@ import io.remme.java.utils.Functions;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.util.Asserts;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.ECDSASigner;
+import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jce.spec.ECParameterSpec;
@@ -20,6 +32,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.*;
+import java.util.Arrays;
 
 /**
  * ECDSA(secp256k1) key type definition
@@ -78,14 +91,29 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair() {
-        byte[] bytes = new byte[32];
-        SecureRandom random = new SecureRandom();
-        do {
-            random.nextBytes(bytes);
-        } while (!(new BigInteger(bytes).compareTo(BigInteger.ZERO) > 0));
-        PrivateKey privateKey = Functions.generateECDSAPrivateKey(bytes);
-        PublicKey publicKey = derivePubKeyFromPrivKey((BCECPrivateKey) privateKey);
+        byte[] privKey = createNewPrivateKey();
+        while (privKey.length != 32) {
+            privKey = createNewPrivateKey();
+        }
+        byte[] pubKey = getPublicFor(privKey);
+        PrivateKey privateKey = Functions.generateECDSAPrivateKey(privKey);
+        PublicKey publicKey = Functions.getECDSAPublicKeyFromBytes(pubKey);
+        System.out.println("HEX pub:" + Hex.encodeHexString(pubKey));
+        System.out.println("HEX priv:" + Hex.encodeHexString(privKey));
         return new KeyPair(publicKey, privateKey);
+    }
+
+    private static byte[] getPublicFor(byte[] privateKey) {
+        return curve.getG().multiply(new BigInteger(privateKey)).getEncoded(true);
+    }
+
+    private static byte[] createNewPrivateKey() {
+        ECKeyPairGenerator generator = new ECKeyPairGenerator();
+        ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(domain, new SecureRandom());
+        generator.init(keygenParams);
+        AsymmetricCipherKeyPair keypair = generator.generateKeyPair();
+        ECPrivateKeyParameters privParams = (ECPrivateKeyParameters) keypair.getPrivate();
+        return privParams.getD().toByteArray();
     }
 
     private static PublicKey derivePubKeyFromPrivKey(BCECPrivateKey definingKey) {
@@ -106,18 +134,26 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data) {
-        try {
-            if (privateKey == null) {
-                throw new RemmeKeyException("PrivateKey is not provided!");
-            }
-            Signature signature = Signature.getInstance("SHA256withECDSA", "BC");
-            signature.initSign(privateKey);
-            signature.update(data.getBytes(StandardCharsets.UTF_8));
-            return Hex.encodeHexString(signature.sign());
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | NoSuchProviderException e) {
-            throw new IllegalArgumentException(e);
+    public String sign(String dataString) {
+        if (privateKey == null) {
+            throw new RemmeKeyException("PrivateKey is not provided!");
         }
+        byte[] dataHash = DigestUtils.sha256(dataString.getBytes(StandardCharsets.UTF_8));
+        return Hex.encodeHexString(sign(dataHash, Functions.hexToBytes(privateKeyHex)));
+    }
+
+    /**
+     * Makes same as {@link #sign(String)} but data in byte array format
+     *
+     * @param data byte array of data
+     * @return signature HEX string
+     */
+    public String sign(byte[] data) {
+        if (privateKey == null) {
+            throw new RemmeKeyException("PrivateKey is not provided!");
+        }
+        byte[] dataHash = DigestUtils.sha256(data);
+        return Hex.encodeHexString(sign(dataHash, Functions.hexToBytes(privateKeyHex)));
     }
 
     /**
@@ -134,13 +170,11 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
     @Override
     public boolean verify(String signatureHex, String data) {
         try {
-            byte[] signatureBytes = Hex.decodeHex(signatureHex);
-            Signature signature = Signature.getInstance("SHA256withECDSA", "BC");
-            signature.initVerify(publicKey);
-            signature.update(data.getBytes(StandardCharsets.UTF_8));
-            return signature.verify(signatureBytes);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchProviderException | SignatureException | DecoderException e) {
-            throw new IllegalArgumentException(e);
+            byte[] tokenSignature = Hex.decodeHex(signatureHex);
+            byte[] dataHash = DigestUtils.sha256(data.getBytes(StandardCharsets.UTF_8));
+            return verify(dataHash, tokenSignature, Hex.decodeHex(publicKeyHex));
+        } catch (DecoderException e) {
+            return false;
         }
     }
 
@@ -151,4 +185,62 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
     public boolean verify(String signature, String data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
+
+    private byte[] sign(byte[] hash, byte[] privateKey) {
+        ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
+        signer.init(true, new ECPrivateKeyParameters(new BigInteger(privateKey), domain));
+        BigInteger[] signature = signer.generateSignature(hash);
+        byte[] r1 = signature[0].toByteArray();
+        byte[] s1 = toCanonicalS(signature[1]).toByteArray();
+        byte[] r = new byte[32];
+        byte[] s = new byte[32];
+
+        if (r1.length > 32) {
+            System.arraycopy(r1, 1, r, 0, r.length);
+        } else if (r1.length < 32) {
+            System.arraycopy(r1, 0, r, 1, r1.length);
+        } else {
+            r = r1;
+        }
+        if (s1.length > 32) {
+            System.arraycopy(s1, 1, s, 0, s.length);
+        } else if (s1.length < 32) {
+            System.arraycopy(s1, 0, s, 1, s1.length);
+        } else {
+            s = s1;
+        }
+        byte[] rs = new byte[r.length + s.length];
+        System.out.println(r.length);
+        System.out.println(s.length);
+
+        System.arraycopy(r, 0, rs, 0, r.length);
+        System.arraycopy(s, 0, rs, r.length, s.length);
+        return rs;
+    }
+
+    private BigInteger toCanonicalS(BigInteger s) {
+        if (s.compareTo(HALF_CURVE_ORDER) <= 0) {
+            return s;
+        } else {
+            return curve.getN().subtract(s);
+        }
+    }
+
+    private boolean verify(byte[] hash, byte[] signature, byte[] publicKey) {
+        ECDSASigner signer = new ECDSASigner();
+
+        signer.init(false, new ECPublicKeyParameters(curve.getCurve().decodePoint(publicKey), domain));
+
+        BigInteger r = new BigInteger(1, Arrays.copyOfRange(signature, 0, 32));
+        BigInteger s = new BigInteger(1, Arrays.copyOfRange(signature, 32, 64));
+        if (!signer.verifySignature(hash, r, s)) {
+            System.out.println("something");
+        }
+        return signer.verifySignature(hash, r, s);
+    }
+
+    private static final X9ECParameters curve = SECNamedCurves.getByName("secp256k1");
+    private static final ECDomainParameters domain = new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH());
+    private static final BigInteger HALF_CURVE_ORDER = curve.getN().shiftRight(1);
+
 }

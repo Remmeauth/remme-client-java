@@ -103,14 +103,15 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data) {
+    public String sign(String dataString) {
         try {
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             signature.initSign(privateKey);
-            signature.update(data.getBytes(StandardCharsets.UTF_8));
+            signature.update(data);
             return Hex.encodeHexString(signature.sign());
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
@@ -129,12 +130,13 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data) {
+    public boolean verify(String signature, String dataString) {
         try {
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);
-            eddsa.update(data.getBytes(StandardCharsets.UTF_8));
+            eddsa.update(data);
             return eddsa.verify(signatureBytes);
         } catch (NoSuchAlgorithmException | DecoderException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);

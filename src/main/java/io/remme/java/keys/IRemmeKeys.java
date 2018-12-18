@@ -10,6 +10,8 @@ public interface IRemmeKeys {
     PublicKey getPublicKey();
     PrivateKey getPrivateKey();
     KeyType getKeyType();
+    String getPublicKeyPem();
+    String getAddress();
 
     /**
      * Sign provided data with selected key implementation

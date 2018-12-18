@@ -7,6 +7,7 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;

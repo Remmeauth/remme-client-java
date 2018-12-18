@@ -6,6 +6,8 @@ import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
+
 public class RemmeAccountTest {
     @Test
     public void testRemmeAccount() {

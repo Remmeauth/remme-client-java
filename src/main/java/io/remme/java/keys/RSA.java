@@ -83,8 +83,9 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String dataString, RSASignaturePadding rsaSignaturePadding) {
         try {
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
@@ -92,7 +93,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             switch (rsaSignaturePadding) {
                 case PSS:
                     MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
-                    hashEngine.update(data.getBytes(StandardCharsets.UTF_8));
+                    hashEngine.update(data);
                     // salt length
                     int saltLength = calculateSaltLength(hashEngine);
                     // create a PSSParameterSpec
@@ -100,12 +101,12 @@ public class RSA extends KeyDTO implements IRemmeKeys {
                     Signature pss = Signature.getInstance("SHA512withRSAandMGF1");
                     pss.setParameter(pssParamSpec);
                     pss.initSign(privateKey);
-                    pss.update(data.getBytes(StandardCharsets.UTF_8));
+                    pss.update(data);
                     return Hex.encodeHexString(pss.sign());
                 case PKCS1v15:
                     Signature pkcs1v15 = Signature.getInstance("SHA512withRSA");
                     pkcs1v15.initSign(privateKey);
-                    pkcs1v15.update(data.getBytes(StandardCharsets.UTF_8));
+                    pkcs1v15.update(data);
                     return Hex.encodeHexString(pkcs1v15.sign());
                 default: {
                     throw new IllegalArgumentException("Unknown padding: " + rsaSignaturePadding.name());
@@ -128,13 +129,14 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(String signature, String dataString, RSASignaturePadding rsaSignaturePadding) {
         try {
             byte[] signatureBytes = Hex.decodeHex(signature);
+            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             switch (rsaSignaturePadding) {
                 case PSS:
                     MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
-                    hashEngine.update(data.getBytes(StandardCharsets.UTF_8));
+                    hashEngine.update(data);
                     // salt length
                     int saltLength = calculateSaltLength(hashEngine);
                     // create a PSSParameterSpec
@@ -142,12 +144,12 @@ public class RSA extends KeyDTO implements IRemmeKeys {
                     Signature pss = Signature.getInstance("SHA512withRSAandMGF1");
                     pss.setParameter(pssParamSpec);
                     pss.initVerify(publicKey);
-                    pss.update(data.getBytes(StandardCharsets.UTF_8));
+                    pss.update(data);
                     return pss.verify(signatureBytes);
                 case PKCS1v15:
                     Signature pkcs1v15 = Signature.getInstance("SHA512withRSA");
                     pkcs1v15.initVerify(publicKey);
-                    pkcs1v15.update(data.getBytes(StandardCharsets.UTF_8));
+                    pkcs1v15.update(data);
                     return pkcs1v15.verify(signatureBytes);
                 default: {
                     throw new IllegalArgumentException("Unknown padding: " + rsaSignaturePadding.name());

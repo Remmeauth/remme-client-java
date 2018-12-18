@@ -18,6 +18,8 @@ public class ECDSATest {
         PrivateKey privateKey = Functions.getPrivateKeyFromBytesArray(KeyType.ECDSA, Functions.hexToBytes(Functions.ecdsaPrivateKeyToHex(keyPair.getPrivate())));
         Assert.assertTrue(privateKey instanceof BCECPrivateKey);
         ECDSA ecdsa = new ECDSA(keyPair.getPrivate(), keyPair.getPublic());
+        System.out.println(ecdsa.getPublicKeyHex());
+        System.out.println(ecdsa.getPrivateKeyHex());
         String signature = ecdsa.sign("testData", null);
         boolean result = ecdsa.verify(signature, "testData", null);
         Assert.assertTrue(result);

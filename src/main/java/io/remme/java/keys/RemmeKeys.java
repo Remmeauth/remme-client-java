@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
  * For now it is RSA, EdDSA (ED25519), ECDSA (secp256k1).
  *
  */
-class RemmeKeys {
+public class RemmeKeys {
     /**
      * Generate key pair of type keyType with specified options.
      *
