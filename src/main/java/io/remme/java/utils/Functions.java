@@ -21,10 +21,14 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import sun.security.provider.X509Factory;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.spec.*;
 import java.util.Arrays;
 import java.util.List;
@@ -344,6 +348,27 @@ public class Functions {
         }
         if (!publicKey.matches(Patterns.PUBLIC_KEY.getPattern())) {
             throw new RemmeValidationException("Given public key is not a valid");
+        }
+    }
+
+    public static String certificateToPEM(Certificate certificate) {
+        try {
+            StringWriter writer = new StringWriter();
+            new JcaPEMWriter(writer).writeObject(certificate.getCert());
+            return writer.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Certificate certificateFromPEM(String certificatePEM) {
+        try {
+            //before decoding we need to get rod off the prefix and suffix
+            byte[] decoded = Base64.decodeBase64(certificatePEM.replaceAll(X509Factory.BEGIN_CERT, "").replaceAll(X509Factory.END_CERT, ""));
+            X509Certificate certificate = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(decoded));
+            return Certificate.builder().cert(certificate).build();
+        } catch (Exception e) {
+            throw new RemmeKeyException(e);
         }
     }
 }

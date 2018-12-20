@@ -159,8 +159,8 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
                     .setPublicKeyType(keyType)
                     .setEntityHash(entityHash)
                     .setEntityHashSignature(entityHashSignature)
-                    .setValidFrom(Long.valueOf(keyStore.getValidFrom().getTime() / 1000).intValue())
-                    .setValidTo(Long.valueOf(keyStore.getValidTo().getTime() / 1000).intValue()).build();
+                    .setValidFrom(keyStore.getValidFrom())
+                    .setValidTo(keyStore.getValidTo()).build();
             NodeConfigRequest nodeConfig = this.remmeApi.sendRequest(RemmeMethod.NODE_CONFIG, NodeConfigRequest.class).get();
 
             String pubKeyAddress = keyStore.getKeys().getAddress();

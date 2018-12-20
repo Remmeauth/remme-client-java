@@ -34,8 +34,8 @@ public class RemmePublicStorageTest {
         BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
                 .data("store data")
                 .rsaSignaturePadding(RSASignaturePadding.PSS)
-                .validFrom(new Date())
-                .validTo(new Date(System.currentTimeMillis() + 5*24*60*60000L))
+                .validFrom((int)Math.floor(new Date().getTime() / 1000d))
+                .validTo((int)Math.floor(new Date(System.currentTimeMillis() + 5*24*60*60000L).getTime() / 1000d))
                 .keys(keys)
                 .build()).get();
         storeResponse.connectToWebSocket((err, res) -> {
