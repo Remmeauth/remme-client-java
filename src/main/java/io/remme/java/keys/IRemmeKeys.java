@@ -2,6 +2,7 @@ package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
 import io.remme.java.enums.RSASignaturePadding;
+import io.remme.java.protobuf.PubKey;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -11,6 +12,7 @@ public interface IRemmeKeys {
     PrivateKey getPrivateKey();
     KeyType getKeyType();
     String getPublicKeyPem();
+    String getPublicKeyHex();
     String getAddress();
 
     /**
@@ -19,7 +21,7 @@ public interface IRemmeKeys {
      * @param rsaSignaturePadding RSA padding for signature (optional)
      * @return HEX String for signature
      */
-    String sign(String data, RSASignaturePadding rsaSignaturePadding);
+    String sign(String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
 
     /**
      * Sign provided data with selected key implementation
@@ -35,7 +37,7 @@ public interface IRemmeKeys {
      * @param rsaSignaturePadding RSA padding for signature (optional)
      * @return <code>true</code> in case signature is correct
      */
-    boolean verify(String signature, String data, RSASignaturePadding rsaSignaturePadding);
+    boolean verify(String signature, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
 
     /**
      * Verify signature for selected key implementation
