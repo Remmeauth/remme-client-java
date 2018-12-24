@@ -1,8 +1,8 @@
 package io.remme.java.certificate.dto;
 
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.keys.IRemmeKeys;
 import io.remme.java.keys.RSA;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.utils.Certificate;
 
@@ -26,10 +26,10 @@ public class CertificateTransactionResponse extends BaseTransactionResponse impl
      * Sign data with a certificate's private key and output DigestInfo DER-encoded bytes
      * (defaults to PSS)
      * @param data data string
-     * @param rsaSignaturePadding {@link RSASignaturePadding}
+     * @param rsaSignaturePadding {@link io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding}
      * @return HEX string of signature
      */
-    public String sign(String data, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
         return this.keys.sign(data, rsaSignaturePadding);
     }
 
@@ -40,7 +40,7 @@ public class CertificateTransactionResponse extends BaseTransactionResponse impl
      * @return HEX string of signature
      */
     public String sign(String data) {
-        return this.keys.sign(data, RSASignaturePadding.PSS);
+        return this.keys.sign(data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS);
     }
 
     /**
@@ -48,10 +48,10 @@ public class CertificateTransactionResponse extends BaseTransactionResponse impl
      * (defaults to PSS)
      * @param signature HEX string of signature
      * @param data string data that was signed
-     * @param rsaSignaturePadding {@link RSASignaturePadding}
+     * @param rsaSignaturePadding {@link io.remme.java.protobuf.PubKey.NewPubKeyPayload.RSAConfiguration.Padding}
      * @return boolean result
      */
-    public boolean verify(String data, String signature, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(String data, String signature, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
         return this.keys.verify(data, signature, rsaSignaturePadding);
     }
 
@@ -63,6 +63,6 @@ public class CertificateTransactionResponse extends BaseTransactionResponse impl
      * @return boolean result
      */
     public boolean verify(String data, String signature) {
-        return this.keys.verify(data, signature, RSASignaturePadding.PSS);
+        return this.keys.verify(data, signature, PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS);
     }
 }

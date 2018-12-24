@@ -1,7 +1,6 @@
 package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.protobuf.PubKey;
 
 import java.security.PrivateKey;
@@ -10,7 +9,7 @@ import java.security.PublicKey;
 public interface IRemmeKeys {
     PublicKey getPublicKey();
     PrivateKey getPrivateKey();
-    KeyType getKeyType();
+    String getKeyType();
     String getPublicKeyPem();
     String getPublicKeyHex();
     String getAddress();

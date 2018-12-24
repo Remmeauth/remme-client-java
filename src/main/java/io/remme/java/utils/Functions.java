@@ -22,8 +22,8 @@ import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import sun.security.provider.X509Factory;
-
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
@@ -351,22 +351,38 @@ public class Functions {
         }
     }
 
-    public static String certificateToPEM(Certificate certificate) {
-        try {
-            StringWriter writer = new StringWriter();
-            new JcaPEMWriter(writer).writeObject(certificate.getCert());
-            return writer.toString();
-        } catch (IOException e) {
+    public static String certificateToPEM(Certificate certificate, boolean withPrivateKey) {
+        StringWriter sw = new StringWriter();
+        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+            pw.writeObject(certificate.getCert());
+            if (withPrivateKey) {
+                pw.writeObject(certificate.getPrivateKey());
+            }
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
+        return sw.toString();
     }
 
     public static Certificate certificateFromPEM(String certificatePEM) {
+        StringReader sr = new StringReader(certificatePEM);
+        Certificate certificate = new Certificate();
         try {
-            //before decoding we need to get rod off the prefix and suffix
-            byte[] decoded = Base64.decodeBase64(certificatePEM.replaceAll(X509Factory.BEGIN_CERT, "").replaceAll(X509Factory.END_CERT, ""));
-            X509Certificate certificate = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(decoded));
-            return Certificate.builder().cert(certificate).build();
+            PemReader reader = new PemReader(sr);
+            PemObject object = reader.readPemObject();
+            if (object != null) {
+                do {
+                    if (object.getType().toUpperCase().contains("CERTIFICATE")) {
+                        certificate.setCert((X509Certificate) CertificateFactory.getInstance("X.509")
+                                .generateCertificate(new ByteArrayInputStream(object.getContent())));
+                    }
+                    if (object.getType().toUpperCase().contains("PRIVATE")) {
+                        certificate.setPrivateKey(getPrivateKeyFromBytesArray(KeyType.RSA, object.getContent()));
+                    }
+                    object = reader.readPemObject();
+                } while (object != null);
+            }
+            return certificate;
         } catch (Exception e) {
             throw new RemmeKeyException(e);
         }

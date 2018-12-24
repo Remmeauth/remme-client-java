@@ -3,6 +3,7 @@ package io.remme.java.publickeystorage;
 import com.google.protobuf.ByteString;
 import io.remme.java.account.RemmeAccount;
 import io.remme.java.api.IRemmeApi;
+import io.remme.java.enums.KeyType;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeKeyException;
@@ -19,6 +20,7 @@ import io.remme.java.utils.models.NodeConfigRequest;
 import io.remme.java.utils.models.PublicKeyRequest;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -84,26 +86,18 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
         });
     }
 
-    private String generateMessage(String data) {
-        return DigestUtils.sha512Hex(data);
-    }
-
-    private String generateEntityHash(String message) {
-        return Hex.encodeHexString(message.getBytes(StandardCharsets.UTF_8));
-    }
-
     /**
      * @param remmeApi         {@link IRemmeApi}
      * @param remmeAccount     {@link RemmeAccount}
      * @param remmeTransaction {@link io.remme.java.transactionservice.RemmeTransactionService}
      *                         <pre>
-     *                                                                          RemmeApi api = new RemmeApi();
-     *                                                                          RemmeAccount account = new RemmeAccount();
-     *                                                                          IRemmeTransactionService transaction = new RemmeTransactionService(api, account);
-     *                                                                          RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(api, account, transaction);
-     *                                                                         </pre>
+     *                                                                                                  RemmeApi api = new RemmeApi();
+     *                                                                                                  RemmeAccount account = new RemmeAccount();
+     *                                                                                                  IRemmeTransactionService transaction = new RemmeTransactionService(api, account);
+     *                                                                                                  RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(api, account, transaction);
+     *                                                                                                 </pre>
      */
-    RemmePublicKeyStorage(IRemmeApi remmeApi, RemmeAccount remmeAccount, IRemmeTransactionService remmeTransaction) {
+    public RemmePublicKeyStorage(IRemmeApi remmeApi, RemmeAccount remmeAccount, IRemmeTransactionService remmeTransaction) {
         this.remmeApi = remmeApi;
         this.remmeAccount = remmeAccount;
         this.remmeTransaction = remmeTransaction;
@@ -115,42 +109,43 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param keyStore {@link PublicKeyStore}
      *                 <pre>
-     *                                                 IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
-     *                                                 BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
-     *                                                                 .data("store data")
-     *                                                                 .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
-     *                                                                 .keys(keys)
-     *                                                                 .validFrom(validFrom)
-     *                                                                 .validTo(validTo).build());
+     *                                                                 IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
+     *                                                                 BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
+     *                                                                                 .data("store data")
+     *                                                                                 .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
+     *                                                                                 .keys(keys)
+     *                                                                                 .validFrom(validFrom)
+     *                                                                                 .validTo(validTo).build());
      *                 <p>
-     *                                                 storeResponse.connectToWebSocket((err, res) -> {
-     *                                                             try {
-     *                                                                 if (err != null) {
-     *                                                                     System.out.println(MAPPER.writeValueAsString(err));
-     *                                                                     return;
-     *                                                                 }
-     *                                                                 System.out.println(MAPPER.writeValueAsString(res));
-     *                                                                 storeResponse.closeWebSocket();
-     *                                                             } catch (JsonProcessingException e) {
-     *                                                                 throw new RuntimeException(e);
-     *                                                             }
-     *                                                 })
-     *                                                 </pre>
+     *                                                                 storeResponse.connectToWebSocket((err, res) -> {
+     *                                                                             try {
+     *                                                                                 if (err != null) {
+     *                                                                                     System.out.println(MAPPER.writeValueAsString(err));
+     *                                                                                     return;
+     *                                                                                 }
+     *                                                                                 System.out.println(MAPPER.writeValueAsString(res));
+     *                                                                                 storeResponse.closeWebSocket();
+     *                                                                             } catch (JsonProcessingException e) {
+     *                                                                                 throw new RuntimeException(e);
+     *                                                                             }
+     *                                                                 })
+     *                                                                 </pre>
      * @return {@link BaseTransactionResponse}
      */
     public Future<BaseTransactionResponse> store(PublicKeyStore keyStore) {
         try {
             PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding = keyStore.getRsaSignaturePadding() != null ?
                     keyStore.getRsaSignaturePadding() : PubKey.NewPubKeyPayload.RSAConfiguration.Padding.UNRECOGNIZED;
-            String message = this.generateMessage(keyStore.getData());
-            String entityHash = this.generateEntityHash(message);
-            String entityHashSignature = keyStore.getKeys().sign(message, padding);
+            String message = DigestUtils.sha512Hex(keyStore.getData());
+            byte[] entityHash = message.getBytes(StandardCharsets.UTF_8);
+            byte[] entityHashSignature = Hex.decodeHex(keyStore.getKeys().sign(message, padding));
             PubKey.NewPubKeyPayload.Builder payload = PubKey.NewPubKeyPayload.newBuilder()
-                    .setEntityHash(ByteString.copyFrom(entityHash.getBytes(StandardCharsets.UTF_8)))
-                    .setEntityHashSignature(ByteString.copyFrom(entityHashSignature.getBytes(StandardCharsets.UTF_8)))
+                    .setEntityHash(ByteString.copyFrom(entityHash))
+                    .setEntityHashSignature(ByteString.copyFrom(entityHashSignature))
                     .setValidFrom(keyStore.getValidFrom())
+                    .setHashingAlgorithm(PubKey.NewPubKeyPayload.HashingAlgorithm.SHA256)
                     .setValidTo(keyStore.getValidTo());
-            switch (keyStore.getKeys().getKeyType()) {
+            switch (KeyType.getByType(keyStore.getKeys().getKeyType())) {
                 case RSA:
                     payload.setRsa(PubKey.NewPubKeyPayload.RSAConfiguration.newBuilder()
                             .setKey(ByteString.copyFrom(keyStore.getKeys().getPublicKey().getEncoded()))
@@ -169,14 +164,14 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
             NodeConfigRequest nodeConfig = this.remmeApi.sendRequest(RemmeMethod.NODE_CONFIG, NodeConfigRequest.class).get();
 
             String pubKeyAddress = keyStore.getKeys().getAddress();
-            String storagePublicKeyAddress = generateSettingsAddress("remme.settings.storage_pub_key");
+            String storageSettingAddress = generateSettingsAddress("remme.settings.storage_pub_key");
             String settingAddress = generateSettingsAddress("remme.economy_enabled");
-            String storageAddress = generateAddress(this.remmeAccount.getFamilyName().getName(), nodeConfig.getStorage_public_key());
+            String storageAddress = generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), nodeConfig.getStorage_public_key());
             byte[] payloadBytes = this.generateTransactionPayload(PubKey.PubKeyMethod.Method.STORE.getNumber(), payload.build().toByteString());
-            String[] inputs = new String[]{pubKeyAddress, storagePublicKeyAddress, settingAddress, storageAddress};
+            String[] inputs = new String[]{pubKeyAddress, storageSettingAddress, settingAddress, storageAddress};
             String[] outputs = new String[]{pubKeyAddress, storageAddress};
             return this.createAndSendTransaction(inputs, outputs, payloadBytes);
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (DecoderException | InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -187,9 +182,9 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param address address in REMChain
      *                <pre>
-     *                                              Boolean isValid = publicKeyStorage.check(publicKeyAddress).get();
-     *                                              System.out.println(isValid) // true or false
-     *                                              </pre>
+     *                                                             Boolean isValid = publicKeyStorage.check(publicKeyAddress).get();
+     *                                                             System.out.println(isValid) // true or false
+     *                                                             </pre>
      * @return boolean value
      */
     public Future<Boolean> check(String address) {
@@ -203,9 +198,9 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param address address in REMChain
      *                <pre>
-     *                                              const info = await remme.publicKeyStorage.getInfo(publicKeyAddress);
-     *                                              console.log(info); // PublicKeyInfo
-     *                                              </pre>
+     *                                                             const info = await remme.publicKeyStorage.getInfo(publicKeyAddress);
+     *                                                             console.log(info); // PublicKeyInfo
+     *                                                             </pre>
      * @return information about public key
      */
     public Future<PublicKeyInfo> getInfo(String address) {
@@ -219,20 +214,20 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param address address in REMChain
      *                <pre>
-     *                                              BaseTransactionResponse revokeResponse = publicKeyStorage.revoke(publicKeyAddress);
-     *                                              revokeResponse.connectToWebSocket((err, res) => {
-     *                                                          try {
-     *                                                              if (err != null) {
-     *                                                                  System.out.println(MAPPER.writeValueAsString(err));
-     *                                                                  return;
-     *                                                              }
-     *                                                              System.out.println(MAPPER.writeValueAsString(res));
-     *                                                              storeResponse.closeWebSocket();
-     *                                                          } catch (JsonProcessingException e) {
-     *                                                              throw new RuntimeException(e);
-     *                                                          }
-     *                                              })
-     *                                              </pre>
+     *         BaseTransactionResponse revokeResponse = publicKeyStorage.revoke(publicKeyAddress);
+     *         revokeResponse.connectToWebSocket((err, res) => {
+     *                     try {
+     *                         if (err != null) {
+     *                             System.out.println(MAPPER.writeValueAsString(err));
+     *                             return;
+     *                         }
+     *                         System.out.println(MAPPER.writeValueAsString(res));
+     *                         storeResponse.closeWebSocket();
+     *                     } catch (JsonProcessingException e) {
+     *                         throw new RuntimeException(e);
+     *                     }
+     *         })
+     *                                                             </pre>
      * @return {@link BaseTransactionResponse}
      */
     public Future<BaseTransactionResponse> revoke(String address) {
@@ -248,9 +243,9 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param address address in REMChain
      *                <pre>
-     *                                              String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress());
-     *                                              System.out.println(publicKeyAddresses); // string[]
-     *                                              </pre>
+     *     String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress());
+     *     System.out.println(publicKeyAddresses); // string[]
+     *     </pre>
      * @returns array of addresses for user
      */
     public Future<String[]> getAccountPublicKeys(String address) {

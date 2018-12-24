@@ -1,7 +1,6 @@
 package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.KeyDTO;
@@ -69,8 +68,8 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
 
-        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyBase64);
-        this.keyType = KeyType.ECDSA;
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyHex);
+        this.keyType = KeyType.ECDSA.getType();
     }
 
     /**
@@ -81,9 +80,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof BCECPublicKey, "Public Key should be instance of BCECPublicKey");
-        String publicKeyToHex = Functions.ecdsaPublicKeyToHex(publicKey, true);
-        String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
-        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
+        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), Functions.ecdsaPublicKeyToHex(publicKey, true));
     }
 
     /**

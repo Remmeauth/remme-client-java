@@ -1,7 +1,6 @@
 package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.GenerateOptions;
@@ -59,8 +58,8 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             this.privateKeyPem = Functions.privateKeyToPem(this.privateKey);
         }
         this.publicKeyBase64 = Base64.encodeBase64String(publicKeyPem.getBytes(StandardCharsets.UTF_8));
-        this.address = Functions.generateAddress(familyName.getName(), publicKeyPem);
-        this.keyType = KeyType.RSA;
+        this.address = Functions.generateAddress(familyName.getName(), Hex.encodeHexString(this.publicKey.getEncoded()));
+        this.keyType = KeyType.RSA.getType();
     }
 
     /**
@@ -71,8 +70,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof RSAPublicKey, "Public Key should be instance of RSAPublicKey");
-        String publicKeyPem = Functions.publicKeyToPem(publicKey);
-        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyPem);
+        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), Hex.encodeHexString(publicKey.getEncoded()));
     }
 
     private Integer calculateSaltLength(MessageDigest md) {
@@ -93,19 +91,19 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             rsaSignaturePadding = rsaSignaturePadding != null ? rsaSignaturePadding : PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS;
             switch (rsaSignaturePadding) {
                 case PSS:
-                    MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
+                    MessageDigest hashEngine = MessageDigest.getInstance("SHA-256");
                     hashEngine.update(data);
                     // salt length
                     int saltLength = calculateSaltLength(hashEngine);
                     // create a PSSParameterSpec
-                    PSSParameterSpec pssParamSpec = new PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, saltLength, 1);
-                    Signature pss = Signature.getInstance("SHA512withRSAandMGF1");
+                    PSSParameterSpec pssParamSpec = new PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, saltLength, 1);
+                    Signature pss = Signature.getInstance("SHA256withRSAandMGF1");
                     pss.setParameter(pssParamSpec);
                     pss.initSign(privateKey);
                     pss.update(data);
                     return Hex.encodeHexString(pss.sign());
                 case PKCS1v15:
-                    Signature pkcs1v15 = Signature.getInstance("SHA512withRSA");
+                    Signature pkcs1v15 = Signature.getInstance("SHA256withRSA");
                     pkcs1v15.initSign(privateKey);
                     pkcs1v15.update(data);
                     return Hex.encodeHexString(pkcs1v15.sign());
@@ -136,19 +134,19 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             switch (rsaSignaturePadding) {
                 case PSS:
-                    MessageDigest hashEngine = MessageDigest.getInstance("SHA-512");
+                    MessageDigest hashEngine = MessageDigest.getInstance("SHA-256");
                     hashEngine.update(data);
                     // salt length
                     int saltLength = calculateSaltLength(hashEngine);
                     // create a PSSParameterSpec
-                    PSSParameterSpec pssParamSpec = new PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, saltLength, 1);
-                    Signature pss = Signature.getInstance("SHA512withRSAandMGF1");
+                    PSSParameterSpec pssParamSpec = new PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, saltLength, 1);
+                    Signature pss = Signature.getInstance("SHA256withRSAandMGF1");
                     pss.setParameter(pssParamSpec);
                     pss.initVerify(publicKey);
                     pss.update(data);
                     return pss.verify(signatureBytes);
                 case PKCS1v15:
-                    Signature pkcs1v15 = Signature.getInstance("SHA512withRSA");
+                    Signature pkcs1v15 = Signature.getInstance("SHA256withRSA");
                     pkcs1v15.initVerify(publicKey);
                     pkcs1v15.update(data);
                     return pkcs1v15.verify(signatureBytes);

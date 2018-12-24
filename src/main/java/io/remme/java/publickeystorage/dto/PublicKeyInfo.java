@@ -31,5 +31,7 @@ public class PublicKeyInfo {
     private String entityHash;
     @JsonProperty(value = "entity_hash_signature")
     private String entityHashSignature;
+    @JsonProperty(value = "public_key")
+    private String publicKey;
     private String type;
 }

@@ -1,7 +1,6 @@
 package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.protobuf.PubKey;
 import io.remme.java.utils.Functions;
 import org.junit.Assert;

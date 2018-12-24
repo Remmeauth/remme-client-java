@@ -4,12 +4,12 @@ import io.remme.java.certificate.dto.CertificateTransactionResponse;
 import io.remme.java.certificate.dto.CreateCertificateDTO;
 import io.remme.java.certificate.dto.ICertificateTransactionResponse;
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.error.RemmeValidationException;
 import io.remme.java.keys.RSA;
 import io.remme.java.keys.RemmeKeys;
 import io.remme.java.keys.dto.GenerateOptions;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.publickeystorage.IRemmePublicKeyStorage;
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
 import io.remme.java.publickeystorage.dto.PublicKeyStore;
@@ -20,7 +20,6 @@ import io.remme.java.utils.RemmeExecutorService;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -28,14 +27,12 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
@@ -127,14 +124,13 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * @param remmePublicKeyStorage {@link io.remme.java.publickeystorage.RemmePublicKeyStorage}
-     * @example Usage without remme main package
-     * ```typescript
-     * const rest = new RemmeRest();
-     * const account = new RemmeAccount();
-     * const transaction = new RemmeTransactionService(rest, account);
-     * const publicKeyStorage = new RemmePublicKeyStorage(rest, account, transaction);
-     * const certificate = new RemmeCertificate(publicKeyStorage);
-     * ```
+     * <pre>
+     * RemmeApi remmeApi = new RemmeApi
+     * RemmeAccount account = new RemmeAccount();
+     * RemmeTransactionService transaction = new RemmeTransactionService(remmeApi, account);
+     * RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, account, transaction);
+     * RemmeCertificate remmeCertificate = new RemmeCertificate(publicKeyStorage);
+     * </pre>
      */
     public RemmeCertificate(IRemmePublicKeyStorage remmePublicKeyStorage) {
         this.remmePublicKeyStorage = remmePublicKeyStorage;
@@ -143,20 +139,21 @@ public class RemmeCertificate implements IRemmeCertificate {
     /**
      * Create certificate.
      *
-     * @param {CreateCertificateDto} certificateDataToCreate
-     * @example ```typescript
-     * const certificate = await remme.certificate.create({
-     * commonName: "userName",
-     * email: "user@email.com",
-     * name: "John",
-     * surname: "Smith",
-     * countryName: "US",
-     * validity: 360,
-     * serial: `${Date.now()}`
-     * });
-     * console.log(certificate);
-     * ```
-     * @returns {Promise<module:node-forge.pki.Certificate>}
+     * @param certificateDataToCreate {@link CreateCertificateDTO}
+     * <pre>
+     * Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
+     *                 .email("test@email.com")
+     *                 .commonName("testCert")
+     *                 .name("test")
+     *                 .title("test")
+     *                 .stateName("CA")
+     *                 .countryName("USA")
+     *                 .validity(365)
+     *                 .validAfter(0)
+     *                 .build()).get();
+     * System.out.println(certificate.getNotBefore());
+     * </pre>
+     * @return {@link Certificate}
      */
     public Future<Certificate> create(CreateCertificateDTO certificateDataToCreate) {
         return RemmeExecutorService.getInstance().submit(() -> {
@@ -169,27 +166,32 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Method that creates certificate and stores it in to REMChain.
      * Send transaction to chain.
      *
-     * @param {CreateCertificateDto} certificateDataToCreate
-     * @example ```typescript
-     * const remme = new Remme.Client();
-     * const certificateTransactionResult = await remme.certificate.createAndStore({
-     * commonName: "userName",
-     * email: "user@email.com",
-     * name: "John",
-     * surname: "Smith",
-     * countryName: "US",
-     * validity: 360,
-     * serial: `${Date.now()}`
-     * });
+     * @param certificateDataToCreate {@link CreateCertificateDTO}
+     * <pre>
+     * CertificateTransactionResponse certificateTransactionResult = remmeCertificate.createAndStore(CreateCertificateDTO.builder()
+     *                 .email("test@email.com")
+     *                 .commonName("testCert")
+     *                 .name("test")
+     *                 .title("test")
+     *                 .stateName("CA")
+     *                 .countryName("USA")
+     *                 .validity(365)
+     *                 .validAfter(0)
+     *                 .build()).get();
      * <p>
-     * const certificateTransactionCallback = (err: Error, response: any) => {
-     * if (err) {
-     * console.log(err);
-     * }
-     * console.log("store", response);
-     * }
-     * ```
-     * @returns {Promise<ICertificateTransactionResponse>}
+     * SocketEventListener certificateTransactionCallback = (err, response) -> {
+     * try {
+     *                 if (error != null) {
+     *                     System.out.println(MAPPER.writeValueAsString(error));
+     *                     return;
+     *                 }
+     *                 System.out.println(MAPPER.writeValueAsString(result));
+     *             } catch (JsonProcessingException e) {
+     *                 e.printStackTrace();
+     *             }
+     *}
+     * </pre>
+     * @return {@link CertificateTransactionResponse}
      */
     public Future<ICertificateTransactionResponse> createAndStore(CreateCertificateDTO certificateDataToCreate) {
         return RemmeExecutorService.getInstance().submit(() -> {
@@ -203,33 +205,34 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Your certificate should contains private and public keys.
      * Send transaction to chain.
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @example ```typescript
-     * const certificate = await remme.certificate.create({
-     * commonName: "userName",
-     * email: "user@email.com",
-     * name: "John",
-     * surname: "Smith",
-     * countryName: "US",
-     * validity: 360,
-     * serial: `${Date.now()}`
-     * });
-     * const storeResponse = await remme.certificate.store(certificate);
-     * ```
-     * @returns {Promise<ICertificateTransactionResponse>}
+     * @param certificate {@link Certificate}
+     * <pre>
+     *Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
+     *                 .email("test@email.com")
+     *                 .commonName("testCert")
+     *                 .name("test")
+     *                 .title("test")
+     *                 .stateName("CA")
+     *                 .countryName("USA")
+     *                 .validity(365)
+     *                 .validAfter(0)
+     *                 .build()).get();
+     * CertificateTransactionResponse response = remmeCertificate.store(certificate);
+     * </pre>
+     * @return {@link CertificateTransactionResponse}
      */
     public Future<ICertificateTransactionResponse> store(Certificate certificate) {
         if (certificate.getPrivateKey() == null) {
             throw new RemmeValidationException("Your certificate does not have private key");
         }
         return RemmeExecutorService.getInstance().submit(() -> {
-            String certificatePEM = Functions.certificateToPEM(certificate);
+            String certificatePEM = Functions.certificateToPEM(certificate, false);
             int validFrom = (int) Math.floor(certificate.getNotBefore().getTime() / 1000d);
             int validTo = (int) Math.floor(certificate.getNotAfter().getTime() / 1000d);
             BaseTransactionResponse batchResponse = this.remmePublicKeyStorage.store(PublicKeyStore.builder()
                     .data(certificatePEM)
                     .keys(new RSA(certificate.getPublicKey(), certificate.getPrivateKey()))
-                    .rsaSignaturePadding(RSASignaturePadding.PSS)
+                    .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
                     .validFrom(validFrom)
                     .validTo(validTo).build()).get();
             return new CertificateTransactionResponse(
@@ -243,12 +246,12 @@ public class RemmeCertificate implements IRemmeCertificate {
     /**
      * Check certificate's public key on validity and revocation.
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @example ```typescript
-     * const isValid = await remme.certificate.check(certificate);
-     * console.log(isValid); // true or false
-     * ```
-     * @returns {Promise<boolean>}
+     * @param certificate {@link Certificate}
+     * <pre>
+     * boolean isValid = remmeCertificate.check(certificate).get();
+     * System.out.println(isValid); // true or false
+     * </pre>
+     * @return {@code true} if valid or {@code false} if not
      */
     public Future<Boolean> check(Certificate certificate) {
         return RemmeExecutorService.getInstance().submit(() -> {
@@ -264,12 +267,11 @@ public class RemmeCertificate implements IRemmeCertificate {
     /**
      * Get info about certificate's public key.
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @example ```typescript
-     * const isValid = await remme.certificate.getInfo(certificate);
-     * console.log(info); // PublicKeyInfo
-     * ```
-     * @returns {Promise<PublicKeyInfo>}
+     * @param certificate {@link Certificate}
+     * <pre>
+     * PublicKeyInfo info = remmeCertificate.getInfo(certificate).get();
+     * </pre>
+     * @return {@link PublicKeyInfo}
      */
     public Future<PublicKeyInfo> getInfo(Certificate certificate) {
         return RemmeExecutorService.getInstance().submit(() -> {
@@ -286,18 +288,22 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Revoke certificate's public key into REMChain.
      * Send transaction to chain.
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @example ```typescript
-     * const revokeResponse = await remme.certificate.revoke(certificate);
-     * revokeResponse.connectToWebSocket((err: Error, res: any) => {
-     * if (err) {
-     * console.log(err);
-     * return;
-     * }
-     * console.log(res);
-     * })
-     * ```
-     * @returns {Promise<IBaseTransactionResponse>}
+     * @param certificate {@link Certificate}
+     * <pre>
+     * BaseTransactionResponse revokeResponse = remmeCertificate.revoke(certificate).get();
+     * revokeResponse.connectToWebSocket((err, res) -> {
+     * try {
+     *                 if (error != null) {
+     *                     System.out.println(MAPPER.writeValueAsString(error));
+     *                     return;
+     *                 }
+     *                 System.out.println(MAPPER.writeValueAsString(result));
+     *             } catch (JsonProcessingException e) {
+     *                 e.printStackTrace();
+     *             }
+     *});
+     * </pre>
+     * @return {@link BaseTransactionResponse}
      */
     public Future<BaseTransactionResponse> revoke(Certificate certificate) {
         String address = RemmeKeys.getAddressFromPublicKey(KeyType.RSA, certificate.getPublicKey());
@@ -308,12 +314,12 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Sign data with a certificate's private key and output DigestInfo DER-encoded bytes
      * (defaults to PSS)
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @param {string}                           data
-     * @param {RSASignaturePadding}              rsaSignaturePadding
-     * @returns {string}
+     * @param certificate {@link Certificate}
+     * @param data data string
+     * @param padding padding (optional)
+     * @return HEX string signature
      */
-    public String sign(Certificate certificate, String data, RSASignaturePadding padding) {
+    public String sign(Certificate certificate, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
         if (certificate.getPrivateKey() == null) {
             throw new RemmeValidationException("Your certificate does not have private key");
         }
@@ -329,19 +335,84 @@ public class RemmeCertificate implements IRemmeCertificate {
      * verify data with a public key
      * (defaults to PSS)
      *
-     * @param {module:node-forge.pki.Certificate | module:node-forge.pki.PEM} certificate
-     * @param {string}                           data
-     * @param {string}                           signature
-     * @param {RSASignaturePadding}              rsaSignaturePadding
-     * @returns {boolean}
+     * @param certificate {@link Certificate}
+     * @param data data string
+     * @param signature HEX signature string
+     * @param rsaSignaturePadding padding (optional)
+     * @return {@code true} if valid or {@code false} if not
      */
-    public boolean verify(Certificate certificate, String data, String signature, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(Certificate certificate, String data, String signature, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
         RSA keys = new RSA(certificate.getPublicKey(), null);
         if (rsaSignaturePadding != null) {
             return keys.verify(data, signature, rsaSignaturePadding);
         } else {
             return keys.verify(data, signature);
         }
+    }
+
+    /**
+     * Same as {@link #store(Certificate)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @return {@link CertificateTransactionResponse}
+     */
+    @Override
+    public Future<ICertificateTransactionResponse> store(String certificatePem) {
+        return store(Functions.certificateFromPEM(certificatePem));
+    }
+
+    /**
+     * Same as {@link #check(Certificate)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @return {@code true} if valid or {@code false} if not
+     */
+    @Override
+    public Future<Boolean> check(String certificatePem) {
+        return check(Functions.certificateFromPEM(certificatePem));
+    }
+
+    /**
+     * Same as {@link #getInfo(Certificate)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @return {@link PublicKeyInfo}
+     */
+    @Override
+    public Future<PublicKeyInfo> getInfo(String certificatePem) {
+        return getInfo(Functions.certificateFromPEM(certificatePem));
+    }
+
+    /**
+     * Same as {@link #revoke(Certificate)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @return {@link BaseTransactionResponse}
+     */
+    @Override
+    public Future<BaseTransactionResponse> revoke(String certificatePem) {
+        return revoke(Functions.certificateFromPEM(certificatePem));
+    }
+
+    /**
+     * Same as {@link #sign(Certificate, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @param data data string
+     * @param rsaSignaturePadding padding (optional)
+     * @return HEX string signature
+     */
+    @Override
+    public String sign(String certificatePem, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
+        return sign(Functions.certificateFromPEM(certificatePem), data, rsaSignaturePadding);
+    }
+
+    /**
+     * Same as {@link #verify(Certificate, String, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
+     * @param certificatePem certificate PEM string
+     * @param data data string
+     * @param signatureData HEX signature string
+     * @param rsaSignaturePadding padding (optional)
+     * @return {@code true} if valid or {@code false} if not
+     */
+    @Override
+    public boolean verify(String certificatePem, String data, String signatureData, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
+        return verify(Functions.certificateFromPEM(certificatePem), data, signatureData, rsaSignaturePadding);
     }
 
 }
