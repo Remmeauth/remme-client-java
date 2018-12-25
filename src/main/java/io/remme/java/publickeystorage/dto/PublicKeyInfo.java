@@ -23,9 +23,7 @@ public class PublicKeyInfo {
     private Boolean isRevoked;
     @JsonProperty(value = "is_valid")
     private Boolean isValid;
-
     private Date validFrom;
-    @JsonProperty(value = "valid_to")
     private Date validTo;
     @JsonProperty(value = "entity_hash")
     private String entityHash;
