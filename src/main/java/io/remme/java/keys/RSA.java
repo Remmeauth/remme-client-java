@@ -58,7 +58,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
             this.privateKeyPem = Functions.privateKeyToPem(this.privateKey);
         }
         this.publicKeyBase64 = Base64.encodeBase64String(publicKeyPem.getBytes(StandardCharsets.UTF_8));
-        this.address = Functions.generateAddress(familyName.getName(), Hex.encodeHexString(this.publicKey.getEncoded()));
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKey.getEncoded());
         this.keyType = KeyType.RSA.getType();
     }
 
@@ -70,7 +70,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof RSAPublicKey, "Public Key should be instance of RSAPublicKey");
-        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), Hex.encodeHexString(publicKey.getEncoded()));
+        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKey.getEncoded());
     }
 
     private Integer calculateSaltLength(MessageDigest md) {

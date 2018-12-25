@@ -23,7 +23,7 @@ public class PublicKeyInfo {
     private Boolean isRevoked;
     @JsonProperty(value = "is_valid")
     private Boolean isValid;
-    @JsonProperty(value = "valid_from")
+
     private Date validFrom;
     @JsonProperty(value = "valid_to")
     private Date validTo;
@@ -34,4 +34,14 @@ public class PublicKeyInfo {
     @JsonProperty(value = "public_key")
     private String publicKey;
     private String type;
+
+    @JsonProperty(value = "valid_from")
+    public void setValidFrom(long seconds) {
+        this.validFrom = new Date(seconds * 1000);
+    }
+
+    @JsonProperty(value = "valid_to")
+    public void setValidTo(long seconds) {
+        this.validTo = new Date(seconds * 1000);
+    }
 }
