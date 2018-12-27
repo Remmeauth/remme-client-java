@@ -31,35 +31,34 @@ public class RemmePublicStorageTest {
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, remmeAccount);
         IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, null);
         System.out.println(keys.getPublicKeyPem());
+        System.out.println(keys.getAddress());
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, remmeAccount, transactionService);
-//        BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
-//                .data("store data")
-//                .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
-//                .validFrom((int)Math.floor(new Date().getTime() / 1000d))
-//                .validTo((int)Math.floor(new Date(System.currentTimeMillis() + 5*24*60*60000L).getTime() / 1000d))
-//                .keys(keys)
-//                .build()).get();
-//        storeResponse.connectToWebSocket((err, res) -> {
-//            try {
-//                if (err != null) {
-//                    System.out.println(MAPPER.writeValueAsString(err));
-//                    return;
-//                }
-//                System.out.println(MAPPER.writeValueAsString(res));
-//                storeResponse.closeWebSocket();
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        while (true) {
-//
-//        }
+        BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
+                .data("store data")
+                .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
+                .validFrom((int)Math.floor(new Date().getTime() / 1000d))
+                .validTo((int)Math.floor(new Date(System.currentTimeMillis() + 5*24*60*60000L).getTime() / 1000d))
+                .keys(keys)
+                .build()).get();
+        storeResponse.connectToWebSocket((err, res) -> {
+            try {
+                if (err != null) {
+                    System.out.println(MAPPER.writeValueAsString(err));
+                    return;
+                }
+                System.out.println(MAPPER.writeValueAsString(res));
+                storeResponse.closeWebSocket();
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Thread.sleep(5000L);
 //a23be1e18aa0109eb7311226bd4946f6faa6c839c76603db73e4a93bf9bc7fc8fdc713
 //        boolean keyIsValid = publicKeyStorage.check("a23be1e18aa0109eb7311226bd4946f6faa6c839c76603db73e4a93bf9bc7fc8fdc713").get();
 //        System.out.println(keyIsValid); // true
 //
-        PublicKeyInfo publicKeyInfo = publicKeyStorage.getInfo("a23be1e18aa0109eb7311226bd4946f6faa6c839c76603db73e4a93bf9bc7fc8fdc713").get();
-        System.out.println(MAPPER.writeValueAsString(publicKeyInfo)); // PublicKeyInfo
+//        PublicKeyInfo publicKeyInfo = publicKeyStorage.getInfo("a23be1e18aa0109eb7311226bd4946f6faa6c839c76603db73e4a93bf9bc7fc8fdc713").get();
+//        System.out.println(MAPPER.writeValueAsString(publicKeyInfo)); // PublicKeyInfo
 //        BaseTransactionResponse revoke = publicKeyStorage.revoke(keys.getAddress()).get();
 //        // You can connectToWebSocket like in store method.
 //        System.out.println(revoke.getBatchId()); // string{\^[a-f0-9]{128}$\}
@@ -76,7 +75,7 @@ public class RemmePublicStorageTest {
 //            revoke.closeWebSocket();
 //        });
 //        Thread.sleep(30000L);
-//        String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress()).get();
-//        System.out.println(Arrays.toString(publicKeyAddresses)); // string[]
+        String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress()).get();
+        System.out.println(Arrays.toString(publicKeyAddresses)); // string[]
     }
 }

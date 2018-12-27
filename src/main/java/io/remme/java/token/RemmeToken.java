@@ -55,25 +55,25 @@ public class RemmeToken implements IRemmeToken {
      *                  <pre>
      *                  String someAccountPublicKeyInHex = "02926476095ea28904c11f22d0da20e999801a267cd3455a00570aa1153086eb13";
      *                  String someRemmeAddress = Functions.generateAddress(RemmeFamilyName.ACCOUNT, someAccountPublicKeyInHex);
-     *                  <p>
+     *
      *                  BaseTransactionResponse transactionResult = transfer(someRemmeAddress, 10).get();
      *                  System.out.println("Sending tokens...BatchId: " + transactionResult.getBatchId());
-     *                  <p>
-     *                  SocketEventListener transactionCallback = (err, result) -> {
+     *
+     *                  SocketEventListener transactionCallback = (err, result) {@code ->} {
      *                  try {
      *                      if (error != null) {
      *                          System.out.println(MAPPER.writeValueAsString(error));
      *                              return;
      *                      }
      *                          System.out.println(MAPPER.writeValueAsString(result));
-     *                  if (result instanceOf BatchInfoDTO && result.getStatus().equals(BatchStatus.COMMITTED)) {
+     *                  {@code if (result instanceOf BatchInfoDTO && result.getStatus().equals(BatchStatus.COMMITTED))} {
      *                      Long newBalance = remmeToken.getBalance(someRemmeAddress).get();
      *                      System.out.println("Account " + someRemmeAddress + "balance - " + newBalance + " REM");
      *                      transactionResult.closeWebSocket();
      *                  } catch (JsonProcessingException e) {
      *                      e.printStackTrace();
      *                  }
-     *                  <p>
+     *
      *                  transactionResult.connectToWebSocket(transactionCallback);
      *                  </pre>
      * @return {@link BaseTransactionResponse}

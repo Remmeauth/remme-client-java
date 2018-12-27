@@ -18,11 +18,11 @@ public class RemmeTransactionServiceTest {
     public void testCreateAndSign() throws ExecutionException, InterruptedException {
 //        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
         RemmeApi remmeApi = new RemmeApi("138.197.204.63", 8080, false);
-        RemmeAccount remmeAccount = new RemmeAccount("b2c94353072abecabd47db2ca03a72f7a9eef583e1aec4f4e76c67a4f8a5f252");
+        RemmeAccount remmeAccount = new RemmeAccount("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff");
 //        RemmeAccount remmeAccount = new RemmeAccount("cbda109323487371d21e0a9ee138f5a9ece3fe12b82ee5256a6ee51e25201562");
-        String signature = remmeAccount.sign("my transaction");
-        boolean verif = remmeAccount.verify("fcdc36310949b5bd6316a63f11b45a4adee2f5b24108e1167df0030a67a9044e239160a32a52c97ccd5de61c295279430fb40d8888491eb33a7ad50798eb26de",
-                "my transaction");
+//        String signature = remmeAccount.sign("my transaction");
+//        boolean verif = remmeAccount.verify("fcdc36310949b5bd6316a63f11b45a4adee2f5b24108e1167df0030a67a9044e239160a32a52c97ccd5de61c295279430fb40d8888491eb33a7ad50798eb26de",
+//                "my transaction");
 //        Assert.assertTrue(verif);
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, remmeAccount);
         CreateTransactionDto dto = CreateTransactionDto.builder()
@@ -45,9 +45,8 @@ public class RemmeTransactionServiceTest {
                 e.printStackTrace();
             }
         });
+        Assert.assertNotNull(response.getBatchId());
         System.out.println(response.getBatchId());
-        while(true) {
-
-        }
+        Thread.sleep(5000L);
     }
 }

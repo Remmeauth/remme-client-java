@@ -178,8 +178,8 @@ public class RemmeCertificate implements IRemmeCertificate {
      *                 .validity(365)
      *                 .validAfter(0)
      *                 .build()).get();
-     * <p>
-     * SocketEventListener certificateTransactionCallback = (err, response) -> {
+     *
+     * SocketEventListener certificateTransactionCallback = (err, response) {@code ->} {
      * try {
      *                 if (error != null) {
      *                     System.out.println(MAPPER.writeValueAsString(error));
@@ -291,7 +291,7 @@ public class RemmeCertificate implements IRemmeCertificate {
      * @param certificate {@link Certificate}
      * <pre>
      * BaseTransactionResponse revokeResponse = remmeCertificate.revoke(certificate).get();
-     * revokeResponse.connectToWebSocket((err, res) -> {
+     * revokeResponse.connectToWebSocket((err, res) {@code ->} {
      * try {
      *                 if (error != null) {
      *                     System.out.println(MAPPER.writeValueAsString(error));

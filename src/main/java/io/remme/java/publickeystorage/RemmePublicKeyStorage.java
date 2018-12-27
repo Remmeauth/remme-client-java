@@ -116,8 +116,8 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *                                                                                 .keys(keys)
      *                                                                                 .validFrom(validFrom)
      *                                                                                 .validTo(validTo).build());
-     *                 <p>
-     *                                                                 storeResponse.connectToWebSocket((err, res) -> {
+     *
+     *                                                                 storeResponse.connectToWebSocket((err, res) {@code ->} {
      *                                                                             try {
      *                                                                                 if (err != null) {
      *                                                                                     System.out.println(MAPPER.writeValueAsString(err));
@@ -215,7 +215,7 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      * @param address address in REMChain
      *                <pre>
      *         BaseTransactionResponse revokeResponse = publicKeyStorage.revoke(publicKeyAddress);
-     *         revokeResponse.connectToWebSocket((err, res) => {
+     *         revokeResponse.connectToWebSocket((err, res) {@code ->} {
      *                     try {
      *                         if (err != null) {
      *                             System.out.println(MAPPER.writeValueAsString(err));
@@ -239,14 +239,14 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
     }
 
     /**
-     * Take account address (which describe in {@link io.remme.java.enums.Patterns) ADDRESS
+     * Take account address (which describe in {@link io.remme.java.enums.Patterns}) ADDRESS
      *
      * @param address address in REMChain
      *                <pre>
      *     String[] publicKeyAddresses = publicKeyStorage.getAccountPublicKeys(remmeAccount.getAddress());
      *     System.out.println(publicKeyAddresses); // string[]
      *     </pre>
-     * @returns array of addresses for user
+     * @return array of addresses for user
      */
     public Future<String[]> getAccountPublicKeys(String address) {
         checkAddress(address);

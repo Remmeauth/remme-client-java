@@ -3,6 +3,7 @@ package io.remme.java.token;
 import io.remme.java.account.RemmeAccount;
 import io.remme.java.api.RemmeApi;
 import io.remme.java.transactionservice.RemmeTransactionService;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutionException;
@@ -17,6 +18,7 @@ public class RemmeTokenTest {
         RemmeToken token = new RemmeToken(remmeApi, transactionService);
         Long result = token.getBalance(remmeAccount.getAddress()).get();
         System.out.println(result);
+        Assert.assertTrue(result > 0);
 //        RemmeTransactionService transactionService2 = new RemmeTransactionService(remmeApi, remmeAccount2);
 //        RemmeToken token2 = new RemmeToken(remmeApi, transactionService2);
 //        Long result2 = token2.getBalance(remmeAccount2.getAddress()).get();
