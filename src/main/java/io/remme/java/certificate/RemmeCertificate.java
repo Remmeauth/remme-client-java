@@ -4,6 +4,7 @@ import io.remme.java.certificate.dto.CertificateTransactionResponse;
 import io.remme.java.certificate.dto.CreateCertificateDTO;
 import io.remme.java.certificate.dto.ICertificateTransactionResponse;
 import io.remme.java.enums.KeyType;
+import io.remme.java.enums.SubjectField;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.error.RemmeValidationException;
 import io.remme.java.keys.RSA;
@@ -17,9 +18,9 @@ import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.utils.Certificate;
 import io.remme.java.utils.Functions;
 import io.remme.java.utils.RemmeExecutorService;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -28,6 +29,8 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.cert.CertificateException;
@@ -44,59 +47,26 @@ public class RemmeCertificate implements IRemmeCertificate {
     private static final Integer RSA_KEY_SIZE = 2048;
 
     private X500Name createSubject(CreateCertificateDTO dto) {
-        if (dto.getCommonName() == null || dto.getCommonName().isEmpty()) {
-            throw new RemmeValidationException("Attribute commonName must have a value");
+        try {
+            if (dto.getCommonName() == null || dto.getCommonName().isEmpty()) {
+                throw new RemmeValidationException("Attribute commonName must have a value");
+            }
+            if (dto.getValidity() == null) {
+                throw new RemmeValidationException("Attribute validity must have a value");
+            }
+            X500NameBuilder builder = new X500NameBuilder();
+            Field[] fields = dto.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                SubjectField subjectField = SubjectField.getByFieldName(field.getName());
+                Object value = PropertyUtils.getProperty(dto, field.getName());
+                if (subjectField != null && value != null) {
+                    builder.addRDN(subjectField.getRdn(), (String) value);
+                }
+            }
+            return builder.build();
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                throw new RuntimeException(e);
         }
-        if (dto.getValidity() == null) {
-            throw new RemmeValidationException("Attribute validity must have a value");
-        }
-        X500NameBuilder builder = new X500NameBuilder();
-        if (dto.getCommonName() != null) {
-            builder.addRDN(BCStyle.CN, dto.getCommonName());
-        }
-        if (dto.getEmail() != null) {
-            builder.addRDN(BCStyle.E, dto.getEmail());
-        }
-        if (dto.getCountryName() != null) {
-            builder.addRDN(BCStyle.C, dto.getCountryName());
-        }
-        if (dto.getLocalityName() != null) {
-            builder.addRDN(BCStyle.L, dto.getLocalityName());
-        }
-        if (dto.getPostalAddress() != null) {
-            builder.addRDN(BCStyle.POSTAL_ADDRESS, dto.getPostalAddress());
-        }
-        if (dto.getPostalCode() != null) {
-            builder.addRDN(BCStyle.POSTAL_CODE, dto.getPostalCode());
-        }
-        if (dto.getStreetAddress() != null) {
-            builder.addRDN(BCStyle.STREET, dto.getStreetAddress());
-        }
-        if (dto.getStateName() != null) {
-            builder.addRDN(BCStyle.ST, dto.getStateName());
-        }
-        if (dto.getName() != null) {
-            builder.addRDN(BCStyle.NAME, dto.getName());
-        }
-        if (dto.getSurname() != null) {
-            builder.addRDN(BCStyle.SURNAME, dto.getSurname());
-        }
-        if (dto.getPseudonym() != null) {
-            builder.addRDN(BCStyle.PSEUDONYM, dto.getPseudonym());
-        }
-        if (dto.getGenerationQualifier() != null) {
-            builder.addRDN(BCStyle.GENERATION, dto.getGenerationQualifier());
-        }
-        if (dto.getTitle() != null) {
-            builder.addRDN(BCStyle.T, dto.getTitle());
-        }
-        if (dto.getSerial() != null) {
-            builder.addRDN(BCStyle.SERIALNUMBER, dto.getSerial());
-        }
-        if (dto.getBusinessCategory() != null) {
-            builder.addRDN(BCStyle.BUSINESS_CATEGORY, dto.getBusinessCategory());
-        }
-        return builder.build();
     }
 
     private Certificate createCertificate(KeyPair keyPair, CreateCertificateDTO certificateDataToCreate) {
@@ -124,13 +94,13 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * @param remmePublicKeyStorage {@link io.remme.java.publickeystorage.RemmePublicKeyStorage}
-     * <pre>
-     * RemmeApi remmeApi = new RemmeApi
-     * RemmeAccount account = new RemmeAccount();
-     * RemmeTransactionService transaction = new RemmeTransactionService(remmeApi, account);
-     * RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, account, transaction);
-     * RemmeCertificate remmeCertificate = new RemmeCertificate(publicKeyStorage);
-     * </pre>
+     *                              <pre>
+     *                              RemmeApi remmeApi = new RemmeApi
+     *                              RemmeAccount account = new RemmeAccount();
+     *                              RemmeTransactionService transaction = new RemmeTransactionService(remmeApi, account);
+     *                              RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, account, transaction);
+     *                              RemmeCertificate remmeCertificate = new RemmeCertificate(publicKeyStorage);
+     *                              </pre>
      */
     public RemmeCertificate(IRemmePublicKeyStorage remmePublicKeyStorage) {
         this.remmePublicKeyStorage = remmePublicKeyStorage;
@@ -140,19 +110,19 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Create certificate.
      *
      * @param certificateDataToCreate {@link CreateCertificateDTO}
-     * <pre>
-     * Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
-     *                 .email("test@email.com")
-     *                 .commonName("testCert")
-     *                 .name("test")
-     *                 .title("test")
-     *                 .stateName("CA")
-     *                 .countryName("USA")
-     *                 .validity(365)
-     *                 .validAfter(0)
-     *                 .build()).get();
-     * System.out.println(certificate.getNotBefore());
-     * </pre>
+     *                                <pre>
+     *                                Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
+     *                                                .email("test@email.com")
+     *                                                .commonName("testCert")
+     *                                                .name("test")
+     *                                                .title("test")
+     *                                                .stateName("CA")
+     *                                                .countryName("USA")
+     *                                                .validity(365)
+     *                                                .validAfter(0)
+     *                                                .build()).get();
+     *                                System.out.println(certificate.getNotBefore());
+     *                                </pre>
      * @return {@link Certificate}
      */
     public Future<Certificate> create(CreateCertificateDTO certificateDataToCreate) {
@@ -167,30 +137,30 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Send transaction to chain.
      *
      * @param certificateDataToCreate {@link CreateCertificateDTO}
-     * <pre>
-     * CertificateTransactionResponse certificateTransactionResult = remmeCertificate.createAndStore(CreateCertificateDTO.builder()
-     *                 .email("test@email.com")
-     *                 .commonName("testCert")
-     *                 .name("test")
-     *                 .title("test")
-     *                 .stateName("CA")
-     *                 .countryName("USA")
-     *                 .validity(365)
-     *                 .validAfter(0)
-     *                 .build()).get();
+     *                                <pre>
+     *                                CertificateTransactionResponse certificateTransactionResult = remmeCertificate.createAndStore(CreateCertificateDTO.builder()
+     *                                                .email("test@email.com")
+     *                                                .commonName("testCert")
+     *                                                .name("test")
+     *                                                .title("test")
+     *                                                .stateName("CA")
+     *                                                .countryName("USA")
+     *                                                .validity(365)
+     *                                                .validAfter(0)
+     *                                                .build()).get();
      *
-     * SocketEventListener certificateTransactionCallback = (err, response) {@code ->} {
-     * try {
-     *                 if (error != null) {
-     *                     System.out.println(MAPPER.writeValueAsString(error));
-     *                     return;
-     *                 }
-     *                 System.out.println(MAPPER.writeValueAsString(result));
-     *             } catch (JsonProcessingException e) {
-     *                 e.printStackTrace();
-     *             }
-     *}
-     * </pre>
+     *                                SocketEventListener certificateTransactionCallback = (err, response) {@code ->} {
+     *                                try {
+     *                                                if (error != null) {
+     *                                                    System.out.println(MAPPER.writeValueAsString(error));
+     *                                                    return;
+     *                                                }
+     *                                                System.out.println(MAPPER.writeValueAsString(result));
+     *                                            } catch (JsonProcessingException e) {
+     *                                                e.printStackTrace();
+     *                                            }
+     *                                }
+     *                                </pre>
      * @return {@link CertificateTransactionResponse}
      */
     public Future<ICertificateTransactionResponse> createAndStore(CreateCertificateDTO certificateDataToCreate) {
@@ -206,19 +176,19 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Send transaction to chain.
      *
      * @param certificate {@link Certificate}
-     * <pre>
-     *Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
-     *                 .email("test@email.com")
-     *                 .commonName("testCert")
-     *                 .name("test")
-     *                 .title("test")
-     *                 .stateName("CA")
-     *                 .countryName("USA")
-     *                 .validity(365)
-     *                 .validAfter(0)
-     *                 .build()).get();
-     * CertificateTransactionResponse response = remmeCertificate.store(certificate);
-     * </pre>
+     *                    <pre>
+     *                    Certificate certificate = remmeCertificate.create(CreateCertificateDTO.builder()
+     *                                    .email("test@email.com")
+     *                                    .commonName("testCert")
+     *                                    .name("test")
+     *                                    .title("test")
+     *                                    .stateName("CA")
+     *                                    .countryName("USA")
+     *                                    .validity(365)
+     *                                    .validAfter(0)
+     *                                    .build()).get();
+     *                    CertificateTransactionResponse response = remmeCertificate.store(certificate);
+     *                    </pre>
      * @return {@link CertificateTransactionResponse}
      */
     public Future<ICertificateTransactionResponse> store(Certificate certificate) {
@@ -247,10 +217,10 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Check certificate's public key on validity and revocation.
      *
      * @param certificate {@link Certificate}
-     * <pre>
-     * boolean isValid = remmeCertificate.check(certificate).get();
-     * System.out.println(isValid); // true or false
-     * </pre>
+     *                    <pre>
+     *                    boolean isValid = remmeCertificate.check(certificate).get();
+     *                    System.out.println(isValid); // true or false
+     *                    </pre>
      * @return {@code true} if valid or {@code false} if not
      */
     public Future<Boolean> check(Certificate certificate) {
@@ -268,9 +238,9 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Get info about certificate's public key.
      *
      * @param certificate {@link Certificate}
-     * <pre>
-     * PublicKeyInfo info = remmeCertificate.getInfo(certificate).get();
-     * </pre>
+     *                    <pre>
+     *                    PublicKeyInfo info = remmeCertificate.getInfo(certificate).get();
+     *                    </pre>
      * @return {@link PublicKeyInfo}
      */
     public Future<PublicKeyInfo> getInfo(Certificate certificate) {
@@ -289,20 +259,20 @@ public class RemmeCertificate implements IRemmeCertificate {
      * Send transaction to chain.
      *
      * @param certificate {@link Certificate}
-     * <pre>
-     * BaseTransactionResponse revokeResponse = remmeCertificate.revoke(certificate).get();
-     * revokeResponse.connectToWebSocket((err, res) {@code ->} {
-     * try {
-     *                 if (error != null) {
-     *                     System.out.println(MAPPER.writeValueAsString(error));
-     *                     return;
-     *                 }
-     *                 System.out.println(MAPPER.writeValueAsString(result));
-     *             } catch (JsonProcessingException e) {
-     *                 e.printStackTrace();
-     *             }
-     *});
-     * </pre>
+     *                    <pre>
+     *                    BaseTransactionResponse revokeResponse = remmeCertificate.revoke(certificate).get();
+     *                    revokeResponse.connectToWebSocket((err, res) {@code ->} {
+     *                    try {
+     *                                    if (error != null) {
+     *                                        System.out.println(MAPPER.writeValueAsString(error));
+     *                                        return;
+     *                                    }
+     *                                    System.out.println(MAPPER.writeValueAsString(result));
+     *                                } catch (JsonProcessingException e) {
+     *                                    e.printStackTrace();
+     *                                }
+     *                    });
+     *                    </pre>
      * @return {@link BaseTransactionResponse}
      */
     public Future<BaseTransactionResponse> revoke(Certificate certificate) {
@@ -315,8 +285,8 @@ public class RemmeCertificate implements IRemmeCertificate {
      * (defaults to PSS)
      *
      * @param certificate {@link Certificate}
-     * @param data data string
-     * @param padding padding (optional)
+     * @param data        data string
+     * @param padding     padding (optional)
      * @return HEX string signature
      */
     public String sign(Certificate certificate, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
@@ -335,9 +305,9 @@ public class RemmeCertificate implements IRemmeCertificate {
      * verify data with a public key
      * (defaults to PSS)
      *
-     * @param certificate {@link Certificate}
-     * @param data data string
-     * @param signature HEX signature string
+     * @param certificate         {@link Certificate}
+     * @param data                data string
+     * @param signature           HEX signature string
      * @param rsaSignaturePadding padding (optional)
      * @return {@code true} if valid or {@code false} if not
      */
@@ -352,6 +322,7 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #store(Certificate)} but accepts PEM string
+     *
      * @param certificatePem certificate PEM string
      * @return {@link CertificateTransactionResponse}
      */
@@ -362,6 +333,7 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #check(Certificate)} but accepts PEM string
+     *
      * @param certificatePem certificate PEM string
      * @return {@code true} if valid or {@code false} if not
      */
@@ -372,6 +344,7 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #getInfo(Certificate)} but accepts PEM string
+     *
      * @param certificatePem certificate PEM string
      * @return {@link PublicKeyInfo}
      */
@@ -382,6 +355,7 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #revoke(Certificate)} but accepts PEM string
+     *
      * @param certificatePem certificate PEM string
      * @return {@link BaseTransactionResponse}
      */
@@ -392,8 +366,9 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #sign(Certificate, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
-     * @param certificatePem certificate PEM string
-     * @param data data string
+     *
+     * @param certificatePem      certificate PEM string
+     * @param data                data string
      * @param rsaSignaturePadding padding (optional)
      * @return HEX string signature
      */
@@ -404,9 +379,10 @@ public class RemmeCertificate implements IRemmeCertificate {
 
     /**
      * Same as {@link #verify(Certificate, String, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
-     * @param certificatePem certificate PEM string
-     * @param data data string
-     * @param signatureData HEX signature string
+     *
+     * @param certificatePem      certificate PEM string
+     * @param data                data string
+     * @param signatureData       HEX signature string
      * @param rsaSignaturePadding padding (optional)
      * @return {@code true} if valid or {@code false} if not
      */
