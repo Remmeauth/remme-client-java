@@ -6,7 +6,7 @@ import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeSocketException;
 import io.remme.java.websocket.dto.*;
-import io.remme.java.websocket.dto.atomicswap.AtomicSwapInfoDTO;
+import io.remme.java.atomicswap.dto.SwapInfoDTO;
 import io.remme.java.websocket.dto.batch.BatchInfoDTO;
 import io.remme.java.websocket.dto.batch.BatchStatus;
 import io.remme.java.websocket.dto.block.BlockInfoDTO;
@@ -35,7 +35,7 @@ public class RemmeWebSocket implements IRemmeWebSocket {
 
     static {
         EVENT_MAP = new HashMap<>();
-        EVENT_MAP.put(RemmeEvents.ATOMIC_SWAP, AtomicSwapInfoDTO.class);
+        EVENT_MAP.put(RemmeEvents.ATOMIC_SWAP, SwapInfoDTO.class);
         EVENT_MAP.put(RemmeEvents.BATCH, BatchInfoDTO.class);
         EVENT_MAP.put(RemmeEvents.BLOCKS, BlockInfoDTO.class);
         EVENT_MAP.put(RemmeEvents.TRANSFER, TransferInfoDTO.class);
