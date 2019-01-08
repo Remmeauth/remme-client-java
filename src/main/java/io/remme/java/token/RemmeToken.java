@@ -3,6 +3,7 @@ package io.remme.java.token;
 import io.remme.java.api.IRemmeApi;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.enums.RemmeMethod;
+import io.remme.java.error.RemmeValidationException;
 import io.remme.java.protobuf.AccountOuterClass;
 import io.remme.java.protobuf.Transaction;
 import io.remme.java.transactionservice.BaseTransactionResponse;
@@ -82,10 +83,10 @@ public class RemmeToken implements IRemmeToken {
         try {
             checkAddress(addressTo);
             if (amount == null) {
-                throw new Error("Amount was not provided, please set the amount");
+                throw new RemmeValidationException("Amount was not provided, please set the amount");
             }
             if (amount <= 0L) {
-                throw new Error("Amount must be higher than 0");
+                throw new RemmeValidationException("Amount must be higher than 0");
             }
 
             AccountOuterClass.TransferPayload transferPayload = AccountOuterClass.TransferPayload.newBuilder()
