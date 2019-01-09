@@ -73,7 +73,7 @@ public class RemmeClient {
      *      System.out.println(status);
      * </pre>
      */
-    public IRemmePublicKeyStorage publicKeyStorage;
+    private IRemmePublicKeyStorage publicKeyStorage;
 
     /**
      * This properties hold implementation of RemmeCertificate,
@@ -115,7 +115,7 @@ public class RemmeClient {
      *      System.out.println(status);
      * </pre>
      */
-    public IRemmeCertificate certificate;
+    private IRemmeCertificate certificate;
 
 
     /**
@@ -145,7 +145,7 @@ public class RemmeClient {
      * </pre>
      *
      */
-    public IRemmeToken token;
+    private IRemmeToken token;
 
     /**
      * This properties hold implementation of RemmeSwap,
@@ -208,7 +208,7 @@ public class RemmeClient {
      * BaseTransactionResponse close = remme.getSwap().close(swapId, secretKey);
      * </pre>
      */
-    public IRemmeSwap swap;
+    private IRemmeSwap swap;
 
 
     /**
@@ -289,7 +289,7 @@ public class RemmeClient {
      * System.out.println(state.getAddress());
      * </pre>
      */
-    public IRemmeBlockchainInfo blockchainInfo;
+    private IRemmeBlockchainInfo blockchainInfo;
 
     /**
      * @param clientInit {@link ClientInit}
