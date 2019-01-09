@@ -16,6 +16,8 @@ import io.remme.java.token.IRemmeToken;
 import io.remme.java.token.RemmeToken;
 import io.remme.java.transactionservice.IRemmeTransactionService;
 import io.remme.java.transactionservice.RemmeTransactionService;
+import io.remme.java.websocketevents.IRemmeWebSocketEvents;
+import io.remme.java.websocketevents.RemmeWebSocketEvents;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -292,6 +294,29 @@ public class RemmeClient {
     private IRemmeBlockchainInfo blockchainInfo;
 
     /**
+     * This properties hold implementation of RemmeWebSocketEvents,
+     * which get a possibility to listen events from validator about transactions.
+     *
+     * Subscribe to event
+     * <pre>
+     * remme.getEvents().subscribe(
+     *     RemmeRequestParams.builder().event_type(RemmeEvents.ATOMIC_SWAP).build(),
+     *     // lastKnownBlockId <-- also can be set if you know it.
+     *  (err, res) {@code ->} {
+     *     System.out.println(MAPPER.writeValueAsString(res));});
+     * </pre>
+     *
+     * Unsubscribe
+     * <pre>
+     * remme.getEvents().unsubscribe();
+     * </pre>
+     */
+
+    public IRemmeWebSocketEvents getEvents() {
+        return new RemmeWebSocketEvents(this.remmeApi.getNetworkConfig());
+    }
+
+    /**
      * @param clientInit {@link ClientInit}
      *
      * Create a client. With all configuration.
@@ -305,12 +330,11 @@ public class RemmeClient {
      * In this case account would be creating from newly creating private key.
      *
      * <pre>
-     * RemmeClient remme = new RemmeClient(ClientInit.builder().nodeAddress("localhost").build());
+     * RemmeClient remme = new RemmeClient(ClientInit.builder().networkConfig(new NetworkConfig("localhost:8080", false)).build());
      * </pre>
      *
      * Also you can set only a privateKeyHex parameter. So networkConfig would be this: {
-     *      nodeAddress: "localhost",
-     *      nodePort: "8080",
+     *      nodeAddress: "localhost:8080",
      *      sslMode: false
      * }.
      *
@@ -325,8 +349,8 @@ public class RemmeClient {
      * </pre>
      */
     public RemmeClient(ClientInit clientInit) {
-        if (clientInit.getNodeAddress() != null || clientInit.getNodePort() != null || clientInit.isSslMode()) {
-            this.remmeApi = new RemmeApi(clientInit.getNodeAddress(), clientInit.getNodePort(), clientInit.isSslMode());
+        if (clientInit.getNetworkConfig() != null) {
+            this.remmeApi = new RemmeApi(clientInit.getNetworkConfig());
         } else {
             this.remmeApi = new RemmeApi();
         }

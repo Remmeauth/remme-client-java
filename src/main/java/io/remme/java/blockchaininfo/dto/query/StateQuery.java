@@ -1,6 +1,7 @@
 package io.remme.java.blockchaininfo.dto.query;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,8 @@ public class StateQuery extends BaseQuery {
     private String address;
 
     @Builder
-    public StateQuery(String head, Integer limit, Object start, Object reverse, String address) {
-        super(head, start, limit, reverse);
+    public StateQuery(String head, Integer limit, Object start, Object reverse, RemmeFamilyName familyName, String address) {
+        super(head, start, limit, reverse, familyName);
         this.address = address;
     }
 

@@ -1,5 +1,6 @@
 package io.remme.java.certificate.dto;
 
+import io.remme.java.api.NetworkConfig;
 import io.remme.java.keys.IRemmeKeys;
 import io.remme.java.keys.RSA;
 import io.remme.java.protobuf.PubKey;
@@ -14,7 +15,11 @@ public class CertificateTransactionResponse extends BaseTransactionResponse impl
     public Certificate certificate;
 
     public CertificateTransactionResponse(String socketAddress, Boolean sslMode, String batchId, Certificate certificate) {
-        super(socketAddress, sslMode, batchId);
+        this(new NetworkConfig(socketAddress, sslMode), batchId, certificate);
+    }
+
+    public CertificateTransactionResponse(NetworkConfig networkConfig, String batchId, Certificate certificate) {
+        super(networkConfig, batchId);
         this.certificate = certificate;
         this.keys = new RSA(
                 this.certificate.getPublicKey(),
