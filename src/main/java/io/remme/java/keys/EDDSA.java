@@ -1,11 +1,11 @@
 package io.remme.java.keys;
 
 import io.remme.java.enums.KeyType;
-import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.keys.dto.GenerateOptions;
 import io.remme.java.keys.dto.KeyDTO;
+import io.remme.java.protobuf.PubKey;
 import io.remme.java.utils.Functions;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -54,8 +54,8 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
 
         publicKeyBase64 = Base64.encodeBase64String(publicKeyHex.getBytes(StandardCharsets.UTF_8));
 
-        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyBase64);
-        this.keyType = KeyType.EdDSA;
+        this.address = Functions.generateAddress(familyName.getName(), this.publicKeyHex);
+        this.keyType = KeyType.EdDSA.getType();
     }
 
     /**
@@ -65,9 +65,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      */
     public static String getAddressFromPublicKey(PublicKey publicKey) {
         Asserts.check(publicKey instanceof EdDSAPublicKey, "Public Key should be instance of EdDSAPublicKey");
-        String publicKeyToHex = Hex.encodeHexString(publicKey.getEncoded());
-        String publicKeyBase64 = Base64.encodeBase64String(publicKeyToHex.getBytes(StandardCharsets.UTF_8));
-        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), publicKeyBase64);
+        return Functions.generateAddress(RemmeFamilyName.PUBLIC_KEY.getName(), Hex.encodeHexString(publicKey.getEncoded()));
     }
 
     /**
@@ -109,9 +107,11 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
             byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(data);
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             signature.initSign(privateKey);
-            signature.update(data);
+            signature.update(md.digest());
             return Hex.encodeHexString(signature.sign());
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
@@ -122,7 +122,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data, RSASignaturePadding padding) {
+    public String sign(String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
         return sign(data);
     }
 
@@ -133,10 +133,12 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
     public boolean verify(String signature, String dataString) {
         try {
             byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(data);
             byte[] signatureBytes = Hex.decodeHex(signature);
             Signature eddsa = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
             eddsa.initVerify(publicKey);
-            eddsa.update(data);
+            eddsa.update(md.digest());
             return eddsa.verify(signatureBytes);
         } catch (NoSuchAlgorithmException | DecoderException | SignatureException | InvalidKeyException e) {
             throw new IllegalArgumentException(e);
@@ -147,7 +149,7 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+    public boolean verify(String signature, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
         return verify(signature, data);
     }
 }

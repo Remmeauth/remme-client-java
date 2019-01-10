@@ -50,7 +50,7 @@ public class KeyDTO {
     /**
      * Key type
      */
-    protected KeyType keyType;
+    protected String keyType;
 
     /**
      *  family name
@@ -80,7 +80,7 @@ public class KeyDTO {
      */
     public String getPrivateKeyPem() {
         if (privateKeyPem == null) {
-            throw new RemmeKeyException("Don't supported for this key type: " + keyType.name() + " or didn't provide private key");
+            throw new RemmeKeyException("Don't supported for this key type: " + keyType + " or didn't provide private key");
         }
         return privateKeyPem;
     }
@@ -91,7 +91,7 @@ public class KeyDTO {
      */
     public String getPublicKeyPem() {
         if (publicKeyPem == null) {
-            throw new RemmeKeyException("Don't supported for this key type: " + keyType.name());
+            throw new RemmeKeyException("Don't supported for this key type: " + keyType);
         }
         return publicKeyPem;
     }
@@ -102,7 +102,7 @@ public class KeyDTO {
      */
     public String getPrivateKeyHex() {
         if (privateKeyHex == null) {
-            throw new RemmeKeyException("Don't supported for this key type: " + keyType.name() + " or didn't provide private key");
+            throw new RemmeKeyException("Don't supported for this key type: " + keyType + " or didn't provide private key");
         }
         return privateKeyHex;
     }
@@ -113,7 +113,7 @@ public class KeyDTO {
      */
     public String getPublicKeyHex() {
         if (publicKeyHex == null) {
-            throw new RemmeKeyException("Don't supported for this key type: " + keyType.name());
+            throw new RemmeKeyException("Don't supported for this key type: " + keyType);
         }
         return publicKeyHex;
     }

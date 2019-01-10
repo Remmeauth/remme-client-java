@@ -103,6 +103,8 @@ public class RemmeKeys {
      * @param keyType {@link KeyType}
      * @param privateKey private key for specified keyType
      * @param publicKey public key for specified keyType
+     *
+     * @return {@link IRemmeKeys}
      */
     public static IRemmeKeys construct(KeyType keyType, PublicKey publicKey, PrivateKey privateKey) {
         try {

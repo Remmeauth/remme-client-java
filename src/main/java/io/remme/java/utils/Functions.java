@@ -21,10 +21,14 @@ import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.PEMParser;
-
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.spec.*;
 import java.util.Arrays;
 import java.util.List;
@@ -344,6 +348,43 @@ public class Functions {
         }
         if (!publicKey.matches(Patterns.PUBLIC_KEY.getPattern())) {
             throw new RemmeValidationException("Given public key is not a valid");
+        }
+    }
+
+    public static String certificateToPEM(Certificate certificate, boolean withPrivateKey) {
+        StringWriter sw = new StringWriter();
+        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+            pw.writeObject(certificate.getCert());
+            if (withPrivateKey) {
+                pw.writeObject(certificate.getPrivateKey());
+            }
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+        return sw.toString();
+    }
+
+    public static Certificate certificateFromPEM(String certificatePEM) {
+        StringReader sr = new StringReader(certificatePEM);
+        Certificate certificate = new Certificate();
+        try {
+            PemReader reader = new PemReader(sr);
+            PemObject object = reader.readPemObject();
+            if (object != null) {
+                do {
+                    if (object.getType().toUpperCase().contains("CERTIFICATE")) {
+                        certificate.setCert((X509Certificate) CertificateFactory.getInstance("X.509")
+                                .generateCertificate(new ByteArrayInputStream(object.getContent())));
+                    }
+                    if (object.getType().toUpperCase().contains("PRIVATE")) {
+                        certificate.setPrivateKey(getPrivateKeyFromBytesArray(KeyType.RSA, object.getContent()));
+                    }
+                    object = reader.readPemObject();
+                } while (object != null);
+            }
+            return certificate;
+        } catch (Exception e) {
+            throw new RemmeKeyException(e);
         }
     }
 }
