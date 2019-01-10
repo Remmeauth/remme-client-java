@@ -3,6 +3,7 @@ package io.remme.java.blockchaininfo.dto.query;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.remme.java.enums.Patterns;
+import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.error.RemmeValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,12 +20,15 @@ public class BaseQueryRequest {
     private String start;
     private Integer limit;
     private String reverse;
+    @JsonProperty("family_name")
+    private RemmeFamilyName familyName;
 
     public BaseQueryRequest(BaseQuery query) {
         this.head = query.getHead();
         setStart(query.getStart());
         this.limit = query.getLimit();
         setReverse(query.getReverse());
+        this.familyName = query.getFamilyName();
     }
 
     @JsonProperty(value = "reverse")

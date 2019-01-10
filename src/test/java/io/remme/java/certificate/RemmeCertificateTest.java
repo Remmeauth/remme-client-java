@@ -21,8 +21,8 @@ public class RemmeCertificateTest {
     @Test
     public void testCertificate() throws ExecutionException, InterruptedException, JsonProcessingException {
         RemmeAccount account = new RemmeAccount("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff");
-//        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
-        RemmeApi remmeApi = new RemmeApi("138.197.204.63", 8080, false);
+//        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io:8080", false);
+        RemmeApi remmeApi = new RemmeApi("138.197.204.63:8080", false);
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, account);
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, account, transactionService);
         RemmeCertificate certificate = new RemmeCertificate(publicKeyStorage);

@@ -3,8 +3,10 @@ package io.remme.java.websocket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.arteam.simplejsonrpc.core.domain.ErrorMessage;
+import io.remme.java.api.NetworkConfig;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeSocketException;
+import io.remme.java.error.RemmeValidationException;
 import io.remme.java.websocket.dto.*;
 import io.remme.java.atomicswap.dto.SwapInfoDTO;
 import io.remme.java.websocket.dto.batch.BatchInfoDTO;
@@ -29,8 +31,7 @@ import java.util.Map;
 public class RemmeWebSocket implements IRemmeWebSocket {
     protected static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private String nodeAddress;
-    private boolean sslMode;
+    private NetworkConfig networkConfig;
     private static final Map<RemmeEvents, Class<?>> EVENT_MAP;
 
     static {
@@ -45,13 +46,16 @@ public class RemmeWebSocket implements IRemmeWebSocket {
     protected RemmeRequestParams data;
 
     public RemmeWebSocket(String nodeAddress, boolean sslMode, RemmeRequestParams params) {
-        this.nodeAddress = nodeAddress;
-        this.sslMode = sslMode;
+        this(new NetworkConfig(nodeAddress, sslMode), params);
+    }
+
+    public RemmeWebSocket(NetworkConfig networkConfig, RemmeRequestParams params) {
+        this.networkConfig = networkConfig;
         this.data = params;
     }
 
     private String getSubscribeUrl() {
-        return (this.sslMode ? "wss://" : "ws://") + this.nodeAddress + "/";
+        return (this.networkConfig.isSslMode() ? "wss://" : "ws://") + this.networkConfig.getNodeAddress() + "/";
     }
 
     private String getSocketQuery() {
@@ -134,7 +138,7 @@ public class RemmeWebSocket implements IRemmeWebSocket {
     @Override
     public void closeWebSocket() {
         if (this.client == null || this.client.isClosed()) {
-            throw new Error("WebSocket is not running");
+            throw new RemmeValidationException("WebSocket is not running");
         }
         if (WebSocket.READYSTATE.OPEN.equals(this.client.getReadyState())) {
             this.client.send(this.getSocketQuery(false));
