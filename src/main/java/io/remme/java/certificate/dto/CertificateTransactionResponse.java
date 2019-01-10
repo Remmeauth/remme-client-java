@@ -1,20 +1,27 @@
 package io.remme.java.certificate.dto;
 
+import io.remme.java.api.NetworkConfig;
 import io.remme.java.keys.IRemmeKeys;
 import io.remme.java.keys.RSA;
 import io.remme.java.protobuf.PubKey;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.utils.Certificate;
+import lombok.Getter;
 
 /**
  * Base class for response on certificate creation
  */
+@Getter
 public class CertificateTransactionResponse extends BaseTransactionResponse implements ICertificateTransactionResponse {
-    public IRemmeKeys keys;
-    public Certificate certificate;
+    private IRemmeKeys keys;
+    private Certificate certificate;
 
     public CertificateTransactionResponse(String socketAddress, Boolean sslMode, String batchId, Certificate certificate) {
-        super(socketAddress, sslMode, batchId);
+        this(new NetworkConfig(socketAddress, sslMode), batchId, certificate);
+    }
+
+    public CertificateTransactionResponse(NetworkConfig networkConfig, String batchId, Certificate certificate) {
+        super(networkConfig, batchId);
         this.certificate = certificate;
         this.keys = new RSA(
                 this.certificate.getPublicKey(),

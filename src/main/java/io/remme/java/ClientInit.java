@@ -1,5 +1,6 @@
 package io.remme.java;
 
+import io.remme.java.api.NetworkConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,17 +16,9 @@ import lombok.NoArgsConstructor;
 public class ClientInit {
     //network config
     /**
-     * REMME node address
+     * REMME node network configuration
      */
-    private String nodeAddress = "localhost";
-    /**
-     * REMME node port
-     */
-    private Integer nodePort = 8080;
-    /**
-     * security protocol https or https
-     */
-    private boolean sslMode = false;
+    private NetworkConfig networkConfig;
     //private key in HEX
     /**
      * Private Key in HEX for account initialization

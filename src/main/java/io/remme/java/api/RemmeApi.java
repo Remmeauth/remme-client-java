@@ -37,12 +37,10 @@ import java.util.concurrent.Future;
 @NoArgsConstructor
 @Builder
 public class RemmeApi implements IRemmeApi {
-    private String nodeAddress = "localhost";
-    private Integer nodePort = 8080;
-    private boolean sslMode = false;
+    private NetworkConfig networkConfig = new NetworkConfig();
 
     /**
-     * RemmeApi constructor to initiate node configuration. All parameters are optional
+     * RemmeApi constructor to initiate node configuration.
      *<p>
      * By default params for constructor are:<br>
      * <pre>
@@ -53,36 +51,52 @@ public class RemmeApi implements IRemmeApi {
      * <p>Example</p>
      * Implementation with all parameters:
      * <pre>
-     *     {@code RemmeApi<Object> remmeApi = new RemmeApi<>("localhost", 8080, false)};
+     *     {@code RemmeApi<Object> remmeApi = new RemmeApi<>("localhost:8080", false)};
      * </pre>
      * Implementation with one parameter:
      * <pre>
-     *     {@code RemmeApi<Object> remmeApi = RemmeApi<Object>.nodeAddress("localhost").build();}
+     *     {@code RemmeApi<Object> remmeApi = RemmeApi<Object>.nodeAddress("localhost:8080").build();}
      * </pre>
      * Implementation without parameters:
      * <pre>
      *     {@code RemmeApi<Object> remmeApi = new RemmeApi<>()};
      * </pre>
      *
-     * @param nodeAddress hostname or IP-address of Remme node
-     * @param nodePort    port of Remme node
+     * @param nodeAddress hostname or IP-address with port and path of Remme node
      * @param sslMode     set this flag to 'true' if you want to use SSL mode (https://)
      */
-    public RemmeApi(String nodeAddress, Integer nodePort, boolean sslMode) {
-        Asserts.check(nodeAddress != null, "nodeAddress should not be null!");
-        Asserts.check(nodePort != null, "nodePort should not be null!");
-        this.nodeAddress = nodeAddress;
-        this.nodePort = nodePort;
-        this.sslMode = sslMode;
+    public RemmeApi(String nodeAddress, boolean sslMode) {
+        this(new NetworkConfig(nodeAddress, sslMode));
     }
 
     /**
-     * Get node address as concatenation of host and port
+     * RemmeApi constructor to initiate node configuration.
      *
-     * @return concatenation of host and port
+     * @param networkConfig network configuration of the REMME node
+     */
+    public RemmeApi(NetworkConfig networkConfig) {
+        Asserts.check(networkConfig != null, "networkConfig should not be null!");
+        Asserts.check(networkConfig.getNodeAddress() != null, "nodeAddress should not be null!");
+        this.networkConfig = networkConfig;
+    }
+
+    /**
+     * Get SSL mode of network
+     *
+     * @return boolean result
+     */
+    @Override
+    public boolean isSslMode() {
+        return networkConfig.isSslMode();
+    }
+
+    /**
+     * Get node address from config
+     *
+     * @return node address
      */
     public String getNodeAddress() {
-        return nodeAddress + ":" + nodePort;
+        return networkConfig.getNodeAddress();
     }
 
     /**
@@ -146,7 +160,7 @@ public class RemmeApi implements IRemmeApi {
      * @return complete request URL based on configuration parameters
      */
     public String getURLForRequest() {
-        return (sslMode ? "https://" : "http://") + getNodeAddress();
+        return (networkConfig.isSslMode() ? "https://" : "http://") + getNodeAddress();
     }
 
     private RequestBuilder<Object> getRequestBuilder(RemmeMethod method) {

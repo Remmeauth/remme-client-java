@@ -12,6 +12,7 @@ public interface IRemmeApi {
     ObjectMapper MAPPER = new ObjectMapper();
     boolean isSslMode();
     String getNodeAddress();
+    NetworkConfig getNetworkConfig();
     <T> Future<T> sendRequest(RemmeMethod method, Class<T> clazz);
     <T> Future<T> sendRequest(RemmeMethod method, Object input, Class<T> clazz);
 }

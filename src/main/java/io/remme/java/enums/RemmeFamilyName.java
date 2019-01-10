@@ -1,5 +1,7 @@
 package io.remme.java.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,6 +22,12 @@ public enum RemmeFamilyName {
                 .findFirst().orElse(null);
     }
 
+    @JsonValue
+    public String getName() {
+        return name;
+    }
+
+    @JsonCreator
     public static RemmeFamilyName getByName(String name) {
         return Stream.of(RemmeFamilyName.values()).filter(val -> val.getName().equalsIgnoreCase(name))
                 .findFirst().orElse(null);

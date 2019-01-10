@@ -206,8 +206,7 @@ public class RemmeCertificate implements IRemmeCertificate {
                     .validFrom(validFrom)
                     .validTo(validTo).build()).get();
             return new CertificateTransactionResponse(
-                    batchResponse.getNodeAddress(),
-                    batchResponse.isSslMode(),
+                    batchResponse.getNetworkConfig(),
                     batchResponse.getBatchId(),
                     certificate);
         });
