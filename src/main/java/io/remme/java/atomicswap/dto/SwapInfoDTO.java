@@ -1,4 +1,4 @@
-package io.remme.java.websocket.dto.atomicswap;
+package io.remme.java.atomicswap.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -11,16 +11,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AtomicSwapInfoDTO {
-    private AtomicSwapState state;
+public class SwapInfoDTO {
+    private SwapState state;
     private String sender_address;
     private String sender_address_non_local;
     private String receiver_address;
-    private Double amount;
+    private Long amount;
     private String email_address_encrypted_optional;
     private String swap_id;
     private String secret_lock;
     private String secret_key;
-    private Date created_at;
+    private Integer created_at;
     private boolean is_initiator;
 }

@@ -198,9 +198,9 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      *
      * @param address address in REMChain
      *                <pre>
-     *                                                             const info = await remme.publicKeyStorage.getInfo(publicKeyAddress);
-     *                                                             console.log(info); // PublicKeyInfo
-     *                                                             </pre>
+     *                PublicKeyInfo info = remmePublicKeyStorage.getInfo(publicKeyAddress).get();
+     *                System.out.println(info.getAddress()); // PublicKeyInfo
+     *                </pre>
      * @return information about public key
      */
     public Future<PublicKeyInfo> getInfo(String address) {

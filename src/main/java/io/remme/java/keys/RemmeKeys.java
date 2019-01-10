@@ -21,7 +21,6 @@ public class RemmeKeys {
     /**
      * Generate key pair of type keyType with specified options.
      *
-     * <p>Example</p>
      * If you don't have key pair you can generate it.
      *<pre>
      * {@code Future<KeyPair> keys = RemmeKeys.generateKeyPair(KeyType.RSA);}
