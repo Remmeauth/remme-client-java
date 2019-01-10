@@ -81,25 +81,6 @@ public class RemmeApi implements IRemmeApi {
     }
 
     /**
-     * Get SSL mode of network
-     *
-     * @return boolean result
-     */
-    @Override
-    public boolean isSslMode() {
-        return networkConfig.isSslMode();
-    }
-
-    /**
-     * Get node address from config
-     *
-     * @return node address
-     */
-    public String getNodeAddress() {
-        return networkConfig.getNodeAddress();
-    }
-
-    /**
      * Use this method to send JSON-RPC request (specification 2.0) to Remme node
      *
      * <pre>
@@ -160,7 +141,7 @@ public class RemmeApi implements IRemmeApi {
      * @return complete request URL based on configuration parameters
      */
     public String getURLForRequest() {
-        return (networkConfig.isSslMode() ? "https://" : "http://") + getNodeAddress();
+        return (networkConfig.isSslMode() ? "https://" : "http://") + networkConfig.getNodeAddress();
     }
 
     private RequestBuilder<Object> getRequestBuilder(RemmeMethod method) {

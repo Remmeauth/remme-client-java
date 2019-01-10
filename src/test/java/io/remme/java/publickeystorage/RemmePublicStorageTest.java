@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.remme.java.account.RemmeAccount;
 import io.remme.java.api.RemmeApi;
 import io.remme.java.enums.KeyType;
+import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.keys.IRemmeKeys;
-import io.remme.java.keys.RSA;
 import io.remme.java.keys.RemmeKeys;
-import io.remme.java.protobuf.PubKey;
-import io.remme.java.publickeystorage.dto.PublicKeyInfo;
 import io.remme.java.publickeystorage.dto.PublicKeyStore;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.transactionservice.RemmeTransactionService;
-import io.remme.java.utils.Functions;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,7 +32,7 @@ public class RemmePublicStorageTest {
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, remmeAccount, transactionService);
         BaseTransactionResponse storeResponse = publicKeyStorage.store(PublicKeyStore.builder()
                 .data("store data")
-                .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
+                .rsaSignaturePadding(RSASignaturePadding.PSS)
                 .validFrom((int)Math.floor(new Date().getTime() / 1000d))
                 .validTo((int)Math.floor(new Date(System.currentTimeMillis() + 5*24*60*60000L).getTime() / 1000d))
                 .keys(keys)

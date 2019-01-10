@@ -4,13 +4,13 @@ import io.remme.java.certificate.dto.CertificateTransactionResponse;
 import io.remme.java.certificate.dto.CreateCertificateDTO;
 import io.remme.java.certificate.dto.ICertificateTransactionResponse;
 import io.remme.java.enums.KeyType;
+import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.SubjectField;
 import io.remme.java.error.RemmeKeyException;
 import io.remme.java.error.RemmeValidationException;
 import io.remme.java.keys.RSA;
 import io.remme.java.keys.RemmeKeys;
 import io.remme.java.keys.dto.GenerateOptions;
-import io.remme.java.protobuf.PubKey;
 import io.remme.java.publickeystorage.IRemmePublicKeyStorage;
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
 import io.remme.java.publickeystorage.dto.PublicKeyStore;
@@ -202,7 +202,7 @@ public class RemmeCertificate implements IRemmeCertificate {
             BaseTransactionResponse batchResponse = this.remmePublicKeyStorage.store(PublicKeyStore.builder()
                     .data(certificatePEM)
                     .keys(new RSA(certificate.getPublicKey(), certificate.getPrivateKey()))
-                    .rsaSignaturePadding(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS)
+                    .rsaSignaturePadding(RSASignaturePadding.PSS)
                     .validFrom(validFrom)
                     .validTo(validTo).build()).get();
             return new CertificateTransactionResponse(
@@ -288,7 +288,7 @@ public class RemmeCertificate implements IRemmeCertificate {
      * @param padding     padding (optional)
      * @return HEX string signature
      */
-    public String sign(Certificate certificate, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding) {
+    public String sign(Certificate certificate, String data, RSASignaturePadding padding) {
         if (certificate.getPrivateKey() == null) {
             throw new RemmeValidationException("Your certificate does not have private key");
         }
@@ -310,7 +310,7 @@ public class RemmeCertificate implements IRemmeCertificate {
      * @param rsaSignaturePadding padding (optional)
      * @return {@code true} if valid or {@code false} if not
      */
-    public boolean verify(Certificate certificate, String data, String signature, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
+    public boolean verify(Certificate certificate, String data, String signature, RSASignaturePadding rsaSignaturePadding) {
         RSA keys = new RSA(certificate.getPublicKey(), null);
         if (rsaSignaturePadding != null) {
             return keys.verify(data, signature, rsaSignaturePadding);
@@ -364,7 +364,7 @@ public class RemmeCertificate implements IRemmeCertificate {
     }
 
     /**
-     * Same as {@link #sign(Certificate, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
+     * Same as {@link #sign(Certificate, String, RSASignaturePadding)} but accepts PEM string
      *
      * @param certificatePem      certificate PEM string
      * @param data                data string
@@ -372,12 +372,12 @@ public class RemmeCertificate implements IRemmeCertificate {
      * @return HEX string signature
      */
     @Override
-    public String sign(String certificatePem, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
+    public String sign(String certificatePem, String data, RSASignaturePadding rsaSignaturePadding) {
         return sign(Functions.certificateFromPEM(certificatePem), data, rsaSignaturePadding);
     }
 
     /**
-     * Same as {@link #verify(Certificate, String, String, PubKey.NewPubKeyPayload.RSAConfiguration.Padding)} but accepts PEM string
+     * Same as {@link #verify(Certificate, String, String, RSASignaturePadding)} but accepts PEM string
      *
      * @param certificatePem      certificate PEM string
      * @param data                data string
@@ -386,7 +386,7 @@ public class RemmeCertificate implements IRemmeCertificate {
      * @return {@code true} if valid or {@code false} if not
      */
     @Override
-    public boolean verify(String certificatePem, String data, String signatureData, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding) {
+    public boolean verify(String certificatePem, String data, String signatureData, RSASignaturePadding rsaSignaturePadding) {
         return verify(Functions.certificateFromPEM(certificatePem), data, signatureData, rsaSignaturePadding);
     }
 

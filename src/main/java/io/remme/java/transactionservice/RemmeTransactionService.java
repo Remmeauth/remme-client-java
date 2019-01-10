@@ -108,8 +108,7 @@ public class RemmeTransactionService implements IRemmeTransactionService {
                 SendTransactionDto requestPayload = new SendTransactionDto(transaction);
                 String batchId = remmeApi.sendRequest(RemmeMethod.TRANSACTION, requestPayload, String.class).get();
                 return new BaseTransactionResponse(
-                        this.remmeApi.getNodeAddress(),
-                        this.remmeApi.isSslMode(),
+                        this.remmeApi.getNetworkConfig(),
                         batchId);
             } catch (Exception e) {
                 throw new RemmeValidationException(e);

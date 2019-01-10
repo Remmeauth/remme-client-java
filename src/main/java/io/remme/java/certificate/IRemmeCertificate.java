@@ -2,7 +2,7 @@ package io.remme.java.certificate;
 
 import io.remme.java.certificate.dto.CreateCertificateDTO;
 import io.remme.java.certificate.dto.ICertificateTransactionResponse;
-import io.remme.java.protobuf.PubKey;
+import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.utils.Certificate;
@@ -22,9 +22,9 @@ public interface IRemmeCertificate {
 
     Future<BaseTransactionResponse> revoke(Certificate certificate);
 
-    String sign(Certificate certificate, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
+    String sign(Certificate certificate, String data, RSASignaturePadding rsaSignaturePadding);
 
-    boolean verify(Certificate certificate, String data, String signatureData, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
+    boolean verify(Certificate certificate, String data, String signatureData, RSASignaturePadding rsaSignaturePadding);
 
     Future<ICertificateTransactionResponse> store(String certificatePem);
 
@@ -34,7 +34,7 @@ public interface IRemmeCertificate {
 
     Future<BaseTransactionResponse> revoke(String certificatePem);
 
-    String sign(String certificatePem, String data, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
+    String sign(String certificatePem, String data, RSASignaturePadding rsaSignaturePadding);
 
-    boolean verify(String certificatePem, String data, String signatureData, PubKey.NewPubKeyPayload.RSAConfiguration.Padding rsaSignaturePadding);
+    boolean verify(String certificatePem, String data, String signatureData, RSASignaturePadding rsaSignaturePadding);
 }

@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.remme.java.account.RemmeAccount;
 import io.remme.java.api.IRemmeApi;
 import io.remme.java.enums.KeyType;
+import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeKeyException;
@@ -134,8 +135,8 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      */
     public Future<BaseTransactionResponse> store(PublicKeyStore keyStore) {
         try {
-            PubKey.NewPubKeyPayload.RSAConfiguration.Padding padding = keyStore.getRsaSignaturePadding() != null ?
-                    keyStore.getRsaSignaturePadding() : PubKey.NewPubKeyPayload.RSAConfiguration.Padding.UNRECOGNIZED;
+            RSASignaturePadding padding = keyStore.getRsaSignaturePadding() != null ?
+                    keyStore.getRsaSignaturePadding() : RSASignaturePadding.EMPTY;
             String message = DigestUtils.sha512Hex(keyStore.getData());
             byte[] entityHash = message.getBytes(StandardCharsets.UTF_8);
             byte[] entityHashSignature = Hex.decodeHex(keyStore.getKeys().sign(message, padding));
@@ -149,8 +150,8 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
                 case RSA:
                     payload.setRsa(PubKey.NewPubKeyPayload.RSAConfiguration.newBuilder()
                             .setKey(ByteString.copyFrom(keyStore.getKeys().getPublicKey().getEncoded()))
-                            .setPadding(padding.equals(PubKey.NewPubKeyPayload.RSAConfiguration.Padding.UNRECOGNIZED)
-                                    ? PubKey.NewPubKeyPayload.RSAConfiguration.Padding.PSS : padding).build());
+                            .setPadding((padding.equals(RSASignaturePadding.EMPTY)
+                                    ? RSASignaturePadding.PSS : padding).getProtoValue()).build());
                     break;
                 case ECDSA:
                     payload.setEcdsa(PubKey.NewPubKeyPayload.ECDSAConfiguration.newBuilder()

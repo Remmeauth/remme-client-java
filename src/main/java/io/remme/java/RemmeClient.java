@@ -46,7 +46,7 @@ public class RemmeClient {
      *      BaseTransactionResponse store = remme.getPublicKeyStorage().store(PublicKeyStore.builder()
      *          .data(certificate)
      *          .keys(keys)
-     *          .rsaSignaturePadding( NewPubKeyPayload.RSAConfiguration.Padding.PSS)
+     *          .rsaSignaturePadding( RSASignaturePadding.PSS)
      *          .validFrom(validFrom)
      *          .validTo(validTo)
      *      .build()).get();
