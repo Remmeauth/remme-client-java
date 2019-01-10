@@ -9,7 +9,7 @@ import io.remme.java.websocket.dto.RemmeRequestParams;
 /**
  * Class for subscribing to events from WebSocket.
  * Available types for subscribing is covered in
- * <a traget="_top" href="https://docs.remme.io/remme-core/docs/remme-ws-events.html#registered-events">Registered Events</a>
+ * <a target="_top" href="https://docs.remme.io/remme-core/docs/remme-ws-events.html#registered-events">Registered Events</a>
  */
 public class RemmeWebSocketEvents extends RemmeWebSocket implements IRemmeWebSocketEvents {
     /**
@@ -28,12 +28,12 @@ public class RemmeWebSocketEvents extends RemmeWebSocket implements IRemmeWebSoc
     /**
      * Subscribing to events from WebSocket.
      * Available types for subscribing is covered in
-     * <a traget="_top" href="https://docs.remme.io/remme-core/docs/remme-ws-events.html#registered-events">Registered Events</a>
+     * <a target="_top" href="https://docs.remme.io/remme-core/docs/remme-ws-events.html#registered-events">Registered Events</a>
      *
      * You can subscribe on events about Swap
      * <pre>
      * remmeEvents.subscribe(
-     *      RemmeRequestParams.builder().event_type(RemmeEvents.ATOMIC_SWAP).build()
+     *      RemmeRequestParams.builder().events(RemmeEvents.ATOMIC_SWAP).build()
      * , (err, res) {@code ->} {
      *      System.out.println("new event error:" + MAPPER.writeValueAsString(err));
      *      System.out.println("new event result:" + MAPPER.writeValueAsString(res));
@@ -42,7 +42,7 @@ public class RemmeWebSocketEvents extends RemmeWebSocket implements IRemmeWebSoc
      * You can subscribe on events about Batch
      * <pre>
      * remmeEvents.subscribe({
-     *      RemmeRequestParams.builder().event_type(RemmeEvents.BATCH).build()
+     *      RemmeRequestParams.builder().events(RemmeEvents.BATCH).build()
      * , (err, res) {@code ->} {
      *      System.out.println("new event error:" + MAPPER.writeValueAsString(err));
      *      System.out.println("new event result:" + MAPPER.writeValueAsString(res));
