@@ -3,12 +3,25 @@ package io.remme.java.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.stream.Stream;
+
 @Getter
 @AllArgsConstructor
 public enum RemmeFamilyName {
-    ACCOUNT("account"),
-    PUBLIC_KEY("pub_key"),
-    SWAP("AtomicSwap");
+    ACCOUNT("account", "112007"),
+    PUBLIC_KEY("pub_key", "a23be1"),
+    SWAP("AtomicSwap", "78173b");
 
     private String name;
+    private String namespace;
+
+    public static RemmeFamilyName getByNamespace(String namespace) {
+        return Stream.of(RemmeFamilyName.values()).filter(val -> val.getNamespace().equalsIgnoreCase(namespace))
+                .findFirst().orElse(null);
+    }
+
+    public static RemmeFamilyName getByName(String name) {
+        return Stream.of(RemmeFamilyName.values()).filter(val -> val.getName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
+    }
 }
