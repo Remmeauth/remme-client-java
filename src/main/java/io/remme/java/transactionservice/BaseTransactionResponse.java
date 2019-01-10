@@ -1,5 +1,6 @@
 package io.remme.java.transactionservice;
 
+import io.remme.java.api.NetworkConfig;
 import io.remme.java.enums.Patterns;
 import io.remme.java.error.RemmeValidationException;
 import io.remme.java.websocket.RemmeWebSocket;
@@ -27,6 +28,18 @@ public class BaseTransactionResponse extends RemmeWebSocket {
      */
     public BaseTransactionResponse(String nodeAddress, boolean sslMode, String batchId) {
         super(nodeAddress, sslMode, new RemmeRequestParams(RemmeEvents.BATCH, batchId, null, null));
+        setBatchId(batchId);
+    }
+
+    /**
+     * Get networkConfig and identifier of batch.
+     * Then implement RemmeWebSocket class and provide data to it.
+     *
+     * @param networkConfig network config of the node
+     * @param batchId     identifier of batch that contains sending transaction
+     */
+    public BaseTransactionResponse(NetworkConfig networkConfig, String batchId) {
+        super(networkConfig, new RemmeRequestParams(RemmeEvents.BATCH, batchId, null, null));
         setBatchId(batchId);
     }
 

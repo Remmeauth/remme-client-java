@@ -1,11 +1,11 @@
-package io.remme.java.websocket.dto.atomicswap;
+package io.remme.java.atomicswap.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AtomicSwapState {
+public enum SwapState {
     EMPTY("EMPTY"),
     OPENED("OPENED"),
     SECRET_LOCK_PROVIDED("SECRET_LOCK_PROVIDED"),

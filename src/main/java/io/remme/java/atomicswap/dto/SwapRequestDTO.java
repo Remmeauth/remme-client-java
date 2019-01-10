@@ -1,13 +1,14 @@
-package io.remme.java.websocket.dto.block;
+package io.remme.java.atomicswap.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlockInfoDTO {
-    private String id;
-    private Long timestamp;
+@Builder
+public class SwapRequestDTO {
+    private String swap_id;
 }
