@@ -3,8 +3,40 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.remme.java</groupId>
     <artifactId>remme-java-lib</artifactId>
-    <version>0.0.1.SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
+
+    <name>REMME Java Client</name>
+    <description>An open source Java integration library for REMChain, simplifying the access and interaction with REMME
+        nodes both public or permissioned.</description>
+    <url>https://remme.io</url>
+
+    <developers>
+        <developer>
+            <name>REMME</name>
+            <email>moauth@gmail.com</email>
+            <organization>REMME CAPITAL LTD.</organization>
+            <organizationUrl>https://remme.io</organizationUrl>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:Remmeauth/remme-client-java.git</connection>
+        <url>https://github.com/Remmeauth/remme-client-java</url>
+    </scm>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <guava.version>19.0</guava.version>
+    </properties>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -109,11 +141,6 @@
         <!--TEST-->
     </dependencies>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <guava.version>19.0</guava.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -129,10 +156,35 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>
                 <configuration>
+                    <!--Path to protoc compiler-->
                     <protocExecutable>C:/work/protoc_compiler/bin/protoc</protocExecutable>
                     <clearOutputDirectory>false</clearOutputDirectory>
                     <descriptorSetOutputDirectory>${project.basedir}/remme-protobuf/</descriptorSetOutputDirectory>

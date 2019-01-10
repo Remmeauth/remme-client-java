@@ -85,7 +85,7 @@ public class RemmeClient {
      *
      * <pre>
      *      RemmeClient remme = new RemmeClient();
-     *      const certificateTransactionResult = remme.getCertificate().createAndStore(CreateCertificateDTO.builder()
+     *      ICertificateTransactionResponse certificateTransactionResult = remme.getCertificate().createAndStore(CreateCertificateDTO.builder()
      *          .commonName("userName1")
      *          .email("user@email.com")
      *          .name("John"),
@@ -300,8 +300,8 @@ public class RemmeClient {
      * Subscribe to event
      * <pre>
      * remme.getEvents().subscribe(
-     *     RemmeRequestParams.builder().event_type(RemmeEvents.ATOMIC_SWAP).build(),
-     *     // lastKnownBlockId <-- also can be set if you know it.
+     *     RemmeRequestParams.builder().events(RemmeEvents.ATOMIC_SWAP).build(),
+     *     //lastKnownBlockId also can be set if you know it.
      *  (err, res) {@code ->} {
      *     System.out.println(MAPPER.writeValueAsString(res));});
      * </pre>
@@ -310,6 +310,8 @@ public class RemmeClient {
      * <pre>
      * remme.getEvents().unsubscribe();
      * </pre>
+     *
+     * @return {@link RemmeWebSocketEvents}
      */
 
     public IRemmeWebSocketEvents getEvents() {
@@ -398,6 +400,8 @@ public class RemmeClient {
      * RemmeAccount account = RemmeClient.generateAccount();
      * remme.setAccount(account);
      * </pre>
+     *
+     * @return {@link RemmeAccount}
      */
     public RemmeAccount getAccount() {
         return this.account;
@@ -411,6 +415,8 @@ public class RemmeClient {
      * RemmeClient account = RemmeClient.generateAccount();
      * System.out.println(account);
      * </pre>
+     *
+     * @return {@link RemmeAccount}
      */
     public static RemmeAccount generateAccount() {
         return new RemmeAccount();
