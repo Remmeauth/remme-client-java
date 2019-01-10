@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BlockInfoDTO {
     private String id;
+    private Long timestamp;
 }

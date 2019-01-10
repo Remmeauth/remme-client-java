@@ -24,8 +24,8 @@ import static io.remme.java.websocket.RemmeWebSocketTest.MAPPER;
 public class RemmePublicStorageTest {
     @Test
     public void testStorage() throws ExecutionException, InterruptedException, JsonProcessingException {
-//        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io", 8080, false);
-        RemmeApi remmeApi = new RemmeApi("138.197.204.63", 8080, false);
+//        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io:8080", false);
+        RemmeApi remmeApi = new RemmeApi("138.197.204.63:8080", false);
         //0399cc573facb6a206cd1a6bbb6b3200a80b9147890f1a612feab1d522cd3cebd6
         RemmeAccount remmeAccount = new RemmeAccount("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff");
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, remmeAccount);

@@ -96,8 +96,8 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
         byte[] pubKey = getPublicFor(privKey);
         PrivateKey privateKey = Functions.generateECDSAPrivateKey(privKey);
         PublicKey publicKey = Functions.getECDSAPublicKeyFromBytes(pubKey);
-        System.out.println("HEX pub:" + Hex.encodeHexString(pubKey));
-        System.out.println("HEX priv:" + Hex.encodeHexString(privKey));
+//        System.out.println("HEX pub:" + Hex.encodeHexString(pubKey));
+//        System.out.println("HEX priv:" + Hex.encodeHexString(privKey));
         return new KeyPair(publicKey, privateKey);
     }
 
@@ -208,8 +208,6 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
             s = s1;
         }
         byte[] rs = new byte[r.length + s.length];
-        System.out.println(r.length);
-        System.out.println(s.length);
 
         System.arraycopy(r, 0, rs, 0, r.length);
         System.arraycopy(s, 0, rs, r.length, s.length);
@@ -232,7 +230,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
         BigInteger r = new BigInteger(1, Arrays.copyOfRange(signature, 0, 32));
         BigInteger s = new BigInteger(1, Arrays.copyOfRange(signature, 32, 64));
         if (!signer.verifySignature(hash, r, s)) {
-            System.out.println("something");
+            System.out.println("Something wrong with signature");
         }
         return signer.verifySignature(hash, r, s);
     }
