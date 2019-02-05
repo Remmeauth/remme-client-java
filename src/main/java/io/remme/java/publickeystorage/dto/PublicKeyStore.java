@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class PublicKeyStore {
     private String data;
     private IRemmeKeys keys;
+    private String signature;
     private Integer validFrom;
     private Integer validTo;
     private RSASignaturePadding rsaSignaturePadding;

@@ -387,4 +387,23 @@ public class Functions {
             throw new RemmeKeyException(e);
         }
     }
+
+    public static void checkSha256(String data) {
+        if (data == null || !data.matches(Patterns.SHA256.getPattern())) {
+            throw new RemmeValidationException("Value should be SHA-256");
+        }
+    };
+
+    public static void checkSha512(String data) {
+        if (data == null || !data.matches(Patterns.SHA512.getPattern())) {
+            throw new RemmeValidationException("Value should be SHA-512");
+        }
+    }
+
+    public static void checkSha(String data) {
+        if (data == null || (!data.matches(Patterns.SHA256.getPattern())
+                && !data.matches(Patterns.SHA512.getPattern()))) {
+            throw new RemmeValidationException("Value should be SHA-256 or SHA-512");
+        }
+    };
 }

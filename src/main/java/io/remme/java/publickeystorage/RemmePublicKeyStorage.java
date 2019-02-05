@@ -8,6 +8,7 @@ import io.remme.java.enums.RSASignaturePadding;
 import io.remme.java.enums.RemmeFamilyName;
 import io.remme.java.enums.RemmeMethod;
 import io.remme.java.error.RemmeKeyException;
+import io.remme.java.error.RemmeValidationException;
 import io.remme.java.protobuf.PubKey;
 import io.remme.java.protobuf.Transaction;
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
@@ -135,11 +136,18 @@ public class RemmePublicKeyStorage implements IRemmePublicKeyStorage {
      */
     public Future<BaseTransactionResponse> store(PublicKeyStore keyStore) {
         try {
+            if (keyStore.getSignature() != null) {
+                Functions.checkSha(keyStore.getData());
+                if (!keyStore.getKeys().verify(keyStore.getData(), keyStore.getSignature())) {
+                    throw new RemmeValidationException("Signature not valid");
+                }
+            }
             RSASignaturePadding padding = keyStore.getRsaSignaturePadding() != null ?
                     keyStore.getRsaSignaturePadding() : RSASignaturePadding.EMPTY;
-            String message = DigestUtils.sha512Hex(keyStore.getData());
+            String message = keyStore.getSignature() != null ? keyStore.getData() : DigestUtils.sha512Hex(keyStore.getData());
             byte[] entityHash = message.getBytes(StandardCharsets.UTF_8);
-            byte[] entityHashSignature = Hex.decodeHex(keyStore.getKeys().sign(message, padding));
+            byte[] entityHashSignature = Hex.decodeHex(keyStore.getSignature() != null
+                    ? keyStore.getSignature() : keyStore.getKeys().sign(message, padding));
             PubKey.NewPubKeyPayload.Builder payload = PubKey.NewPubKeyPayload.newBuilder()
                     .setEntityHash(ByteString.copyFrom(entityHash))
                     .setEntityHashSignature(ByteString.copyFrom(entityHashSignature))
