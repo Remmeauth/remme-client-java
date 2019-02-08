@@ -1,0 +1,6 @@
+[submodule "remme-protobuf"]
+	path = remme-protobuf
+	url = https://github.com/Remmeauth/remme-protobuf.git
+[submodule "sawtooth-sdk-java"]
+	path = sawtooth-sdk-java
+	url = https://github.com/hyperledger/sawtooth-sdk-java.git
