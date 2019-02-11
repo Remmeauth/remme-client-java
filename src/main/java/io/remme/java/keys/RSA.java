@@ -82,9 +82,8 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String dataString, RSASignaturePadding rsaSignaturePadding) {
+    public String sign(byte[] data, RSASignaturePadding rsaSignaturePadding) {
         try {
-            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
@@ -120,7 +119,7 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String data) {
+    public String sign(byte[] data) {
         return sign(data, RSASignaturePadding.PSS);
     }
 
@@ -128,10 +127,9 @@ public class RSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String dataString, RSASignaturePadding rsaSignaturePadding) {
+    public boolean verify(String signature, byte[] data, RSASignaturePadding rsaSignaturePadding) {
         try {
             byte[] signatureBytes = Hex.decodeHex(signature);
-            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             switch (rsaSignaturePadding) {
                 case PSS:
                     MessageDigest hashEngine = MessageDigest.getInstance("SHA-256");
@@ -157,6 +155,38 @@ public class RSA extends KeyDTO implements IRemmeKeys {
         } catch (DecoderException | InvalidKeyException | NoSuchAlgorithmException | SignatureException | InvalidAlgorithmParameterException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, byte[] data) {
+        return verify(signature, data, RSASignaturePadding.PSS);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String sign(String dataString, RSASignaturePadding rsaSignaturePadding) {
+       return sign(dataString.getBytes(StandardCharsets.UTF_8), rsaSignaturePadding);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String sign(String data) {
+        return sign(data, RSASignaturePadding.PSS);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String dataString, RSASignaturePadding rsaSignaturePadding) {
+        return verify(signature, dataString.getBytes(StandardCharsets.UTF_8), rsaSignaturePadding);
     }
 
     /**

@@ -13,7 +13,7 @@ import io.remme.java.keys.RemmeKeys;
 import io.remme.java.keys.dto.GenerateOptions;
 import io.remme.java.publickeystorage.IRemmePublicKeyStorage;
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
-import io.remme.java.publickeystorage.dto.PublicKeyStore;
+import io.remme.java.publickeystorage.dto.PublicKeyCreate;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 import io.remme.java.utils.Certificate;
 import io.remme.java.utils.Functions;
@@ -199,7 +199,7 @@ public class RemmeCertificate implements IRemmeCertificate {
             String certificatePEM = Functions.certificateToPEM(certificate, false);
             int validFrom = (int) Math.floor(certificate.getNotBefore().getTime() / 1000d);
             int validTo = (int) Math.floor(certificate.getNotAfter().getTime() / 1000d);
-            BaseTransactionResponse batchResponse = this.remmePublicKeyStorage.store(PublicKeyStore.builder()
+            BaseTransactionResponse batchResponse = this.remmePublicKeyStorage.createAndStore(PublicKeyCreate.builder()
                     .data(certificatePEM)
                     .keys(new RSA(certificate.getPublicKey(), certificate.getPrivateKey()))
                     .rsaSignaturePadding(RSASignaturePadding.PSS)

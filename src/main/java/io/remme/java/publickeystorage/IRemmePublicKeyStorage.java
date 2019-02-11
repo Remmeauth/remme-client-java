@@ -1,13 +1,17 @@
 package io.remme.java.publickeystorage;
 
 import io.remme.java.publickeystorage.dto.PublicKeyInfo;
-import io.remme.java.publickeystorage.dto.PublicKeyStore;
+import io.remme.java.publickeystorage.dto.PublicKeyCreate;
 import io.remme.java.transactionservice.BaseTransactionResponse;
 
 import java.util.concurrent.Future;
 
 public interface IRemmePublicKeyStorage {
-    Future<BaseTransactionResponse> store(PublicKeyStore data);
+    byte[] create(PublicKeyCreate data);
+
+    Future<BaseTransactionResponse> store(byte[] data);
+
+    Future<BaseTransactionResponse> createAndStore(PublicKeyCreate data);
 
     Future<Boolean> check(String address);
 

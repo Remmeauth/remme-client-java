@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PublicKeyStore {
+public class PublicKeyCreate {
     private String data;
     private IRemmeKeys keys;
     private String signature;
     private Integer validFrom;
     private Integer validTo;
     private RSASignaturePadding rsaSignaturePadding;
+    private Boolean doOwnerPay = true;
 }
