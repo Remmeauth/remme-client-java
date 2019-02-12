@@ -23,7 +23,7 @@ public class RemmeSwapTest {
     @Test
     public void testSwap() throws ExecutionException, InterruptedException {
         //RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io:8080", false);
-        RemmeApi remmeApi = new RemmeApi("138.197.204.63:8080", false);
+        RemmeApi remmeApi = new RemmeApi("node-1-testnet-dev.remme.io:8080", false);
         RemmeAccount remmeAccount = new RemmeAccount("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff");
         RemmeTransactionService remmeTransaction = new RemmeTransactionService(remmeApi, remmeAccount);
         RemmeSwap remmeSwap = new RemmeSwap(remmeApi, remmeTransaction);

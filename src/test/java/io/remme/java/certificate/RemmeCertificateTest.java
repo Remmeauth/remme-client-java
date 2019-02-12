@@ -22,7 +22,7 @@ public class RemmeCertificateTest {
     public void testCertificate() throws ExecutionException, InterruptedException, JsonProcessingException {
         RemmeAccount account = new RemmeAccount("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff");
 //        RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io:8080", false);
-        RemmeApi remmeApi = new RemmeApi("138.197.204.63:8080", false);
+        RemmeApi remmeApi = new RemmeApi("node-1-testnet-dev.remme.io:8080", false);
         RemmeTransactionService transactionService = new RemmeTransactionService(remmeApi, account);
         RemmePublicKeyStorage publicKeyStorage = new RemmePublicKeyStorage(remmeApi, account, transactionService);
         RemmeCertificate certificate = new RemmeCertificate(publicKeyStorage);
@@ -50,7 +50,7 @@ public class RemmeCertificateTest {
                 throw new RuntimeException(e);
             }
         });
-        Thread.sleep(5000L);
+        Thread.sleep(10000L);
         Assert.assertTrue(certificate.check(Functions.certificateToPEM(cert, true)).get()); // true
         System.out.println(MAPPER.writeValueAsString(certificate.getInfo(Functions.certificateToPEM(cert, true)).get()));
         BaseTransactionResponse response2 = certificate.revoke(cert).get();

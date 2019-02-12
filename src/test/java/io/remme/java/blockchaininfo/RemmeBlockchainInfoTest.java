@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 public class RemmeBlockchainInfoTest {
     private RemmeBlockchainInfo initInfo() {
         //                RemmeApi remmeApi = new RemmeApi("node-genesis-testnet-dev.remme.io:8080", false);
-        RemmeApi remmeApi = new RemmeApi("138.197.204.63:8080", false);
+        RemmeApi remmeApi = new RemmeApi("node-1-testnet-dev.remme.io:8080", false);
         return new RemmeBlockchainInfo(remmeApi);
     }
 

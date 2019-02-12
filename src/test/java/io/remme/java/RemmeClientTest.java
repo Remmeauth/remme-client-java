@@ -29,7 +29,7 @@ public class RemmeClientTest {
     @Test
     public void test2() throws ExecutionException, InterruptedException, JsonProcessingException {
         RemmeClient client = new RemmeClient(ClientInit.builder().privateKeyHex("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff")
-                .networkConfig(new NetworkConfig("138.197.204.63:8080", false)).build());
+                .networkConfig(new NetworkConfig("node-1-testnet-dev.remme.io:8080", false)).build());
         Certificate cert = client.getCertificate().create(CreateCertificateDTO.builder()
                 .email("test@email.com")
                 .commonName("testCert")
@@ -77,10 +77,11 @@ public class RemmeClientTest {
     @Test
     public void test() throws ExecutionException, InterruptedException {
         RemmeClient client = new RemmeClient(ClientInit.builder().privateKeyHex("631a5f4e73efa194944fef2456ed743c6cf06211e68a18909e67023a5910a2ff")
-                .networkConfig(new NetworkConfig("138.197.204.63:8080", false)).build());
+                .networkConfig(new NetworkConfig("node-1-testnet-dev.remme.io:8080", false)).build());
         String accountToSendAddress = RemmeClient.generateAccount().getAddress();
         Long balance = client.getToken().getBalance(accountToSendAddress).get();
         System.out.println("before:" + balance);
+        Assert.assertEquals(0L, balance.longValue());
         BaseTransactionResponse result = client.getToken().transfer(accountToSendAddress, 100L).get();
         result.connectToWebSocket((err, res) -> {
             try {
@@ -92,6 +93,7 @@ public class RemmeClientTest {
                     result.closeWebSocket();
                     Long balance2 = client.getToken().getBalance(accountToSendAddress).get();
                     System.out.println("after:" + balance2);
+                    Assert.assertEquals(100L, balance.longValue());
                     finish = true;
                 }
             } catch (Exception e) {
