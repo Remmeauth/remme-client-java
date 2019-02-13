@@ -13,7 +13,13 @@ You can check out how to do that at [REMME core repo](https://github.com/Remmeau
 #### Using Maven
 Add Maven dependency below to the *pom.xml* file
 
-**coming soon**
+```xml
+<dependency>
+  <groupId>io.remme.java</groupId>
+  <artifactId>remme-java-lib</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
 
 #### Manually
 a) Checkout (or download) master branch of the repository

@@ -101,6 +101,10 @@ public final class PubKey {
        * <code>REVOKE = 1;</code>
        */
       REVOKE(1),
+      /**
+       * <code>STORE_AND_PAY = 2;</code>
+       */
+      STORE_AND_PAY(2),
       UNRECOGNIZED(-1),
       ;
 
@@ -112,6 +116,10 @@ public final class PubKey {
        * <code>REVOKE = 1;</code>
        */
       public static final int REVOKE_VALUE = 1;
+      /**
+       * <code>STORE_AND_PAY = 2;</code>
+       */
+      public static final int STORE_AND_PAY_VALUE = 2;
 
 
       public final int getNumber() {
@@ -134,6 +142,7 @@ public final class PubKey {
         switch (value) {
           case 0: return STORE;
           case 1: return REVOKE;
+          case 2: return STORE_AND_PAY;
           default: return null;
         }
       }
@@ -3920,6 +3929,865 @@ public final class PubKey {
 
   }
 
+  public interface NewPubKeyStoreAndPayPayloadOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:NewPubKeyStoreAndPayPayload)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    boolean hasPubKeyPayload();
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayload getPubKeyPayload();
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder getPubKeyPayloadOrBuilder();
+
+    /**
+     * <code>bytes owner_public_key = 2;</code>
+     */
+    com.google.protobuf.ByteString getOwnerPublicKey();
+
+    /**
+     * <code>bytes signature_by_owner = 3;</code>
+     */
+    com.google.protobuf.ByteString getSignatureByOwner();
+  }
+  /**
+   * Protobuf type {@code NewPubKeyStoreAndPayPayload}
+   */
+  public  static final class NewPubKeyStoreAndPayPayload extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:NewPubKeyStoreAndPayPayload)
+      NewPubKeyStoreAndPayPayloadOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use NewPubKeyStoreAndPayPayload.newBuilder() to construct.
+    private NewPubKeyStoreAndPayPayload(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private NewPubKeyStoreAndPayPayload() {
+      ownerPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      signatureByOwner_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private NewPubKeyStoreAndPayPayload(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder subBuilder = null;
+              if (pubKeyPayload_ != null) {
+                subBuilder = pubKeyPayload_.toBuilder();
+              }
+              pubKeyPayload_ = input.readMessage(io.remme.java.protobuf.PubKey.NewPubKeyPayload.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(pubKeyPayload_);
+                pubKeyPayload_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+
+              ownerPublicKey_ = input.readBytes();
+              break;
+            }
+            case 26: {
+
+              signatureByOwner_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyStoreAndPayPayload_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyStoreAndPayPayload_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.class, io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.Builder.class);
+    }
+
+    public static final int PUB_KEY_PAYLOAD_FIELD_NUMBER = 1;
+    private io.remme.java.protobuf.PubKey.NewPubKeyPayload pubKeyPayload_;
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    public boolean hasPubKeyPayload() {
+      return pubKeyPayload_ != null;
+    }
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayload getPubKeyPayload() {
+      return pubKeyPayload_ == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDefaultInstance() : pubKeyPayload_;
+    }
+    /**
+     * <pre>
+     * The payload for account which want to pay for other account public keys storing.
+     * A first account -&gt; send payload -&gt; A second account -&gt; 
+     * -&gt; send transaction with first account's public key -&gt; Remme core.
+     * So Remme core charges tokens from a second account, but store a first account's public key.
+     * Owner here is a first account.
+     * </pre>
+     *
+     * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+     */
+    public io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder getPubKeyPayloadOrBuilder() {
+      return getPubKeyPayload();
+    }
+
+    public static final int OWNER_PUBLIC_KEY_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString ownerPublicKey_;
+    /**
+     * <code>bytes owner_public_key = 2;</code>
+     */
+    public com.google.protobuf.ByteString getOwnerPublicKey() {
+      return ownerPublicKey_;
+    }
+
+    public static final int SIGNATURE_BY_OWNER_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString signatureByOwner_;
+    /**
+     * <code>bytes signature_by_owner = 3;</code>
+     */
+    public com.google.protobuf.ByteString getSignatureByOwner() {
+      return signatureByOwner_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (pubKeyPayload_ != null) {
+        output.writeMessage(1, getPubKeyPayload());
+      }
+      if (!ownerPublicKey_.isEmpty()) {
+        output.writeBytes(2, ownerPublicKey_);
+      }
+      if (!signatureByOwner_.isEmpty()) {
+        output.writeBytes(3, signatureByOwner_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (pubKeyPayload_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPubKeyPayload());
+      }
+      if (!ownerPublicKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, ownerPublicKey_);
+      }
+      if (!signatureByOwner_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, signatureByOwner_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload)) {
+        return super.equals(obj);
+      }
+      io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload other = (io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload) obj;
+
+      boolean result = true;
+      result = result && (hasPubKeyPayload() == other.hasPubKeyPayload());
+      if (hasPubKeyPayload()) {
+        result = result && getPubKeyPayload()
+            .equals(other.getPubKeyPayload());
+      }
+      result = result && getOwnerPublicKey()
+          .equals(other.getOwnerPublicKey());
+      result = result && getSignatureByOwner()
+          .equals(other.getSignatureByOwner());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPubKeyPayload()) {
+        hash = (37 * hash) + PUB_KEY_PAYLOAD_FIELD_NUMBER;
+        hash = (53 * hash) + getPubKeyPayload().hashCode();
+      }
+      hash = (37 * hash) + OWNER_PUBLIC_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getOwnerPublicKey().hashCode();
+      hash = (37 * hash) + SIGNATURE_BY_OWNER_FIELD_NUMBER;
+      hash = (53 * hash) + getSignatureByOwner().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code NewPubKeyStoreAndPayPayload}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:NewPubKeyStoreAndPayPayload)
+        io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayloadOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyStoreAndPayPayload_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyStoreAndPayPayload_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.class, io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.Builder.class);
+      }
+
+      // Construct using io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (pubKeyPayloadBuilder_ == null) {
+          pubKeyPayload_ = null;
+        } else {
+          pubKeyPayload_ = null;
+          pubKeyPayloadBuilder_ = null;
+        }
+        ownerPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+
+        signatureByOwner_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.remme.java.protobuf.PubKey.internal_static_NewPubKeyStoreAndPayPayload_descriptor;
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload getDefaultInstanceForType() {
+        return io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload build() {
+        io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload buildPartial() {
+        io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload result = new io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload(this);
+        if (pubKeyPayloadBuilder_ == null) {
+          result.pubKeyPayload_ = pubKeyPayload_;
+        } else {
+          result.pubKeyPayload_ = pubKeyPayloadBuilder_.build();
+        }
+        result.ownerPublicKey_ = ownerPublicKey_;
+        result.signatureByOwner_ = signatureByOwner_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload) {
+          return mergeFrom((io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload other) {
+        if (other == io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload.getDefaultInstance()) return this;
+        if (other.hasPubKeyPayload()) {
+          mergePubKeyPayload(other.getPubKeyPayload());
+        }
+        if (other.getOwnerPublicKey() != com.google.protobuf.ByteString.EMPTY) {
+          setOwnerPublicKey(other.getOwnerPublicKey());
+        }
+        if (other.getSignatureByOwner() != com.google.protobuf.ByteString.EMPTY) {
+          setSignatureByOwner(other.getSignatureByOwner());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private io.remme.java.protobuf.PubKey.NewPubKeyPayload pubKeyPayload_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder> pubKeyPayloadBuilder_;
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public boolean hasPubKeyPayload() {
+        return pubKeyPayloadBuilder_ != null || pubKeyPayload_ != null;
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload getPubKeyPayload() {
+        if (pubKeyPayloadBuilder_ == null) {
+          return pubKeyPayload_ == null ? io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDefaultInstance() : pubKeyPayload_;
+        } else {
+          return pubKeyPayloadBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public Builder setPubKeyPayload(io.remme.java.protobuf.PubKey.NewPubKeyPayload value) {
+        if (pubKeyPayloadBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pubKeyPayload_ = value;
+          onChanged();
+        } else {
+          pubKeyPayloadBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public Builder setPubKeyPayload(
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder builderForValue) {
+        if (pubKeyPayloadBuilder_ == null) {
+          pubKeyPayload_ = builderForValue.build();
+          onChanged();
+        } else {
+          pubKeyPayloadBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public Builder mergePubKeyPayload(io.remme.java.protobuf.PubKey.NewPubKeyPayload value) {
+        if (pubKeyPayloadBuilder_ == null) {
+          if (pubKeyPayload_ != null) {
+            pubKeyPayload_ =
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.newBuilder(pubKeyPayload_).mergeFrom(value).buildPartial();
+          } else {
+            pubKeyPayload_ = value;
+          }
+          onChanged();
+        } else {
+          pubKeyPayloadBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public Builder clearPubKeyPayload() {
+        if (pubKeyPayloadBuilder_ == null) {
+          pubKeyPayload_ = null;
+          onChanged();
+        } else {
+          pubKeyPayload_ = null;
+          pubKeyPayloadBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder getPubKeyPayloadBuilder() {
+        
+        onChanged();
+        return getPubKeyPayloadFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      public io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder getPubKeyPayloadOrBuilder() {
+        if (pubKeyPayloadBuilder_ != null) {
+          return pubKeyPayloadBuilder_.getMessageOrBuilder();
+        } else {
+          return pubKeyPayload_ == null ?
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload.getDefaultInstance() : pubKeyPayload_;
+        }
+      }
+      /**
+       * <pre>
+       * The payload for account which want to pay for other account public keys storing.
+       * A first account -&gt; send payload -&gt; A second account -&gt; 
+       * -&gt; send transaction with first account's public key -&gt; Remme core.
+       * So Remme core charges tokens from a second account, but store a first account's public key.
+       * Owner here is a first account.
+       * </pre>
+       *
+       * <code>.NewPubKeyPayload pub_key_payload = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          io.remme.java.protobuf.PubKey.NewPubKeyPayload, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder> 
+          getPubKeyPayloadFieldBuilder() {
+        if (pubKeyPayloadBuilder_ == null) {
+          pubKeyPayloadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              io.remme.java.protobuf.PubKey.NewPubKeyPayload, io.remme.java.protobuf.PubKey.NewPubKeyPayload.Builder, io.remme.java.protobuf.PubKey.NewPubKeyPayloadOrBuilder>(
+                  getPubKeyPayload(),
+                  getParentForChildren(),
+                  isClean());
+          pubKeyPayload_ = null;
+        }
+        return pubKeyPayloadBuilder_;
+      }
+
+      private com.google.protobuf.ByteString ownerPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes owner_public_key = 2;</code>
+       */
+      public com.google.protobuf.ByteString getOwnerPublicKey() {
+        return ownerPublicKey_;
+      }
+      /**
+       * <code>bytes owner_public_key = 2;</code>
+       */
+      public Builder setOwnerPublicKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        ownerPublicKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes owner_public_key = 2;</code>
+       */
+      public Builder clearOwnerPublicKey() {
+        
+        ownerPublicKey_ = getDefaultInstance().getOwnerPublicKey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString signatureByOwner_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature_by_owner = 3;</code>
+       */
+      public com.google.protobuf.ByteString getSignatureByOwner() {
+        return signatureByOwner_;
+      }
+      /**
+       * <code>bytes signature_by_owner = 3;</code>
+       */
+      public Builder setSignatureByOwner(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signatureByOwner_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature_by_owner = 3;</code>
+       */
+      public Builder clearSignatureByOwner() {
+        
+        signatureByOwner_ = getDefaultInstance().getSignatureByOwner();
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:NewPubKeyStoreAndPayPayload)
+    }
+
+    // @@protoc_insertion_point(class_scope:NewPubKeyStoreAndPayPayload)
+    private static final io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload();
+    }
+
+    public static io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<NewPubKeyStoreAndPayPayload>
+        PARSER = new com.google.protobuf.AbstractParser<NewPubKeyStoreAndPayPayload>() {
+      @java.lang.Override
+      public NewPubKeyStoreAndPayPayload parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NewPubKeyStoreAndPayPayload(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<NewPubKeyStoreAndPayPayload> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NewPubKeyStoreAndPayPayload> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.remme.java.protobuf.PubKey.NewPubKeyStoreAndPayPayload getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface RevokePubKeyPayloadOrBuilder extends
       // @@protoc_insertion_point(interface_extends:RevokePubKeyPayload)
       com.google.protobuf.MessageOrBuilder {
@@ -5436,6 +6304,11 @@ public final class PubKey {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_NewPubKeyPayload_Ed25519Configuration_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_NewPubKeyStoreAndPayPayload_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_NewPubKeyStoreAndPayPayload_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_RevokePubKeyPayload_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -5454,29 +6327,33 @@ public final class PubKey {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rpub_key.proto\"/\n\014PubKeyMethod\"\037\n\006Metho" +
-      "d\022\t\n\005STORE\020\000\022\n\n\006REVOKE\020\001\"\237\005\n\020NewPubKeyPa" +
-      "yload\022=\n\021hashing_algorithm\030\001 \001(\0162\".NewPu" +
-      "bKeyPayload.HashingAlgorithm\022\023\n\013entity_h" +
-      "ash\030\002 \001(\014\022\035\n\025entity_hash_signature\030\003 \001(\014" +
-      "\022\022\n\nvalid_from\030\004 \001(\r\022\020\n\010valid_to\030\005 \001(\r\0221" +
-      "\n\003rsa\030\006 \001(\0132\".NewPubKeyPayload.RSAConfig" +
-      "urationH\000\0225\n\005ecdsa\030\007 \001(\0132$.NewPubKeyPayl" +
-      "oad.ECDSAConfigurationH\000\0229\n\007ed25519\030\010 \001(" +
-      "\0132&.NewPubKeyPayload.Ed25519Configuratio" +
-      "nH\000\032~\n\020RSAConfiguration\022\013\n\003key\030\001 \001(\014\022;\n\007" +
-      "padding\030\002 \001(\0162*.NewPubKeyPayload.RSAConf" +
-      "iguration.Padding\" \n\007Padding\022\007\n\003PSS\020\000\022\014\n" +
-      "\010PKCS1v15\020\001\032k\n\022ECDSAConfiguration\022\013\n\003key" +
-      "\030\001 \001(\014\0223\n\002ec\030\002 \001(\0162\'.NewPubKeyPayload.EC" +
-      "DSAConfiguration.EC\"\023\n\002EC\022\r\n\tSECP256k1\020\000" +
-      "\032#\n\024Ed25519Configuration\022\013\n\003key\030\001 \001(\014\"*\n" +
-      "\020HashingAlgorithm\022\n\n\006SHA256\020\000\022\n\n\006SHA512\020" +
-      "\001B\017\n\rconfiguration\"&\n\023RevokePubKeyPayloa" +
-      "d\022\017\n\007address\030\001 \001(\t\"V\n\rPubKeyStorage\022\r\n\005o" +
-      "wner\030\001 \001(\t\022\"\n\007payload\030\002 \001(\0132\021.NewPubKeyP" +
-      "ayload\022\022\n\nis_revoked\030\003 \001(\010B\030\n\026io.remme.j" +
-      "ava.protobufb\006proto3"
+      "\n\rpub_key.proto\"B\n\014PubKeyMethod\"2\n\006Metho" +
+      "d\022\t\n\005STORE\020\000\022\n\n\006REVOKE\020\001\022\021\n\rSTORE_AND_PA" +
+      "Y\020\002\"\237\005\n\020NewPubKeyPayload\022=\n\021hashing_algo" +
+      "rithm\030\001 \001(\0162\".NewPubKeyPayload.HashingAl" +
+      "gorithm\022\023\n\013entity_hash\030\002 \001(\014\022\035\n\025entity_h" +
+      "ash_signature\030\003 \001(\014\022\022\n\nvalid_from\030\004 \001(\r\022" +
+      "\020\n\010valid_to\030\005 \001(\r\0221\n\003rsa\030\006 \001(\0132\".NewPubK" +
+      "eyPayload.RSAConfigurationH\000\0225\n\005ecdsa\030\007 " +
+      "\001(\0132$.NewPubKeyPayload.ECDSAConfiguratio" +
+      "nH\000\0229\n\007ed25519\030\010 \001(\0132&.NewPubKeyPayload." +
+      "Ed25519ConfigurationH\000\032~\n\020RSAConfigurati" +
+      "on\022\013\n\003key\030\001 \001(\014\022;\n\007padding\030\002 \001(\0162*.NewPu" +
+      "bKeyPayload.RSAConfiguration.Padding\" \n\007" +
+      "Padding\022\007\n\003PSS\020\000\022\014\n\010PKCS1v15\020\001\032k\n\022ECDSAC" +
+      "onfiguration\022\013\n\003key\030\001 \001(\014\0223\n\002ec\030\002 \001(\0162\'." +
+      "NewPubKeyPayload.ECDSAConfiguration.EC\"\023" +
+      "\n\002EC\022\r\n\tSECP256k1\020\000\032#\n\024Ed25519Configurat" +
+      "ion\022\013\n\003key\030\001 \001(\014\"*\n\020HashingAlgorithm\022\n\n\006" +
+      "SHA256\020\000\022\n\n\006SHA512\020\001B\017\n\rconfiguration\"\177\n" +
+      "\033NewPubKeyStoreAndPayPayload\022*\n\017pub_key_" +
+      "payload\030\001 \001(\0132\021.NewPubKeyPayload\022\030\n\020owne" +
+      "r_public_key\030\002 \001(\014\022\032\n\022signature_by_owner" +
+      "\030\003 \001(\014\"&\n\023RevokePubKeyPayload\022\017\n\007address" +
+      "\030\001 \001(\t\"V\n\rPubKeyStorage\022\r\n\005owner\030\001 \001(\t\022\"" +
+      "\n\007payload\030\002 \001(\0132\021.NewPubKeyPayload\022\022\n\nis" +
+      "_revoked\030\003 \001(\010B\030\n\026io.remme.java.protobuf" +
+      "b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5520,14 +6397,20 @@ public final class PubKey {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_NewPubKeyPayload_Ed25519Configuration_descriptor,
         new java.lang.String[] { "Key", });
-    internal_static_RevokePubKeyPayload_descriptor =
+    internal_static_NewPubKeyStoreAndPayPayload_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_NewPubKeyStoreAndPayPayload_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_NewPubKeyStoreAndPayPayload_descriptor,
+        new java.lang.String[] { "PubKeyPayload", "OwnerPublicKey", "SignatureByOwner", });
+    internal_static_RevokePubKeyPayload_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_RevokePubKeyPayload_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_RevokePubKeyPayload_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_PubKeyStorage_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_PubKeyStorage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_PubKeyStorage_descriptor,

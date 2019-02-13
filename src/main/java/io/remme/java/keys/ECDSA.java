@@ -166,10 +166,34 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
+    public String sign(byte[] data, RSASignaturePadding padding) {
+        return sign(data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean verify(String signatureHex, String data) {
+        return verify(signatureHex, data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+        return verify(signature, data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signatureHex, byte[] data) {
         try {
             byte[] tokenSignature = Hex.decodeHex(signatureHex);
-            byte[] dataHash = DigestUtils.sha256(data.getBytes(StandardCharsets.UTF_8));
+            byte[] dataHash = DigestUtils.sha256(data);
             return verify(dataHash, tokenSignature, Hex.decodeHex(publicKeyHex));
         } catch (DecoderException e) {
             return false;
@@ -180,7 +204,7 @@ public class ECDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+    public boolean verify(String signature, byte[] data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
 
