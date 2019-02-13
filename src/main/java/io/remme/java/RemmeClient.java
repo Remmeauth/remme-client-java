@@ -43,7 +43,7 @@ public class RemmeClient {
      *      IRemmeKeys keys = RemmeKeys.construct(KeyType.RSA, null, Functions.privateKeyFromPem(privateKey));
      *      Integer validFrom = Math.floor(System.currentTimeMillis() / 1000);
      *      Integer validTo = Math.floor(System.currentTimeMillis() / 1000) + 365;
-     *      BaseTransactionResponse store = remme.getPublicKeyStorage().store(PublicKeyStore.builder()
+     *      BaseTransactionResponse store = remme.getPublicKeyStorage().store(PublicKeyCreate.builder()
      *          .data(certificate)
      *          .keys(keys)
      *          .rsaSignaturePadding( RSASignaturePadding.PSS)

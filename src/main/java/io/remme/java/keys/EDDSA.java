@@ -101,12 +101,11 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public String sign(String dataString) {
+    public String sign(byte[] data) {
         try {
             if (privateKey == null) {
                 throw new RemmeKeyException("PrivateKey is not provided!");
             }
-            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(data);
             Signature signature = Signature.getInstance(EdDSAEngine.SIGNATURE_ALGORITHM, new EdDSASecurityProvider());
@@ -122,6 +121,14 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
+    public String sign(String dataString) {
+        return sign(dataString.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String sign(String data, RSASignaturePadding padding) {
         return sign(data);
     }
@@ -130,9 +137,16 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String dataString) {
+    public String sign(byte[] data, RSASignaturePadding padding) {
+        return sign(data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, byte[] data) {
         try {
-            byte[] data = dataString.getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(data);
             byte[] signatureBytes = Hex.decodeHex(signature);
@@ -149,7 +163,23 @@ public class EDDSA extends KeyDTO implements IRemmeKeys {
      * {@inheritDoc}
      */
     @Override
-    public boolean verify(String signature, String data, RSASignaturePadding padding) {
+    public boolean verify(String signature, String dataString, RSASignaturePadding padding) {
+        return verify(signature, dataString.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, String dataString) {
+        return verify(signature, dataString.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean verify(String signature, byte[] data, RSASignaturePadding padding) {
         return verify(signature, data);
     }
 }

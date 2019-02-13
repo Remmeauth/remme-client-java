@@ -44,4 +44,36 @@ public interface IRemmeKeys {
      * @return <code>true</code> in case signature is correct
      */
     boolean verify(String signature, String data);
+
+    /**
+     * Sign provided data with selected key implementation
+     * @param data Data string which will be signed
+     * @param rsaSignaturePadding RSA padding for signature (optional)
+     * @return HEX String for signature
+     */
+    String sign(byte[] data, RSASignaturePadding rsaSignaturePadding);
+
+    /**
+     * Sign provided data with selected key implementation
+     * @param data Data which will be signed
+     * @return HEX String for signature
+     */
+    String sign(byte[] data);
+
+    /**
+     * Verify signature for selected key implementation
+     * @param signature HEX String of signature
+     * @param data Data which will be verified
+     * @param rsaSignaturePadding RSA padding for signature (optional)
+     * @return <code>true</code> in case signature is correct
+     */
+    boolean verify(String signature, byte[] data, RSASignaturePadding rsaSignaturePadding);
+
+    /**
+     * Verify signature for selected key implementation
+     * @param signature HEX String of signature
+     * @param data Data which will be verified
+     * @return <code>true</code> in case signature is correct
+     */
+    boolean verify(String signature, byte[] data);
 }
